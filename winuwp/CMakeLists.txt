@@ -4,11 +4,11 @@ set(CMAKE_SYSTEM_VERSION 10.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
-project(flutter_application_1 LANGUAGES CXX)
+project(smart_taal_system LANGUAGES CXX)
 
 cmake_policy(SET CMP0079 NEW)
 
-set(BINARY_NAME "flutter_application_1")
+set(BINARY_NAME "smart_taal_system")
 
 # Configure build options.
 get_property(IS_MULTICONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)

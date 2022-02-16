@@ -1,10 +1,10 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/backend/enumeratorRawData.dart';
-import 'package:flutter_application_1/backend/google_sheets_api.dart';
-import 'package:flutter_application_1/backend/sqlfite_local_secondary_db.dart';
-import 'package:flutter_application_1/screens/form_page_one.dart';
-import 'package:flutter_application_1/submit_button.dart';
+import 'package:smart_taal_system/backend/enumeratorRawData.dart';
+import 'package:smart_taal_system/backend/google_sheets_api.dart';
+import 'package:smart_taal_system/backend/sqlfite_local_secondary_db.dart';
+import 'package:smart_taal_system/forms/form_place_page.dart';
+import 'package:smart_taal_system/submit_button.dart';
 import '../backend/sqlfite_local_primary_db.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';

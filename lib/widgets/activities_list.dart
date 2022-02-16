@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/dashboard_page.dart';
-import 'package:flutter_application_1/screens/data_table_page.dart';
-import 'package:flutter_application_1/screens/form_page_one.dart';
-import 'package:flutter_application_1/screens/manual_page.dart';
-import 'package:flutter_application_1/screens/settings_page.dart';
+import 'package:smart_taal_system/screens/dashboard_page.dart';
+import 'package:smart_taal_system/screens/data_table_page.dart';
+import 'package:smart_taal_system/forms/form_place_page.dart';
+import 'package:smart_taal_system/screens/manual_page.dart';
+import 'package:smart_taal_system/screens/settings_page.dart';
 import '../backend/sqlfite_local_primary_db.dart';
 import '../widgets/stored_form.dart';
 
@@ -51,11 +51,11 @@ class _ActivitiesListState extends State<ActivitiesList> {
                       },
                     )
                   : Container(
-                      height: MediaQuery.of(context).size.height / 1.3,
+                      height: MediaQuery.of(context).size.height / 1.25,
                       child: Container(
                           child: Column(children: [
                         Padding(
-                            padding: EdgeInsets.fromLTRB(10, 40, 15, 0),
+                            padding: EdgeInsets.fromLTRB(10, 80, 15, 0),
                             child: Container(
                                 width: MediaQuery.of(context).size.width / 1.05,
                                 decoration: BoxDecoration(

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/dashboard_page.dart';
-import 'package:flutter_application_1/screens/data_table_page.dart';
-import 'package:flutter_application_1/screens/form_page_one.dart';
-import 'package:flutter_application_1/screens/manual_page.dart';
-import 'package:flutter_application_1/screens/settings_page.dart';
-import 'package:flutter_application_1/widgets/activities_list.dart';
-import 'package:flutter_application_1/widgets/calendar.dart';
+import 'package:smart_taal_system/screens/dashboard_page.dart';
+import 'package:smart_taal_system/screens/data_table_page.dart';
+import 'package:smart_taal_system/forms/form_place_page.dart';
+import 'package:smart_taal_system/screens/manual_page.dart';
+import 'package:smart_taal_system/screens/settings_page.dart';
+import 'package:smart_taal_system/widgets/activities_list.dart';
+import 'package:smart_taal_system/widgets/calendar.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../backend/sqlfite_local_primary_db.dart';
@@ -48,10 +48,10 @@ class _DashboardState extends State<Dashboard> {
                         physics: BouncingScrollPhysics(
                             parent: AlwaysScrollableScrollPhysics()),
                         child: Column(children: [
-                          Calendar(),
+                          //Calendar(),
                           ActivitiesList(),
-                          DaysList()
+                          //DaysList()
                         ]))))));
-    // Scaffold
+    // Scaffol
   }
 }

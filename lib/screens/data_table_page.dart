@@ -1,6 +1,6 @@
 // import 'package:flutter/material.dart';
-// import 'package:flutter_application_1/backend/model.dart';
-// import 'package:flutter_application_1/backend/sqlfite_local_db.dart';
+// import 'package:smart_taal_system/backend/model.dart';
+// import 'package:smart_taal_system/backend/sqlfite_local_db.dart';
 // import 'dashboard_page.dart';
 
 // class ActivityTable extends StatefulWidget {
@@ -105,12 +105,14 @@ class _ActivityTableState extends State<ActivityTable> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.purple,
       appBar: AppBar(title: Text('Profile')),
       body: Center(
-        child: Column(children: <Widget>[
-          Text('ActivityTable Screen', style: TextStyle(fontSize: 40)),
-          TextButton(onPressed: _query, child: Text('click meh'))
-        ]),
+        child: //Column(children: <Widget>[
+            Text('ActivityTable Screen',
+                style: TextStyle(color: Colors.white, fontSize: 40)),
+        //TextButton( child: Text('click meh'))
+        //]),
       ), // Center
     ); // Scaffold
   }
