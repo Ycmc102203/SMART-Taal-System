@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_taal_system/screens/dashboard_page.dart';
 import 'package:smart_taal_system/screens/data_table_page.dart';
-import 'package:smart_taal_system/forms/form_place_page.dart';
+import 'package:smart_taal_system/forms/form_page_one.dart';
 import 'package:smart_taal_system/screens/manual_page.dart';
 import 'package:smart_taal_system/screens/settings_page.dart';
 import 'package:sqflite/sqflite.dart';
@@ -15,13 +15,13 @@ class DaysList extends StatefulWidget {
 }
 
 class _DaysListState extends State<DaysList> {
-  var dateSelected;
+  late String dateSelected;
   _query() async {
     // get a reference to the database
-    Database db = await DatabaseHelperOne.instance.database;
+    Database db = await DatabaseHelperTwo.instance.database;
     // raw query
     List<Map> result = await db.rawQuery(
-        'SELECT * FROM enumeratorLocalData WHERE date=?', ['$dateSelected']);
+        'SELECT * FROM enumeratorDaysData WHERE date=?', ['$dateSelected']);
     // print the results
     result.forEach((row) => print(row));
     // {_id: 2, name: Mary, age: 32}
@@ -153,6 +153,7 @@ class _DaysListState extends State<DaysList> {
                                                                       dateSelected =
                                                                           enumeratorDays
                                                                               .date;
+
                                                                       _query();
                                                                       // showStoredForm(
                                                                       //     context,

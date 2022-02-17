@@ -10,7 +10,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 class NewSpecies extends StatefulWidget {
-  final Function(String) addSpecies;
   final DateTime passedDate;
   final String passedEnumerator;
   final String passedFishingGround;
@@ -26,7 +25,6 @@ class NewSpecies extends StatefulWidget {
   const NewSpecies(
       {Key,
       key,
-      required this.addSpecies,
       required this.passedDate,
       required this.passedEnumerator,
       required this.passedFishingGround,
@@ -65,15 +63,20 @@ class _NewTodoState extends State<NewSpecies> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/');
+                print('test!');
                 setState(() {});
+                _postDays();
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               child: Text('Bumalik sa Home Screen',
                   style: TextStyle(color: Colors.green)),
             ),
             TextButton(
               onPressed: () {
-                //int count = 0;
+                print('test!');
+                setState(() {});
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
@@ -388,13 +391,11 @@ class _NewTodoState extends State<NewSpecies> {
 
   void _postSpecies() async {
     _addSpeciesToList();
-
     final passedGSheetsDate =
         DateFormat('yyyy/MM/dd').format(widget.passedDate);
     final passedSqfliteDateTime =
-        DateFormat('dd/MM/yyyy h:mma').format(widget.passedDate);
-    final passedSqfliteDate =
-        DateFormat('dd/MM/yyyy').format(widget.passedDate);
+        DateFormat('yyyy-MM-dd').format(widget.passedDate);
+
     final feedback = {
       EnumeratorRawDataColumn.date: passedGSheetsDate.trim(),
       EnumeratorRawDataColumn.enumerator: widget.passedEnumerator.trim(),
@@ -431,6 +432,14 @@ class _NewTodoState extends State<NewSpecies> {
         length: lengthController.text,
         weight: weightController.text,
         image: speciesPic));
+
+    Navigator.of(context).pop();
+    setState(() {});
+  }
+
+  void _postDays() async {
+    final passedSqfliteDate =
+        DateFormat('dd/MM/yyyy').format(widget.passedDate);
     await DatabaseHelperTwo.instance.add(enumeratorDays(
       date: passedSqfliteDate,
       enumerator: widget.passedEnumerator,
@@ -438,8 +447,6 @@ class _NewTodoState extends State<NewSpecies> {
       fishingGround: widget.passedFishingGround,
       totalLandings: widget.passedTotalLandings,
     ));
-    Navigator.of(context).pop();
-    setState(() {});
   }
 
   TextEditingController dateController = TextEditingController();

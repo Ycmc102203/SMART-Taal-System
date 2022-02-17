@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_taal_system/screens/dashboard_page.dart';
 import 'package:smart_taal_system/screens/data_table_page.dart';
-import 'package:smart_taal_system/forms/form_place_page.dart';
+import 'package:smart_taal_system/forms/form_page_one.dart';
 import 'package:smart_taal_system/screens/manual_page.dart';
 import 'package:smart_taal_system/screens/settings_page.dart';
 import 'package:smart_taal_system/widgets/activities_list.dart';
@@ -22,6 +22,8 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
+            margin:
+                EdgeInsets.only(top: MediaQuery.of(context).size.height / 100),
             color: Colors.purple,
             // decoration: BoxDecoration(
             //     gradient: LinearGradient(
@@ -48,9 +50,9 @@ class _DashboardState extends State<Dashboard> {
                         physics: BouncingScrollPhysics(
                             parent: AlwaysScrollableScrollPhysics()),
                         child: Column(children: [
-                          //Calendar(),
+                          Calendar(),
                           ActivitiesList(),
-                          //DaysList()
+                          DaysList()
                         ]))))));
     // Scaffol
   }

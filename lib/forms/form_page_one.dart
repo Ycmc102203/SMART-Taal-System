@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_taal_system/forms/form_specimen_page.dart';
+import 'package:smart_taal_system/forms/form_page_two.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -20,7 +20,6 @@ class _NewActivityState extends State<NewActivity> {
         isScrollControlled: true,
         context: context,
         builder: (context) => NewSpecies(
-              addSpecies: _addSpecies,
               passedDate: dateTime,
               passedEnumerator: enumeratorController.text,
               passedFishingGround: fishingGroundController.text,

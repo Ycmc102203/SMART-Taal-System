@@ -2,7 +2,7 @@ import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_taal_system/screens/dashboard_page.dart';
 import 'package:smart_taal_system/screens/data_table_page.dart';
-import 'package:smart_taal_system/forms/form_place_page.dart';
+import 'package:smart_taal_system/forms/form_page_one.dart';
 import 'package:smart_taal_system/screens/manual_page.dart';
 import 'package:smart_taal_system/screens/settings_page.dart';
 import 'package:smart_taal_system/widgets/activities_list.dart';
@@ -80,12 +80,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   fillColor: Colors.green,
                   child: Icon(
                     Icons.add,
-                    size: 35.0,
+                    size: 45.0,
                     color: Colors.white,
                   ),
                   padding: EdgeInsets.all(0.0),
                   shape: CircleBorder(
-                      side: BorderSide(color: Colors.white, width: 4)),
+                      side: BorderSide(color: Colors.white, width: 5)),
                 ),
               ),
               title: ''),
