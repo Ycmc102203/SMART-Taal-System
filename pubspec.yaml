@@ -40,6 +40,8 @@ dependencies:
   path: any
   table_calendar:
   convex_bottom_bar:
+  flutter_offline:
+  filter_list:
   flutter:
     sdk: flutter
 

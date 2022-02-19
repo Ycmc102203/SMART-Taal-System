@@ -5,8 +5,6 @@ import 'package:smart_taal_system/screens/data_table_page.dart';
 import 'package:smart_taal_system/forms/form_page_one.dart';
 import 'package:smart_taal_system/screens/manual_page.dart';
 import 'package:smart_taal_system/screens/settings_page.dart';
-import 'package:smart_taal_system/widgets/activities_list.dart';
-import '../backend/sqlfite_local_primary_db.dart';
 
 class MyHomePage extends StatefulWidget {
   @override

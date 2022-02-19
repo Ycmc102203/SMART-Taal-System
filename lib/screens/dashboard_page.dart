@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:smart_taal_system/screens/dashboard_page.dart';
-import 'package:smart_taal_system/screens/data_table_page.dart';
-import 'package:smart_taal_system/forms/form_page_one.dart';
-import 'package:smart_taal_system/screens/manual_page.dart';
-import 'package:smart_taal_system/screens/settings_page.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:smart_taal_system/widgets/activities_list.dart';
 import 'package:smart_taal_system/widgets/calendar.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:table_calendar/table_calendar.dart';
-import '../backend/sqlfite_local_primary_db.dart';
-import '../backend/sqlfite_local_secondary_db.dart';
 import '../widgets/days_list.dart';
 
 class Dashboard extends StatefulWidget {
@@ -25,25 +17,17 @@ class _DashboardState extends State<Dashboard> {
             margin:
                 EdgeInsets.only(top: MediaQuery.of(context).size.height / 100),
             color: Colors.purple,
-            // decoration: BoxDecoration(
-            //     gradient: LinearGradient(
-            //   begin: Alignment.topLeft,
-            //   end: Alignment.bottomRight,
-            //   colors: [
-            //     Colors.purple,
-            //     Color.fromARGB(255, 121, 39, 176),
-            //   ],
-            // )),
             child: RefreshIndicator(
                 onRefresh: () {
                   return Future.delayed(Duration(seconds: 1), () {
-                    setState(() {});
+                    setState(() {
+                      _checkConnection();
+                    });
                     ;
                   });
                 },
                 child: RawScrollbar(
                     thumbColor: Colors.green,
-                    isAlwaysShown: true,
                     radius: Radius.circular(10),
                     thickness: 7,
                     child: SingleChildScrollView(
@@ -52,8 +36,43 @@ class _DashboardState extends State<Dashboard> {
                         child: Column(children: [
                           Calendar(),
                           ActivitiesList(),
-                          DaysList()
                         ]))))));
     // Scaffol
   }
+}
+
+void _checkConnection() async {
+  // Simple check to see if we have internet
+  print("The statement 'this machine is connected to the Internet' is: ");
+  print(await InternetConnectionChecker().hasConnection);
+  // returns a bool
+
+  // We can also get an enum value instead of a bool
+  print(
+      "Current status: ${await InternetConnectionChecker().connectionStatus}");
+  // prints either InternetConnectionStatus.connected
+  // or InternetConnectionStatus.disconnected
+
+  // This returns the last results from the last call
+  // to either hasConnection or connectionStatus
+  print("Last results: ${InternetConnectionChecker().isActivelyChecking}");
+
+  // actively listen for status updates
+  // this will cause InternetConnectionChecker to check periodically
+  // with the interval specified in InternetConnectionChecker().checkInterval
+  // until listener.cancel() is called
+  var listener = InternetConnectionChecker().onStatusChange.listen((status) {
+    switch (status) {
+      case InternetConnectionStatus.connected:
+        print('Data connection is available.');
+        break;
+      case InternetConnectionStatus.disconnected:
+        print('You are disconnected from the internet.');
+        break;
+    }
+  });
+
+  // close listener after 30 seconds, so the program doesn't run forever
+  await Future.delayed(Duration(seconds: 30));
+  await listener.cancel();
 }

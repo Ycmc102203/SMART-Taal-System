@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:smart_taal_system/backend/enumeratorRawData.dart';
 import 'package:smart_taal_system/backend/google_sheets_api.dart';
 import 'package:smart_taal_system/backend/sqlfite_local_secondary_db.dart';
-//import 'package:smart_taal_system/forms/form_landingCenter_page.dart';
 import 'package:smart_taal_system/submit_button.dart';
 import '../backend/sqlfite_local_primary_db.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -240,7 +239,7 @@ class _NewTodoState extends State<NewSpecies> {
     } else if (commonName == "Mangrove red snapper (also)") {
       setState(() {
         speciesNameController.text = "Lutjanus argentimaculatus";
-        speciesPic = 'assets/Lutjanus argentimaculatuss.PNG';
+        speciesPic = 'assets/Lutjanus argentimaculatus.PNG';
       });
     } else if (commonName == "Malabar blood snapper (maya-maya)") {
       setState(() {
