@@ -1,4 +1,4 @@
-class EnumeratorRawDataColumn {
+class EnumeratorOfflineDataColumn {
   static final String date = 'date';
   static final String enumerator = 'enumerator';
   static final String landingCenter = 'landingCenter';

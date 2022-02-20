@@ -42,6 +42,8 @@ dependencies:
   convex_bottom_bar:
   flutter_offline:
   filter_list:
+  connectivity_plus:
+  top_snackbar_flutter:
   flutter:
     sdk: flutter
 

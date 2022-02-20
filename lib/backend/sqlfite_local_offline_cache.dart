@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 
-class enumeratorLocal {
+class enumeratorOffline {
   final int? id;
   String date = 'date';
   String enumerator = 'enumerator';
@@ -20,7 +20,7 @@ class enumeratorLocal {
   String weight = 'weight';
   String image = 'image';
 
-  enumeratorLocal(
+  enumeratorOffline(
       {this.id,
       required this.date,
       required this.enumerator,
@@ -39,8 +39,8 @@ class enumeratorLocal {
       required this.weight,
       required this.image});
 
-  factory enumeratorLocal.fromMap(Map<String, dynamic> json) =>
-      new enumeratorLocal(
+  factory enumeratorOffline.fromMap(Map<String, dynamic> json) =>
+      new enumeratorOffline(
         id: json['id'],
         date: json['date'],
         enumerator: json['enumerator'],
@@ -83,10 +83,10 @@ class enumeratorLocal {
   }
 }
 
-class DatabaseHelperOne {
-  DatabaseHelperOne._privateConstructor();
-  static final DatabaseHelperOne instance =
-      DatabaseHelperOne._privateConstructor();
+class DatabaseHelperTwo {
+  DatabaseHelperTwo._privateConstructor();
+  static final DatabaseHelperTwo instance =
+      DatabaseHelperTwo._privateConstructor();
 
   static Database? _database;
   Future<Database> get database async => _database ??= await _initDatabase();
@@ -95,7 +95,7 @@ class DatabaseHelperOne {
     //Get path of the directory for android and iOS.
 
     var databasesPath = await getDatabasesPath();
-    String path = p.join(databasesPath, 'enumeratorLocalData.db');
+    String path = p.join(databasesPath, 'enumeratorOfflineData.db');
 
     //open/create database at a given path
     var enumeratorDatabase =
@@ -104,7 +104,7 @@ class DatabaseHelperOne {
     return enumeratorDatabase;
 
     // Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    // String path = join(documentsDirectory.path, 'enumeratorLocalData.db');
+    // String path = join(documentsDirectory.path, 'enumeratorOfflineData.db');
     // return await openDatabase(
     //   path,
     //   version: 5,
@@ -114,7 +114,7 @@ class DatabaseHelperOne {
 
   Future _onCreate(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE enumeratorLocalData(
+      CREATE TABLE enumeratorOfflineData(
           id INTEGER PRIMARY KEY,
           date TEXT,
           enumerator TEXT,
@@ -136,18 +136,30 @@ class DatabaseHelperOne {
       ''');
   }
 
-  Future<List<enumeratorLocal>> getEnumeratorLocal() async {
+  Future<List<enumeratorOffline>> getEnumeratorOffline() async {
     Database db = await instance.database;
-    var enumeratorLocalData =
-        await db.query('enumeratorLocalData', orderBy: 'date');
-    List<enumeratorLocal> enumeratorLocalList = enumeratorLocalData.isNotEmpty
-        ? enumeratorLocalData.map((c) => enumeratorLocal.fromMap(c)).toList()
-        : [];
-    return enumeratorLocalList;
+    var enumeratorOfflineData =
+        await db.query('enumeratorOfflineData', orderBy: 'date');
+    List<enumeratorOffline> enumeratorOfflineList =
+        enumeratorOfflineData.isNotEmpty
+            ? enumeratorOfflineData
+                .map((c) => enumeratorOffline.fromMap(c))
+                .toList()
+            : [];
+    return enumeratorOfflineList;
   }
 
-  Future<int> add(enumeratorLocal enumeratorLocal) async {
+  Future<int> add(enumeratorOffline enumeratorOffline) async {
     Database db = await instance.database;
-    return await db.insert('enumeratorLocalData', enumeratorLocal.toMap());
+    return await db.insert('enumeratorOfflineData', enumeratorOffline.toMap());
+  }
+
+  Future<int> delete(int id) async {
+    Database db = await instance.database;
+    int result = await db.delete("enumeratorOfflineData", //table name
+        where: "id = ?",
+        whereArgs: [id] // use whereArgs to avoid SQL injection
+        );
+    return result;
   }
 }

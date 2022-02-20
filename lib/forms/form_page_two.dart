@@ -1,12 +1,17 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:smart_taal_system/backend/enumeratorRawData.dart';
 import 'package:smart_taal_system/backend/google_sheets_api.dart';
-import 'package:smart_taal_system/backend/sqlfite_local_secondary_db.dart';
+import 'package:smart_taal_system/backend/sqlfite_local_offline_cache.dart';
+
 import 'package:smart_taal_system/submit_button.dart';
 import '../backend/sqlfite_local_primary_db.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+
+import 'dart:async';
+import 'package:flutter_offline/flutter_offline.dart';
 
 class NewSpecies extends StatefulWidget {
   final DateTime passedDate;
@@ -47,7 +52,7 @@ class _NewTodoState extends State<NewSpecies> {
   final List<String> pic = <String>[];
   final List<String> length = <String>[];
   final List<String> weight = <String>[];
-  String commonName = '';
+  final List<String> commonName = <String>[];
   String speciesPic = '';
 
   Future<bool?> showAddQuestion(BuildContext context) async => showDialog<bool>(
@@ -64,10 +69,10 @@ class _NewTodoState extends State<NewSpecies> {
               onPressed: () {
                 print('test!');
                 setState(() {});
-                _postDays();
                 Navigator.pop(context);
                 Navigator.pop(context);
                 Navigator.pop(context);
+                setState(() {});
               },
               child: Text('Bumalik sa Home Screen',
                   style: TextStyle(color: Colors.green)),
@@ -103,7 +108,7 @@ class _NewTodoState extends State<NewSpecies> {
 
   void _addSpeciesToList() {
     setState(() {
-      species.insert(0, commonName);
+      species.insert(0, commonNameController.text);
       pic.insert(0, speciesPic);
       length.insert(0, lengthController.text);
       weight.insert(0, weightController.text);
@@ -111,222 +116,227 @@ class _NewTodoState extends State<NewSpecies> {
   }
 
   void _changeCommonToSciName() {
-    if (commonName == "Flag-tailed glass perchlet (ning-ning)") {
+    if (commonNameController.text == "Flag-tailed glass perchlet (ning-ning)") {
       setState(() {
         speciesNameController.text = "Ambassis miops";
         speciesPic = 'assets/Ambassis miops.PNG';
       });
-    } else if (commonName == "Midas cichlid (red tilapia)") {
+    } else if (commonNameController.text == "Midas cichlid (red tilapia)") {
       setState(() {
         speciesNameController.text = "Amphilophus citrinellus";
         speciesPic = 'assets/Amphilophus citrinellus.PNG';
       });
-    } else if (commonName == "Climbing perch (martiniko)") {
+    } else if (commonNameController.text == "Climbing perch (martiniko)") {
       setState(() {
         speciesNameController.text = "Anabas testudineus";
         speciesPic = 'assets/Anabas testudineus.PNG';
       });
-    } else if (commonName == "Giant mottled eel (igat)") {
+    } else if (commonNameController.text == "Giant mottled eel (igat)") {
       setState(() {
         speciesNameController.text = "Anguilla marmorata";
         speciesPic = 'assets/Anguilla marmorata.PNG';
       });
-    } else if (commonName == "Manila sea catfish (kanduli)") {
+    } else if (commonNameController.text == "Manila sea catfish (kanduli)") {
       setState(() {
         speciesNameController.text = "Arius manillensis";
         speciesPic = 'assets/Arius manillensis.PNG';
       });
-    } else if (commonName == "Eendracht Land silverside (guno)") {
+    } else if (commonNameController.text ==
+        "Eendracht Land silverside (guno)") {
       setState(() {
         speciesNameController.text = "Atherinomorus endrachtensis";
         speciesPic = 'assets/Atherinomorus endrachtensis.PNG';
       });
-    } else if (commonName == "Giant trevally (maliputo)") {
+    } else if (commonNameController.text == "Giant trevally (maliputo)") {
       setState(() {
         speciesNameController.text = "Caranx ignobilis";
         speciesPic = 'assets/Caranx ignobilis.PNG';
       });
-    } else if (commonName == "Big-eye trevally (muslo)") {
+    } else if (commonNameController.text == "Big-eye trevally (muslo)") {
       setState(() {
         speciesNameController.text = "Caranx sexfasciatus";
         speciesPic = 'assets/Caranx sexfasciatus.PNG';
       });
-    } else if (commonName == "Crucian carp (karpita)") {
+    } else if (commonNameController.text == "Crucian carp (karpita)") {
       setState(() {
         speciesNameController.text = "Carassius carassius";
         speciesPic = 'assets/Carassius carassius.PNG';
       });
-    } else if (commonName == "Striped snakehead (dalag)") {
+    } else if (commonNameController.text == "Striped snakehead (dalag)") {
       setState(() {
         speciesNameController.text = "Channa striata";
         speciesPic = 'assets/Channa striata.PNG';
       });
-    } else if (commonName == "Milkfish (bangus)") {
+    } else if (commonNameController.text == "Milkfish (bangus)") {
       setState(() {
         speciesNameController.text = "Chanos chanos";
         speciesPic = 'assets/Chanos chanos.PNG';
       });
-    } else if (commonName == "Philippine catfish (hito)") {
+    } else if (commonNameController.text == "Philippine catfish (hito)") {
       setState(() {
         speciesNameController.text = "Clarias batrachus";
         speciesPic = 'assets/Clarias batrachus.PNG';
       });
-    } else if (commonName == "Bighead catfish (hito)") {
+    } else if (commonNameController.text == "Bighead catfish (hito)") {
       setState(() {
         speciesNameController.text = "Clarias macrocephalus";
         speciesPic = 'assets/Clarias macrocephalus.PNG';
       });
-    } else if (commonName == "Common carp (karpa)") {
+    } else if (commonNameController.text == "Common carp (karpa)") {
       setState(() {
         speciesNameController.text = "Cyprinus carpio";
         speciesPic = 'assets/Cyprinus carpio.PNG';
       });
-    } else if (commonName == "Pipefish (kambabalo)") {
+    } else if (commonNameController.text == "Pipefish (kambabalo)") {
       setState(() {
         speciesNameController.text = "Doryichthys martensii";
         speciesPic = 'assets/Doryichthys martensii.PNG';
       });
-    } else if (commonName == "Tenpounder (Kanoping)") {
+    } else if (commonNameController.text == "Tenpounder (Kanoping)") {
       setState(() {
         speciesNameController.text = "Elops machnata";
         speciesPic = 'assets/Elops machnata.PNG';
       });
-    } else if (commonName == "Half-barred cardinal (dangat)") {
+    } else if (commonNameController.text == "Half-barred cardinal (dangat)") {
       setState(() {
         speciesNameController.text = "Fibramia thermalis";
         speciesPic = 'assets/Fibramia thermalis.PNG';
       });
-    } else if (commonName == "Whipfin silver-biddy (balabatuhan)") {
+    } else if (commonNameController.text ==
+        "Whipfin silver-biddy (balabatuhan)") {
       setState(() {
         speciesNameController.text = "Gerres filamentosus";
         speciesPic = 'assets/Gerres filamentosus.PNG';
       });
-    } else if (commonName == "Snakehead gudgeon (baculi)") {
+    } else if (commonNameController.text == "Snakehead gudgeon (baculi)") {
       setState(() {
         speciesNameController.text = "Giuris margaritacea";
         speciesPic = 'assets/Giuris margaritacea.PNG';
       });
-    } else if (commonName == "Celebes goby (biyang bato)") {
+    } else if (commonNameController.text == "Celebes goby (biyang bato)") {
       setState(() {
         speciesNameController.text = "Glossogobius celebius";
         speciesPic = 'assets/Glossogobius celebius.PNG';
       });
-    } else if (commonName == "Tank goby (biyang puti)") {
+    } else if (commonNameController.text == "Tank goby (biyang puti)") {
       setState(() {
         speciesNameController.text = "Glossogobius giuris";
         speciesPic = 'assets/Glossogobius giuris.PNG';
       });
-    } else if (commonName == "Bighead carp (bighead)") {
+    } else if (commonNameController.text == "Bighead carp (bighead)") {
       setState(() {
         speciesNameController.text = "Hypophthalmichthys nobilis";
         speciesPic = 'assets/Hypophthalmichthys nobilis.PNG';
       });
-    } else if (commonName == "Quoy's garfish (siliw)") {
+    } else if (commonNameController.text == "Quoy's garfish (siliw)") {
       setState(() {
         speciesNameController.text = "Hyporhamphus quoyi";
         speciesPic = 'assets/Hyporhamphus quoyi.PNG';
       });
-    } else if (commonName == "Barramundi (apahap)") {
+    } else if (commonNameController.text == "Barramundi (apahap)") {
       setState(() {
         speciesNameController.text = "Lates calcarifer";
         speciesPic = 'assets/Lates calcarifer.PNG';
       });
-    } else if (commonName == "Silver perch (ayungin)") {
+    } else if (commonNameController.text == "Silver perch (ayungin)") {
       setState(() {
         speciesNameController.text = "Leiopotherapon plumbeus";
         speciesPic = 'assets/Leiopotherapon plumbeus.PNG';
       });
-    } else if (commonName == "Mangrove red snapper (also)") {
+    } else if (commonNameController.text == "Mangrove red snapper (also)") {
       setState(() {
         speciesNameController.text = "Lutjanus argentimaculatus";
         speciesPic = 'assets/Lutjanus argentimaculatus.PNG';
       });
-    } else if (commonName == "Malabar blood snapper (maya-maya)") {
+    } else if (commonNameController.text ==
+        "Malabar blood snapper (maya-maya)") {
       setState(() {
         speciesNameController.text = "Lutjanus malabaricus";
         speciesPic = 'assets/Lutjanus malabaricus.PNG';
       });
-    } else if (commonName == "Indo-Pacific tarpon (buan-buan)") {
+    } else if (commonNameController.text == "Indo-Pacific tarpon (buan-buan)") {
       setState(() {
         speciesNameController.text = "Megalops cyprinoides";
         speciesPic = 'assets/Megalops cyprinoides.PNG';
       });
-    } else if (commonName == "Sharptail goby (biya)") {
+    } else if (commonNameController.text == "Sharptail goby (biya)") {
       setState(() {
         speciesNameController.text = "Oligolepis acutipennis";
         speciesPic = 'assets/Oligolepis acutipennis.PNG';
       });
-    } else if (commonName == "Gossamer blenny (isdang mamay)") {
+    } else if (commonNameController.text == "Gossamer blenny (isdang mamay)") {
       setState(() {
         speciesNameController.text = "Omobranchus ferox";
         speciesPic = 'assets/Omobranchus ferox.PNG';
       });
-    } else if (commonName == "Nile tilapia (tilapia)") {
+    } else if (commonNameController.text == "Nile tilapia (tilapia)") {
       setState(() {
         speciesNameController.text = "Oreochromis niloticus";
         speciesPic = 'assets/Oreochromis niloticus.PNG';
       });
-    } else if (commonName == "Striped catfish (pangasius)") {
+    } else if (commonNameController.text == "Striped catfish (pangasius)") {
       setState(() {
         speciesNameController.text = "Pangasianodon hypophthalmus";
         speciesPic = 'assets/Pangasianodon hypophthalmus.PNG';
       });
-    } else if (commonName == "Jaguar guapote (dugong)") {
+    } else if (commonNameController.text == "Jaguar guapote (dugong)") {
       setState(() {
         speciesNameController.text = "Parachromis managuensis";
         speciesPic = 'assets/Parachromis managuensis.PNG';
       });
-    } else if (commonName == "Greenback mullet (Banak)") {
+    } else if (commonNameController.text == "Greenback mullet (Banak)") {
       setState(() {
         speciesNameController.text = "Planiliza subviridis";
         speciesPic = 'assets/Planiliza subviridis.PNG';
       });
-    } else if (commonName == "Sleepy goby (biya)") {
+    } else if (commonNameController.text == "Sleepy goby (biya)") {
       setState(() {
         speciesNameController.text = "Psammogobius biocellatus";
         speciesPic = 'assets/Psammogobius biocellatus.PNG';
       });
-    } else if (commonName == "Vermiculated sailfin catfish (janitor fish)") {
+    } else if (commonNameController.text ==
+        "Vermiculated sailfin catfish (janitor fish)") {
       setState(() {
         speciesNameController.text = "Pterygoplichthys disjunctivus";
         speciesPic = 'assets/Pterygoplichthys disjunctivus.PNG';
       });
-    } else if (commonName == "Freshwater sardine (tawilis)") {
+    } else if (commonNameController.text == "Freshwater sardine (tawilis)") {
       setState(() {
         speciesNameController.text = "Sardinella tawilis";
         speciesPic = 'assets/Sardinella tawilis.PNG';
       });
-    } else if (commonName == "Blackchin tilapia (tilapiang arroyo)") {
+    } else if (commonNameController.text ==
+        "Blackchin tilapia (tilapiang arroyo)") {
       setState(() {
         speciesNameController.text = "Sarotherodon melanotheron";
         speciesPic = 'assets/Sarotherodon melanotheron.PNG';
       });
-    } else if (commonName == "Spotted scat (kitang)") {
+    } else if (commonNameController.text == "Spotted scat (kitang)") {
       setState(() {
         speciesNameController.text = "Scatophagus argus";
         speciesPic = 'assets/Scatophagus argus.PNG';
       });
-    } else if (commonName == "Jarbua terapon (bagaong)") {
+    } else if (commonNameController.text == "Jarbua terapon (bagaong)") {
       setState(() {
         speciesNameController.text = "Terapon jarbua";
         speciesPic = 'assets/Terapon jarbua.PNG';
       });
-    } else if (commonName == "Banded archerfish (kataba)") {
+    } else if (commonNameController.text == "Banded archerfish (kataba)") {
       setState(() {
         speciesNameController.text = "Toxotes jaculatrix";
         speciesPic = 'assets/Toxotes jaculatrix.PNG';
       });
-    } else if (commonName == "Three spot gourami (gurami)") {
+    } else if (commonNameController.text == "Three spot gourami (gurami)") {
       setState(() {
         speciesNameController.text = "Trichopodus trichopterus";
         speciesPic = 'assets/Trichopodus trichopterus.PNG';
       });
-    } else if (commonName == "Humpbacked cardinalfish (muang)") {
+    } else if (commonNameController.text == "Humpbacked cardinalfish (muang)") {
       setState(() {
         speciesNameController.text = "Yarica hyalosoma";
         speciesPic = 'assets/Yarica hyalosoma.PNG';
       });
-    } else if (commonName == "Feathered river-garfish (siliw)") {
+    } else if (commonNameController.text == "Feathered river-garfish (siliw)") {
       setState(() {
         speciesNameController.text = "Zenarchopterus dispar";
         speciesPic = 'assets/Zenarchopterus dispar.PNG';
@@ -363,7 +373,8 @@ class _NewTodoState extends State<NewSpecies> {
                             Text(
                                 "\nScientific Name ng Isda: \n${speciesNameController.text}",
                                 style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text("\nCommon Name ng Isda: \n${commonName}",
+                            Text(
+                                "\nCommon Name ng Isda: \n${commonNameController.text}",
                                 style: TextStyle(fontWeight: FontWeight.bold))
                           ],
                         ))
@@ -376,7 +387,17 @@ class _NewTodoState extends State<NewSpecies> {
                   child: Text('Bumalik', style: TextStyle(color: Colors.green)),
                 ),
                 TextButton(
-                  onPressed: _postSpecies,
+                  onPressed: () async {
+                    bool isConnected =
+                        await InternetConnectionChecker().hasConnection;
+                    if (isConnected == true) {
+                      _postSpeciesOnline();
+                      print('Is connedted :)');
+                    } else {
+                      _postSpeciesOffline();
+                      print('Not connected :(');
+                    }
+                  },
                   child: Text("Oo, sigurado na ako"),
                   style: TextButton.styleFrom(
                     primary: Colors.white,
@@ -388,13 +409,12 @@ class _NewTodoState extends State<NewSpecies> {
             ));
   }
 
-  void _postSpecies() async {
+  void _postSpeciesOnline() async {
     _addSpeciesToList();
     final passedGSheetsDate =
         DateFormat('yyyy/MM/dd').format(widget.passedDate);
     final passedSqfliteDateTime =
         DateFormat('yyyy-MM-dd').format(widget.passedDate);
-
     final feedback = {
       EnumeratorRawDataColumn.date: passedGSheetsDate.trim(),
       EnumeratorRawDataColumn.enumerator: widget.passedEnumerator.trim(),
@@ -414,6 +434,7 @@ class _NewTodoState extends State<NewSpecies> {
       EnumeratorRawDataColumn.length: lengthController.text.trim(),
       EnumeratorRawDataColumn.weight: weightController.text.trim(),
     };
+    print(feedback);
     await GoogleSheetsApi.insert([feedback]);
     await DatabaseHelperOne.instance.add(enumeratorLocal(
         date: passedSqfliteDateTime,
@@ -428,37 +449,58 @@ class _NewTodoState extends State<NewSpecies> {
         sampleSerialNumber: widget.passedSampleSerialNumber,
         totalSampleWeight: widget.passedTotalSampleWeight,
         speciesName: speciesNameController.text,
+        commonName: commonNameController.text,
         length: lengthController.text,
         weight: weightController.text,
         image: speciesPic));
-
     Navigator.of(context).pop();
     setState(() {});
   }
 
-  void _postDays() async {
-    final passedSqfliteDate =
-        DateFormat('dd/MM/yyyy').format(widget.passedDate);
-    await DatabaseHelperTwo.instance.add(enumeratorDays(
-      date: passedSqfliteDate,
-      enumerator: widget.passedEnumerator,
-      landingCenter: widget.passedLandingCenter,
-      fishingGround: widget.passedFishingGround,
-      totalLandings: widget.passedTotalLandings,
-    ));
+  void _postSpeciesOffline() async {
+    _addSpeciesToList();
+    final passedSqfliteDateTime =
+        DateFormat('yyyy-MM-dd').format(widget.passedDate);
+    await DatabaseHelperTwo.instance.add(enumeratorOffline(
+        date: passedSqfliteDateTime,
+        enumerator: widget.passedEnumerator,
+        landingCenter: widget.passedLandingCenter,
+        fishingGround: widget.passedFishingGround,
+        totalLandings: widget.passedTotalLandings,
+        boatName: widget.passedBoatName,
+        fishingGear: widget.passedFishingGear,
+        fishingEffort: widget.passedFishingEffort,
+        totalBoatCatch: widget.passedTotalBoatCatch,
+        sampleSerialNumber: widget.passedSampleSerialNumber,
+        totalSampleWeight: widget.passedTotalSampleWeight,
+        speciesName: speciesNameController.text,
+        commonName: commonNameController.text,
+        length: lengthController.text,
+        weight: weightController.text,
+        image: speciesPic));
+    await DatabaseHelperOne.instance.add(enumeratorLocal(
+        date: passedSqfliteDateTime,
+        enumerator: widget.passedEnumerator,
+        landingCenter: widget.passedLandingCenter,
+        fishingGround: widget.passedFishingGround,
+        totalLandings: widget.passedTotalLandings,
+        boatName: widget.passedBoatName,
+        fishingGear: widget.passedFishingGear,
+        fishingEffort: widget.passedFishingEffort,
+        totalBoatCatch: widget.passedTotalBoatCatch,
+        sampleSerialNumber: widget.passedSampleSerialNumber,
+        totalSampleWeight: widget.passedTotalSampleWeight,
+        speciesName: speciesNameController.text,
+        commonName: commonNameController.text,
+        length: lengthController.text,
+        weight: weightController.text,
+        image: speciesPic));
+    Navigator.of(context).pop();
+    setState(() {});
   }
 
-  TextEditingController dateController = TextEditingController();
-  TextEditingController enumeratorController = TextEditingController();
-  TextEditingController landingCenterController = TextEditingController();
-  TextEditingController fishingGroundController = TextEditingController();
-  TextEditingController boatNameController = TextEditingController();
-  TextEditingController fishingGearController = TextEditingController();
-  TextEditingController fishingEffortController = TextEditingController();
-  TextEditingController totalBoatCatchController = TextEditingController();
-  TextEditingController sampleSerialNumberController = TextEditingController();
-  TextEditingController totalSampleWeightController = TextEditingController();
   TextEditingController speciesNameController = TextEditingController();
+  TextEditingController commonNameController = TextEditingController();
   TextEditingController lengthController = TextEditingController();
   TextEditingController weightController = TextEditingController();
 
@@ -654,7 +696,7 @@ class _NewTodoState extends State<NewSpecies> {
                                     ),
                                     onChanged: (String? value) {
                                       setState(() {
-                                        commonName = value!;
+                                        commonNameController.text = value!;
                                       });
                                       _changeCommonToSciName();
                                     },

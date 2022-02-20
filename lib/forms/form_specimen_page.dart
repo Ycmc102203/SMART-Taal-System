@@ -2,7 +2,6 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_taal_system/backend/enumeratorRawData.dart';
 import 'package:smart_taal_system/backend/google_sheets_api.dart';
-import 'package:smart_taal_system/backend/sqlfite_local_secondary_db.dart';
 import 'package:smart_taal_system/submit_button.dart';
 import '../backend/sqlfite_local_primary_db.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -427,16 +426,10 @@ class _NewTodoState extends State<NewSpecies> {
         sampleSerialNumber: widget.passedSampleSerialNumber,
         totalSampleWeight: widget.passedTotalSampleWeight,
         speciesName: speciesNameController.text,
+        commonName: commonName,
         length: lengthController.text,
         weight: weightController.text,
         image: speciesPic));
-    await DatabaseHelperTwo.instance.add(enumeratorDays(
-      date: passedSqfliteDate,
-      enumerator: widget.passedEnumerator,
-      landingCenter: widget.passedLandingCenter,
-      fishingGround: widget.passedFishingGround,
-      totalLandings: widget.passedTotalLandings,
-    ));
     Navigator.of(context).pop();
     setState(() {});
   }

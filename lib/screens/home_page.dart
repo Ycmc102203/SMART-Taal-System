@@ -1,10 +1,16 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:smart_taal_system/screens/dashboard_page.dart';
 import 'package:smart_taal_system/screens/data_table_page.dart';
 import 'package:smart_taal_system/forms/form_page_one.dart';
 import 'package:smart_taal_system/screens/manual_page.dart';
 import 'package:smart_taal_system/screens/settings_page.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -12,6 +18,59 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late StreamSubscription subscription;
+  late StreamSubscription internetSubscription;
+  bool hasInternet = false;
+  ConnectivityResult result = ConnectivityResult.none;
+
+  void initState() {
+    super.initState();
+    setState(() {});
+    subscription = Connectivity().onConnectivityChanged.listen((result) {
+      setState(() => this.result = result);
+    });
+
+    internetSubscription =
+        InternetConnectionChecker().onStatusChange.listen((status) {
+      final hasInternet = status == InternetConnectionStatus.connected;
+      setState(() {
+        this.result = result;
+      });
+
+      if (hasInternet == true) {
+        setState(() {
+          colorProfile = Color.fromARGB(255, 191, 251, 191);
+          colorAppbar = Color.fromARGB(255, 213, 253, 205);
+          colorButton = Colors.green;
+        });
+        showTopSnackBar(
+            context,
+            CustomSnackBar.success(
+              message: "Konektado ka na sa internet!",
+            ));
+      } else if (hasInternet == false) {
+        setState(() {
+          colorProfile = Color.fromARGB(255, 251, 191, 191);
+          colorAppbar = Color.fromARGB(255, 253, 205, 205);
+          colorButton = Colors.red;
+        });
+        showTopSnackBar(
+            context,
+            CustomSnackBar.error(
+              message: "Na-diskonek ka sa internet :(",
+            ));
+      }
+    });
+    setState(() {});
+  }
+
+  @override
+  dispose() {
+    subscription.cancel();
+    internetSubscription.cancel();
+    super.dispose();
+  }
+
   int currentTab = 0;
   final List<Widget> screens = [
     Dashboard(),
@@ -25,6 +84,9 @@ class _MyHomePageState extends State<MyHomePage> {
   final PageStorageBucket bucket = PageStorageBucket();
   final double coverHeight = 125;
   final double profileHeight = 45;
+  var colorProfile = Color.fromARGB(255, 251, 191, 191);
+  var colorAppbar = Color.fromARGB(255, 253, 205, 205);
+  var colorButton = Colors.red;
 
   int? selectedId;
   void _addActivity(BuildContext context) {
@@ -56,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
           colors: [
-            Color.fromARGB(255, 205, 253, 208),
+            colorAppbar,
             Color(0xFFffffff),
           ],
         ),
@@ -75,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     _addActivity(context);
                   },
                   elevation: 10,
-                  fillColor: Colors.green,
+                  fillColor: colorButton,
                   child: Icon(
                     Icons.add,
                     size: 45.0,
@@ -119,8 +181,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget buildCoverImage() => Container(
         color: Colors.grey,
-        child: Image.network(
-          'https://images.unsplash.com/photo-1633670057397-b12fc5289e96?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+        child: Image.asset(
+          'assets/Taal-Lake.png',
           width: double.infinity,
           height: MediaQuery.of(context).size.height / 4,
           fit: BoxFit.fitWidth,
@@ -199,7 +261,7 @@ class _MyHomePageState extends State<MyHomePage> {
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
           colors: [
-            Color(0xFFbffbc3),
+            colorProfile,
             Color(0xFFffffff),
           ],
         )),

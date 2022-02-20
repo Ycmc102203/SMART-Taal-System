@@ -48,9 +48,6 @@ class _NewActivityState extends State<NewActivity> {
   TextEditingController totalBoatCatchController = TextEditingController();
   TextEditingController sampleSerialNumberController = TextEditingController();
   TextEditingController totalSampleWeightController = TextEditingController();
-  TextEditingController speciesNameController = TextEditingController();
-  TextEditingController lengthController = TextEditingController();
-  TextEditingController weightController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 

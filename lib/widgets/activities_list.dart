@@ -154,6 +154,7 @@ class _ActivitiesListState extends State<ActivitiesList> {
                                                                             showStoredForm(
                                                                                 context,
                                                                                 enumeratorLocal.speciesName,
+                                                                                enumeratorLocal.commonName,
                                                                                 enumeratorLocal.image,
                                                                                 enumeratorLocal.enumerator,
                                                                                 enumeratorLocal.date,
