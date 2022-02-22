@@ -3,6 +3,7 @@ import 'package:path/path.dart' as p;
 
 class enumeratorOffline {
   final int? id;
+  String uuid = 'uuid';
   String date = 'date';
   String enumerator = 'enumerator';
   String landingCenter = 'landingCenter';
@@ -22,6 +23,7 @@ class enumeratorOffline {
 
   enumeratorOffline(
       {this.id,
+      required this.uuid,
       required this.date,
       required this.enumerator,
       required this.landingCenter,
@@ -41,7 +43,8 @@ class enumeratorOffline {
 
   factory enumeratorOffline.fromMap(Map<String, dynamic> json) =>
       new enumeratorOffline(
-        id: json['id'],
+        id: json['idInt'],
+        uuid: json['uuid'],
         date: json['date'],
         enumerator: json['enumerator'],
         landingCenter: json['landingCenter'],
@@ -63,6 +66,7 @@ class enumeratorOffline {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'uuid': uuid,
       'date': date,
       'enumerator': enumerator,
       'landingCenter': landingCenter,
@@ -99,7 +103,7 @@ class DatabaseHelperTwo {
 
     //open/create database at a given path
     var enumeratorDatabase =
-        await openDatabase(path, version: 5, onCreate: _onCreate);
+        await openDatabase(path, version: 6, onCreate: _onCreate);
 
     return enumeratorDatabase;
 
@@ -116,6 +120,7 @@ class DatabaseHelperTwo {
     await db.execute('''
       CREATE TABLE enumeratorOfflineData(
           id INTEGER PRIMARY KEY,
+          uuid TEXT,
           date TEXT,
           enumerator TEXT,
           landingCenter TEXT,

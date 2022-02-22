@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../backend/sqlfite_local_primary_db.dart';
 import '../widgets/stored_form.dart';
+import '../backend/google_sheets_api.dart';
 
 class ActivitiesList extends StatefulWidget {
   @override
@@ -9,6 +10,10 @@ class ActivitiesList extends StatefulWidget {
 }
 
 class _ActivitiesListState extends State<ActivitiesList> {
+  void _query(uuid) async {
+    await GoogleSheetsApi.queryGSheets(uuid: uuid);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -169,6 +174,8 @@ class _ActivitiesListState extends State<ActivitiesList> {
                                                                                 enumeratorLocal.totalSampleWeight,
                                                                                 enumeratorLocal.weight,
                                                                                 enumeratorLocal.length);
+
+                                                                            _query(enumeratorLocal.uuid);
                                                                           },
                                                                           leading:
                                                                               Padding(

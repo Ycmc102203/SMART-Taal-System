@@ -1,4 +1,7 @@
+import 'package:uuid/uuid.dart';
+
 class EnumeratorRawDataColumn {
+  static final String uuid = 'uuid';
   static final String date = 'date';
   static final String enumerator = 'enumerator';
   static final String landingCenter = 'landingCenter';
@@ -15,7 +18,8 @@ class EnumeratorRawDataColumn {
   static final String length = 'length';
   static final String weight = 'weight';
 
-  static List<String> getColumns() => [
+  static List getColumns() => [
+        uuid,
         date,
         enumerator,
         landingCenter,

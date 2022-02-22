@@ -6,6 +6,7 @@ import 'package:smart_taal_system/backend/google_sheets_api.dart';
 import 'package:smart_taal_system/backend/sqlfite_local_offline_cache.dart';
 
 import 'package:smart_taal_system/submit_button.dart';
+import 'package:uuid/uuid.dart';
 import '../backend/sqlfite_local_primary_db.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -54,6 +55,7 @@ class _NewTodoState extends State<NewSpecies> {
   final List<String> weight = <String>[];
   final List<String> commonName = <String>[];
   String speciesPic = '';
+  var uuid = Uuid();
 
   Future<bool?> showAddQuestion(BuildContext context) async => showDialog<bool>(
         context: context,
@@ -411,11 +413,14 @@ class _NewTodoState extends State<NewSpecies> {
 
   void _postSpeciesOnline() async {
     _addSpeciesToList();
+    String? uuidNow;
+    uuidNow = uuid.v4().toString();
     final passedGSheetsDate =
         DateFormat('yyyy/MM/dd').format(widget.passedDate);
     final passedSqfliteDateTime =
         DateFormat('yyyy-MM-dd').format(widget.passedDate);
     final feedback = {
+      EnumeratorRawDataColumn.uuid: uuidNow.trim(),
       EnumeratorRawDataColumn.date: passedGSheetsDate.trim(),
       EnumeratorRawDataColumn.enumerator: widget.passedEnumerator.trim(),
       EnumeratorRawDataColumn.landingCenter: widget.passedLandingCenter.trim(),
@@ -437,6 +442,7 @@ class _NewTodoState extends State<NewSpecies> {
     print(feedback);
     await GoogleSheetsApi.insert([feedback]);
     await DatabaseHelperOne.instance.add(enumeratorLocal(
+        uuid: uuidNow,
         date: passedSqfliteDateTime,
         enumerator: widget.passedEnumerator,
         landingCenter: widget.passedLandingCenter,
@@ -459,9 +465,12 @@ class _NewTodoState extends State<NewSpecies> {
 
   void _postSpeciesOffline() async {
     _addSpeciesToList();
+    String? uuidNow;
+    uuidNow = uuid.v4().toString();
     final passedSqfliteDateTime =
         DateFormat('yyyy-MM-dd').format(widget.passedDate);
     await DatabaseHelperTwo.instance.add(enumeratorOffline(
+        uuid: uuidNow,
         date: passedSqfliteDateTime,
         enumerator: widget.passedEnumerator,
         landingCenter: widget.passedLandingCenter,
@@ -479,6 +488,7 @@ class _NewTodoState extends State<NewSpecies> {
         weight: weightController.text,
         image: speciesPic));
     await DatabaseHelperOne.instance.add(enumeratorLocal(
+        uuid: uuidNow,
         date: passedSqfliteDateTime,
         enumerator: widget.passedEnumerator,
         landingCenter: widget.passedLandingCenter,

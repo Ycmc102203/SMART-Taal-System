@@ -48,6 +48,11 @@ class GoogleSheetsApi {
     _userSheet!.values.map.appendRows(rowList);
   }
 
+  String uuid = '';
+  static Future queryGSheets({uuid}) async {
+    print(await _userSheet!.values.map.rowByKey(uuid));
+  }
+
 //   static Future<bool> update(
 //     int id,
 //     Map<String, dynamic> user,

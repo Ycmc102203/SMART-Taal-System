@@ -531,7 +531,7 @@ class _ActivityTableState extends State<ActivityTable> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(book['commonName'],
+                              Text(book['uuid'],
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                               Text('Haba: ' +

@@ -3,6 +3,7 @@ import 'package:path/path.dart' as p;
 
 class enumeratorLocal {
   final int? id;
+  String uuid = 'uuid';
   String date = 'date';
   String enumerator = 'enumerator';
   String landingCenter = 'landingCenter';
@@ -22,6 +23,7 @@ class enumeratorLocal {
 
   enumeratorLocal(
       {this.id,
+      required this.uuid,
       required this.date,
       required this.enumerator,
       required this.landingCenter,
@@ -42,6 +44,7 @@ class enumeratorLocal {
   factory enumeratorLocal.fromMap(Map<String, dynamic> json) =>
       new enumeratorLocal(
         id: json['id'],
+        uuid: json['uuid'],
         date: json['date'],
         enumerator: json['enumerator'],
         landingCenter: json['landingCenter'],
@@ -63,6 +66,7 @@ class enumeratorLocal {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'uuid': uuid,
       'date': date,
       'enumerator': enumerator,
       'landingCenter': landingCenter,
@@ -116,6 +120,7 @@ class DatabaseHelperOne {
     await db.execute('''
       CREATE TABLE enumeratorLocalData(
           id INTEGER PRIMARY KEY,
+          uuid TEXT,
           date TEXT,
           enumerator TEXT,
           landingCenter TEXT,
