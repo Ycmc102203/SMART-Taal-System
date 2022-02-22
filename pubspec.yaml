@@ -44,6 +44,8 @@ dependencies:
   filter_list:
   connectivity_plus:
   top_snackbar_flutter:
+  animations:
+  loading_animations:
   flutter:
     sdk: flutter
 

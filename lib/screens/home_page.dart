@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:animations/animations.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
@@ -106,7 +107,16 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(flexibleSpace: buildTop()),
-      body: PageStorage(child: currentScreen, bucket: bucket),
+      body: PageStorage(
+          child: PageTransitionSwitcher(
+              duration: Duration(milliseconds: 350),
+              transitionBuilder: (child, animation, secondaryAnimation) =>
+                  FadeThroughTransition(
+                      animation: animation,
+                      secondaryAnimation: secondaryAnimation,
+                      child: child),
+              child: currentScreen),
+          bucket: bucket),
       bottomNavigationBar: ConvexAppBar(
         elevation: 5,
         color: Color.fromARGB(100, 0, 0, 0),
@@ -199,13 +209,16 @@ class _MyHomePageState extends State<MyHomePage> {
         )
       ]),
       child: CircleAvatar(
-          radius: profileHeight + 7,
+          radius: profileHeight + 10,
           backgroundColor: Colors.white,
           child: CircleAvatar(
-            radius: profileHeight,
-            backgroundColor: Colors.grey,
-            backgroundImage: AssetImage('assets/Maam Mich.jpg'),
-          )));
+              radius: profileHeight + 5,
+              backgroundColor: colorButton,
+              child: CircleAvatar(
+                radius: profileHeight,
+                backgroundColor: Colors.grey,
+                backgroundImage: AssetImage('assets/Maam Mich.jpg'),
+              ))));
 
   Widget buildTop() {
     return Container(

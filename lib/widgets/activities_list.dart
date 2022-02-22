@@ -186,7 +186,7 @@ class _ActivitiesListState extends State<ActivitiesList> {
                                                                                       style: TextStyle(fontSize: 10),
                                                                                     ),
                                                                                     Text(
-                                                                                      '${enumeratorLocal.speciesName}',
+                                                                                      '${enumeratorLocal.commonName}',
                                                                                       style: TextStyle(
                                                                                         fontWeight: FontWeight.bold,
                                                                                         fontSize: 18,

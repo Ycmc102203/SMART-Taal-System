@@ -11,6 +11,7 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
+  var colorProfile;
   DateTime? _selectedDay;
   DateTime? _focusedDay;
   String _queryDate = '';

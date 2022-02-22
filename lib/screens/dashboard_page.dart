@@ -56,7 +56,6 @@ class _DashboardState extends State<Dashboard> {
     var countInt = int.parse(countString);
 
     while (countInt != 0) {
-      Map<String, dynamic> result = {};
       List<Map<String, dynamic>> results = await db.rawQuery(
           'SELECT * FROM enumeratorOfflineData WHERE id=?', ['$countInt']);
       for (var r in results) {
