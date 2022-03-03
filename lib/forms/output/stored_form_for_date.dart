@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_taal_system/backend/sqlfite_local_primary_db.dart';
-import 'package:smart_taal_system/widgets/stored_form.dart';
+import 'package:smart_taal_system/forms/output/stored_form.dart';
 
 showStoredFormForDate(
   BuildContext context,
@@ -18,7 +18,6 @@ showStoredFormForDate(
   } else if (speciesName == 'Amphilophus citrinellus') {
     englishFilipinoName = 'Midas cichlid (red tilapia)';
   }
-
   if (speciesName == 'Ambassis miops') {
     englishFilipinoName = 'Flag-tailed glass perchlet (ning-ning)';
   } else if (speciesName == 'Amphilophus citrinellus') {
@@ -239,7 +238,7 @@ showStoredFormForDate(
                                                                           child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
                                                                             ListTile(
                                                                                 onTap: () {
-                                                                                  showStoredForm(context, enumeratorLocal.speciesName, enumeratorLocal.commonName, enumeratorLocal.image, enumeratorLocal.enumerator, enumeratorLocal.date, enumeratorLocal.fishingGround, enumeratorLocal.landingCenter, enumeratorLocal.totalLandings, enumeratorLocal.boatName, enumeratorLocal.fishingGear, enumeratorLocal.fishingEffort, enumeratorLocal.totalBoatCatch, enumeratorLocal.sampleSerialNumber, enumeratorLocal.totalSampleWeight, enumeratorLocal.weight, enumeratorLocal.length);
+                                                                                  showDialog(context: context, builder: (BuildContext context) => storedForm(context: context, uuid: enumeratorLocal.uuid, speciesName: enumeratorLocal.speciesName, commonName: enumeratorLocal.commonName, speciesPic: enumeratorLocal.image, enumerator: enumeratorLocal.enumerator, date: enumeratorLocal.date, fishingGround: enumeratorLocal.fishingGround, landingCenter: enumeratorLocal.landingCenter, totalLandings: enumeratorLocal.totalLandings, boatName: enumeratorLocal.boatName, fishingGear: enumeratorLocal.fishingGear, fishingEffort: enumeratorLocal.fishingEffort, totalBoatCatch: enumeratorLocal.totalBoatCatch, sampleSerialNumber: enumeratorLocal.sampleSerialNumber, sampleWeight: enumeratorLocal.totalSampleWeight, weight: enumeratorLocal.weight, length: enumeratorLocal.length));
                                                                                 },
                                                                                 leading: Padding(
                                                                                   padding: EdgeInsets.only(top: 8),

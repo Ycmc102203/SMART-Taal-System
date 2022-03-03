@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:smart_taal_system/widgets/loadingIndicator.dart';
+import 'package:sqflite/sqlite_api.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../backend/sqlfite_local_primary_db.dart';
-import '../widgets/stored_form.dart';
 import '../backend/google_sheets_api.dart';
+import '../forms/output/stored_form.dart';
 
 class ActivitiesList extends StatefulWidget {
   @override
@@ -10,14 +15,10 @@ class ActivitiesList extends StatefulWidget {
 }
 
 class _ActivitiesListState extends State<ActivitiesList> {
-  void _query(uuid) async {
-    await GoogleSheetsApi.queryGSheets(uuid: uuid);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.fromLTRB(5, 20, 5, 20),
+        margin: EdgeInsets.fromLTRB(5, 0, 5, 20),
         height: 440,
         child: Card(
             elevation: 20,
@@ -40,17 +41,12 @@ class _ActivitiesListState extends State<ActivitiesList> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text("Mga Naitalang Isda",
+                                      Text("Mga Naitalang Isda Ngayon",
                                           style: TextStyle(
                                               color: Color.fromARGB(
                                                   255, 255, 255, 255),
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 24)),
-                                      Text("i-filter: ",
-                                          style: TextStyle(
-                                              color: Color.fromARGB(
-                                                  255, 255, 255, 255),
-                                              fontSize: 15))
+                                              fontSize: 25))
                                     ]),
                                 FaIcon(FontAwesomeIcons.fish,
                                     color: Color.fromARGB(255, 255, 255, 255))
@@ -117,13 +113,68 @@ class _ActivitiesListState extends State<ActivitiesList> {
                                             child: Text('Loading...'));
                                       }
                                       return snapshot.data!.isEmpty
-                                          ? Center(
-                                              child: Text(
-                                                  'MAGTALA NG AKTIBIDAD',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 30)),
-                                            )
+                                          ? Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              margin: EdgeInsets.only(
+                                                  top: MediaQuery.of(context)
+                                                          .size
+                                                          .height /
+                                                      10),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text('MAGTALA NG AKTIBIDAD',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          color: Colors.purple,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 25)),
+                                                  Text(''),
+                                                  Row(children: [
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left: 45, right: 15),
+                                                      child: Icon(
+                                                          Icons
+                                                              .do_not_disturb_alt,
+                                                          size: 40,
+                                                          color: Colors.red),
+                                                    ),
+                                                    Text(
+                                                        'Wala ka pang tala para sa araw na ito.\nPindutin ang kulay berdeng butones\nsa ilalim para magsimula.',
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.purple,
+                                                            fontSize: 15)),
+                                                  ]),
+                                                  Row(children: [
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left: 45, right: 15),
+                                                      child: Icon(Icons.refresh,
+                                                          size: 40,
+                                                          color: Colors.blue),
+                                                    ),
+                                                    Text(
+                                                        '\nKung may natala ka na pero di pa\nlumalabas, mangyaring i-refresh ang\npahina sa pamamagitan ng paghila\nnito pababa.',
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.purple,
+                                                            fontSize: 15)),
+                                                  ]),
+                                                ],
+                                              ))
                                           : ListView(
                                               reverse: true,
                                               physics: BouncingScrollPhysics(),
@@ -156,26 +207,9 @@ class _ActivitiesListState extends State<ActivitiesList> {
                                                                       ListTile(
                                                                           onTap:
                                                                               () {
-                                                                            showStoredForm(
-                                                                                context,
-                                                                                enumeratorLocal.speciesName,
-                                                                                enumeratorLocal.commonName,
-                                                                                enumeratorLocal.image,
-                                                                                enumeratorLocal.enumerator,
-                                                                                enumeratorLocal.date,
-                                                                                enumeratorLocal.fishingGround,
-                                                                                enumeratorLocal.landingCenter,
-                                                                                enumeratorLocal.totalLandings,
-                                                                                enumeratorLocal.boatName,
-                                                                                enumeratorLocal.fishingGear,
-                                                                                enumeratorLocal.fishingEffort,
-                                                                                enumeratorLocal.totalBoatCatch,
-                                                                                enumeratorLocal.sampleSerialNumber,
-                                                                                enumeratorLocal.totalSampleWeight,
-                                                                                enumeratorLocal.weight,
-                                                                                enumeratorLocal.length);
-
-                                                                            _query(enumeratorLocal.uuid);
+                                                                            showDialog(
+                                                                                context: context,
+                                                                                builder: (BuildContext context) => storedForm(context: context, uuid: enumeratorLocal.uuid, speciesName: enumeratorLocal.speciesName, commonName: enumeratorLocal.commonName, speciesPic: enumeratorLocal.image, enumerator: enumeratorLocal.enumerator, date: enumeratorLocal.date, fishingGround: enumeratorLocal.fishingGround, landingCenter: enumeratorLocal.landingCenter, totalLandings: enumeratorLocal.totalLandings, boatName: enumeratorLocal.boatName, fishingGear: enumeratorLocal.fishingGear, fishingEffort: enumeratorLocal.fishingEffort, totalBoatCatch: enumeratorLocal.totalBoatCatch, sampleSerialNumber: enumeratorLocal.sampleSerialNumber, sampleWeight: enumeratorLocal.totalSampleWeight, weight: enumeratorLocal.weight, length: enumeratorLocal.length));
                                                                           },
                                                                           leading:
                                                                               Padding(
@@ -196,7 +230,7 @@ class _ActivitiesListState extends State<ActivitiesList> {
                                                                                       '${enumeratorLocal.commonName}',
                                                                                       style: TextStyle(
                                                                                         fontWeight: FontWeight.bold,
-                                                                                        fontSize: 18,
+                                                                                        fontSize: 17,
                                                                                       ),
                                                                                     ),
                                                                                     Text("Haba: ${enumeratorLocal.length} cm Bigat: ${enumeratorLocal.weight} g"),

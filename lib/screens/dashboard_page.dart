@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:smart_taal_system/backend/google_sheets_api.dart';
 import 'package:smart_taal_system/backend/sqlfite_local_offline_cache.dart';
-import 'package:smart_taal_system/widgets/lists/activities_list.dart';
+import 'package:smart_taal_system/widgets/activities_list.dart';
 import 'package:smart_taal_system/widgets/calendar.dart';
-import 'package:smart_taal_system/widgets/lists/offline_cache_list.dart';
+import 'package:smart_taal_system/widgets/offline_cache_list.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+
+import '../backend/sqlfite_local_primary_db.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -55,6 +57,25 @@ class _DashboardState extends State<Dashboard> {
             whereArgs: [countInt] // use whereArgs to avoid SQL injection
             );
         await sleep();
+        await DatabaseHelperOne.instance.add(enumeratorLocal(
+            uuid: r['uuid'],
+            date: r['date'],
+            enumerator: r['enumerator'],
+            landingCenter: r['landingCenter'],
+            fishingGround: r['fishingGround'],
+            totalLandings: r['totalLandings'],
+            boatName: r['boatName'],
+            fishingGear: r['fishingGear'],
+            fishingEffort: r['fishingEffort'],
+            totalBoatCatch: r['totalBoatCatch'],
+            sampleSerialNumber: r['sampleSerialNumber'],
+            totalSampleWeight: r['totalSampleWeight'],
+            speciesName: r['speciesName'],
+            commonName: r['commonName'],
+            length: r['length'],
+            weight: r['weight'],
+            image: r['image']));
+        await sleep();
         setState(() {});
       }
       countInt--;
@@ -70,7 +91,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future sleep() {
-    return new Future.delayed(const Duration(milliseconds: 0), () => "1");
+    return new Future.delayed(const Duration(milliseconds: 500), () => "1");
   }
 
   _postOnline(feedback) async {

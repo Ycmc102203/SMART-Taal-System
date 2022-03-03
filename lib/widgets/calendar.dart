@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:smart_taal_system/widgets/stored_form_for_date.dart';
+import 'package:smart_taal_system/forms/output/stored_form_for_date.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../backend/sqlfite_local_primary_db.dart';
@@ -44,8 +44,7 @@ class _CalendarState extends State<Calendar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.fromLTRB(
-            5, MediaQuery.of(context).size.height / 10, 5, 0),
+        margin: EdgeInsets.fromLTRB(5, 0, 5, 20),
         width: double.infinity,
         child: Card(
             elevation: 20,

@@ -106,14 +106,6 @@ class DatabaseHelperTwo {
         await openDatabase(path, version: 6, onCreate: _onCreate);
 
     return enumeratorDatabase;
-
-    // Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    // String path = join(documentsDirectory.path, 'enumeratorOfflineData.db');
-    // return await openDatabase(
-    //   path,
-    //   version: 5,
-    //   onCreate: _onCreate,
-    // );
   }
 
   Future _onCreate(Database db, int version) async {

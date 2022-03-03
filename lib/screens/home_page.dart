@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:smart_taal_system/screens/dashboard_page.dart';
 import 'package:smart_taal_system/screens/data_table_page.dart';
-import 'package:smart_taal_system/forms/form_page_one.dart';
+import 'package:smart_taal_system/forms/input/form_page_one.dart';
 import 'package:smart_taal_system/screens/manual_page.dart';
 import 'package:smart_taal_system/screens/settings_page.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';

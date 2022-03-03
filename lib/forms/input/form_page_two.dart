@@ -4,15 +4,14 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:smart_taal_system/backend/enumeratorRawData.dart';
 import 'package:smart_taal_system/backend/google_sheets_api.dart';
 import 'package:smart_taal_system/backend/sqlfite_local_offline_cache.dart';
-
-import 'package:smart_taal_system/submit_button.dart';
+import 'package:smart_taal_system/widgets/buttons/submit_button.dart';
 import 'package:uuid/uuid.dart';
-import '../backend/sqlfite_local_primary_db.dart';
+import '../../backend/sqlfite_local_primary_db.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-
 import 'dart:async';
-import 'package:flutter_offline/flutter_offline.dart';
+
+import '../../widgets/loadingIndicator.dart';
 
 class NewSpecies extends StatefulWidget {
   final DateTime passedDate;
@@ -413,6 +412,12 @@ class _NewTodoState extends State<NewSpecies> {
 
   void _postSpeciesOnline() async {
     _addSpeciesToList();
+    await sleep();
+    showDialog(
+        context: context,
+        builder: (context) =>
+            LoadingDialog(color: Colors.green, text: "Inu-upload"));
+    await sleep();
     String? uuidNow;
     uuidNow = uuid.v4().toString();
     final passedGSheetsDate =
@@ -487,24 +492,7 @@ class _NewTodoState extends State<NewSpecies> {
         length: lengthController.text,
         weight: weightController.text,
         image: speciesPic));
-    await DatabaseHelperOne.instance.add(enumeratorLocal(
-        uuid: uuidNow,
-        date: passedSqfliteDateTime,
-        enumerator: widget.passedEnumerator,
-        landingCenter: widget.passedLandingCenter,
-        fishingGround: widget.passedFishingGround,
-        totalLandings: widget.passedTotalLandings,
-        boatName: widget.passedBoatName,
-        fishingGear: widget.passedFishingGear,
-        fishingEffort: widget.passedFishingEffort,
-        totalBoatCatch: widget.passedTotalBoatCatch,
-        sampleSerialNumber: widget.passedSampleSerialNumber,
-        totalSampleWeight: widget.passedTotalSampleWeight,
-        speciesName: speciesNameController.text,
-        commonName: commonNameController.text,
-        length: lengthController.text,
-        weight: weightController.text,
-        image: speciesPic));
+
     Navigator.of(context).pop();
     setState(() {});
   }
@@ -836,4 +824,8 @@ class _NewTodoState extends State<NewSpecies> {
                               }))
                     ])),
           )));
+}
+
+Future sleep() {
+  return new Future.delayed(const Duration(milliseconds: 500), () => "1");
 }

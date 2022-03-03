@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:smart_taal_system/backend/enumeratorRawData.dart';
 import 'package:gsheets/gsheets.dart';
 
@@ -51,6 +50,12 @@ class GoogleSheetsApi {
   String uuid = '';
   static Future queryGSheets({uuid}) async {
     print(await _userSheet!.values.map.rowByKey(uuid));
+  }
+
+  static Future deleteByUuid({uuid}) async {
+    if (_userSheet == null) return false;
+    final index = await _userSheet!.values.rowIndexOf(uuid);
+    return _userSheet!.deleteRow(index);
   }
 
 //   static Future<bool> update(

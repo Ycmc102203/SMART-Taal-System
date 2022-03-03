@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smart_taal_system/backend/sqlfite_local_offline_cache.dart';
 import '../backend/sqlfite_local_primary_db.dart';
-import '../widgets/stored_form.dart';
+import '../forms/output/stored_form.dart';
 
 class OfflineCacheList extends StatefulWidget {
   @override
@@ -29,7 +29,7 @@ class _OfflineCacheListState extends State<OfflineCacheList> {
               return snapshot.data!.isEmpty
                   ? Container()
                   : Container(
-                      margin: EdgeInsets.fromLTRB(5, 70, 5, 0),
+                      margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
                       child: Card(
                           clipBehavior: Clip.antiAlias,
                           elevation: 20,
@@ -174,7 +174,7 @@ class _OfflineCacheListState extends State<OfflineCacheList> {
                                                                               children: [
                                                                                 ListTile(
                                                                                     onTap: () {
-                                                                                      showStoredForm(context, enumeratorOffline.speciesName, enumeratorOffline.commonName, enumeratorOffline.image, enumeratorOffline.enumerator, enumeratorOffline.date, enumeratorOffline.fishingGround, enumeratorOffline.landingCenter, enumeratorOffline.totalLandings, enumeratorOffline.boatName, enumeratorOffline.fishingGear, enumeratorOffline.fishingEffort, enumeratorOffline.totalBoatCatch, enumeratorOffline.sampleSerialNumber, enumeratorOffline.totalSampleWeight, enumeratorOffline.weight, enumeratorOffline.length);
+                                                                                      showDialog(context: context, builder: (BuildContext context) => storedForm(context: context, uuid: enumeratorOffline.uuid, speciesName: enumeratorOffline.speciesName, commonName: enumeratorOffline.commonName, speciesPic: enumeratorOffline.image, enumerator: enumeratorOffline.enumerator, date: enumeratorOffline.date, fishingGround: enumeratorOffline.fishingGround, landingCenter: enumeratorOffline.landingCenter, totalLandings: enumeratorOffline.totalLandings, boatName: enumeratorOffline.boatName, fishingGear: enumeratorOffline.fishingGear, fishingEffort: enumeratorOffline.fishingEffort, totalBoatCatch: enumeratorOffline.totalBoatCatch, sampleSerialNumber: enumeratorOffline.sampleSerialNumber, sampleWeight: enumeratorOffline.totalSampleWeight, weight: enumeratorOffline.weight, length: enumeratorOffline.length));
                                                                                     },
                                                                                     leading: Padding(
                                                                                       padding: EdgeInsets.only(top: 8),
