@@ -8,6 +8,7 @@ import 'package:smart_taal_system/forms/fields/text_input_field.dart';
 import 'package:smart_taal_system/forms/output/form_preview.dart';
 import 'package:smart_taal_system/screens/home_page.dart';
 import 'package:smart_taal_system/widgets/buttons/submit_button.dart';
+import 'package:smart_taal_system/widgets/warnings/post_offline_warning.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:uuid/uuid.dart';
@@ -85,12 +86,15 @@ class _NewTodoState extends State<NewSpecies> {
       );
 
   void _addSpeciesToList() {
+    final newIndex = 0;
     setState(() {
-      species.insert(0, commonNameController.text);
-      pic.insert(0, speciesPic);
-      length.insert(0, lengthController.text);
-      weight.insert(0, weightController.text);
+      species.insert(newIndex, commonNameController.text);
+      pic.insert(newIndex, speciesPic);
+      length.insert(newIndex, lengthController.text);
+      weight.insert(newIndex, weightController.text);
     });
+    listKey.currentState!
+        .insertItem(newIndex, duration: Duration(seconds: 120));
   }
 
   void _changeCommonToSciName() {
@@ -368,18 +372,25 @@ class _NewTodoState extends State<NewSpecies> {
                       passedTotalSampleWeight);
                   print('Is connedted :)');
                 } else {
-                  _postSpeciesOffline(
-                      passedDate,
-                      passedEnumerator,
-                      passedLandingCenter,
-                      passedFishingGround,
-                      passedTotalLandings,
-                      passedBoatName,
-                      passedFishingGear,
-                      passedFishingEffort,
-                      passedTotalBoatCatch,
-                      passedSampleSerialNumber,
-                      passedTotalSampleWeight);
+                  showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) =>
+                          PostOfflineWarning(onPressed: () {
+                            _postSpeciesOffline(
+                                passedDate,
+                                passedEnumerator,
+                                passedLandingCenter,
+                                passedFishingGround,
+                                passedTotalLandings,
+                                passedBoatName,
+                                passedFishingGear,
+                                passedFishingEffort,
+                                passedTotalBoatCatch,
+                                passedSampleSerialNumber,
+                                passedTotalSampleWeight);
+                            Navigator.pop(context);
+                          }));
+
                   print('Not connected :(');
                 }
               },

@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:smart_taal_system/forms/output/form_preview.dart';
-import 'package:smart_taal_system/widgets/dialogs/back_warning.dart';
+import 'package:smart_taal_system/widgets/warnings/back_warning.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
