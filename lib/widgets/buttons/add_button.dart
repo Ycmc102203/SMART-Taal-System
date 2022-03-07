@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class SubmitButton extends StatelessWidget {
+class AddButton extends StatelessWidget {
   final text;
   final function;
   final icon;
 
-  SubmitButton({this.text, this.function, this.icon});
+  AddButton({this.text, this.function, this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class SubmitButton extends StatelessWidget {
           onPressed: function,
           child: Container(
             height: 50,
-            width: MediaQuery.of(context).size.width,
+            width: MediaQuery.of(context).size.width / 2.2,
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(

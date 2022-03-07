@@ -4,6 +4,8 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:smart_taal_system/backend/enumeratorRawData.dart';
 import 'package:smart_taal_system/backend/google_sheets_api.dart';
 import 'package:smart_taal_system/backend/sqlfite_local_offline_cache.dart';
+import 'package:smart_taal_system/forms/fields/text_input_field.dart';
+import 'package:smart_taal_system/forms/output/form_preview.dart';
 import 'package:smart_taal_system/screens/home_page.dart';
 import 'package:smart_taal_system/widgets/buttons/submit_button.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -14,7 +16,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 
+import '../../widgets/buttons/add_button.dart';
 import '../../widgets/loadingIndicator.dart';
+import '../fields/dropdown_field.dart';
 import 'arguments.dart';
 
 class NewSpecies extends StatefulWidget {
@@ -333,88 +337,52 @@ class _NewTodoState extends State<NewSpecies> {
       passedTotalSampleWeight) {
     showDialog<String>(
         context: context,
-        builder: (BuildContext context) => AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              title: Text("Sigurado ka na ba sa mga nilagay mo?"),
-              content: Scrollbar(
-                  child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                        "Bago magpatuloy sa pagtala ng mga nahuling isda, siguraduhing tama ang mga detalye ukol sa pagtatalang ito"),
-                    Divider(
-                      thickness: 3,
-                    ),
-                    Padding(
-                        padding: EdgeInsets.only(top: 0, bottom: 20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Image.asset(speciesPic),
-                            Text(
-                                "\nScientific Name ng Isda: \n${speciesNameController.text}",
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text(
-                                "\nCommon Name ng Isda: \n${commonNameController.text}",
-                                style: TextStyle(fontWeight: FontWeight.bold))
-                          ],
-                        ))
-                  ],
+        builder: (BuildContext context) => FormPreview(
+              children: [
+                Image.asset(speciesPic),
+                Text("\nCommon Name ng Isda:",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  "${commonNameController.text}",
                 ),
-              )),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.pop(context, 'Bumalik'),
-                  child: Text('Bumalik', style: TextStyle(color: Colors.green)),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    bool isConnected =
-                        await InternetConnectionChecker().hasConnection;
-
-                    if (isConnected == true) {
-                      _postSpeciesOnline(
-                          passedDate,
-                          passedEnumerator,
-                          passedLandingCenter,
-                          passedFishingGround,
-                          passedTotalLandings,
-                          passedBoatName,
-                          passedFishingGear,
-                          passedFishingEffort,
-                          passedTotalBoatCatch,
-                          passedSampleSerialNumber,
-                          passedTotalSampleWeight);
-                      print('Is connedted :)');
-                    } else {
-                      _postSpeciesOffline(
-                          passedDate,
-                          passedEnumerator,
-                          passedLandingCenter,
-                          passedFishingGround,
-                          passedTotalLandings,
-                          passedBoatName,
-                          passedFishingGear,
-                          passedFishingEffort,
-                          passedTotalBoatCatch,
-                          passedSampleSerialNumber,
-                          passedTotalSampleWeight);
-                      print('Not connected :(');
-                    }
-                  },
-                  child: Text("Oo, sigurado na ako"),
-                  style: TextButton.styleFrom(
-                    primary: Colors.white,
-                    backgroundColor: Colors.green,
-                    //onSurface: Colors.grey,
-                  ),
-                ),
+                Text("\nScientific Name ng Isda:",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text("${speciesNameController.text}",
+                    style: TextStyle(fontStyle: FontStyle.italic)),
               ],
+              onPressed: () async {
+                bool isConnected =
+                    await InternetConnectionChecker().hasConnection;
+                if (isConnected == true) {
+                  _postSpeciesOnline(
+                      passedDate,
+                      passedEnumerator,
+                      passedLandingCenter,
+                      passedFishingGround,
+                      passedTotalLandings,
+                      passedBoatName,
+                      passedFishingGear,
+                      passedFishingEffort,
+                      passedTotalBoatCatch,
+                      passedSampleSerialNumber,
+                      passedTotalSampleWeight);
+                  print('Is connedted :)');
+                } else {
+                  _postSpeciesOffline(
+                      passedDate,
+                      passedEnumerator,
+                      passedLandingCenter,
+                      passedFishingGround,
+                      passedTotalLandings,
+                      passedBoatName,
+                      passedFishingGear,
+                      passedFishingEffort,
+                      passedTotalBoatCatch,
+                      passedSampleSerialNumber,
+                      passedTotalSampleWeight);
+                  print('Not connected :(');
+                }
+              },
             ));
   }
 
@@ -550,6 +518,8 @@ class _NewTodoState extends State<NewSpecies> {
         ),
       );
 
+  final listKey = GlobalKey<AnimatedListState>();
+
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Arguments;
@@ -615,12 +585,13 @@ class _NewTodoState extends State<NewSpecies> {
                                   height: 160,
                                   child: RawScrollbar(
                                     thumbColor: Colors.green,
-                                    child: ListView.builder(
+                                    child: AnimatedList(
+                                        key: listKey,
                                         padding: const EdgeInsets.only(
                                             top: 0, bottom: 5),
-                                        itemCount: species.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
+                                        initialItemCount: species.length,
+                                        itemBuilder: (BuildContext context,
+                                            int index, animation) {
                                           return Card(
                                               elevation: 4,
                                               shape: RoundedRectangleBorder(
@@ -663,7 +634,7 @@ class _NewTodoState extends State<NewSpecies> {
                                     padding: EdgeInsets.only(top: 20),
                                     child: Column(
                                       children: [
-                                        DropdownSearch<String>(
+                                        DropDownField(
                                           items: [
                                             "Flag-tailed glass perchlet (ning-ning)",
                                             "Midas cichlid (red tilapia)",
@@ -717,17 +688,10 @@ class _NewTodoState extends State<NewSpecies> {
                                             }
                                             return null;
                                           },
-                                          mode: Mode.DIALOG,
-                                          dropdownSearchDecoration:
-                                              InputDecoration(
-                                            labelText: "Pangalan ng Isda",
-                                            labelStyle: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18),
-                                            contentPadding: EdgeInsets.fromLTRB(
-                                                10, 10, 0, 0),
-                                            border: OutlineInputBorder(),
-                                          ),
+                                          labelTextOne: "Pangalan ng Isda",
+                                          labelTextTwo:
+                                              "Hanapin ang Isdang Sinukat",
+                                          labelTextThree: 'Pangalan ng Isda',
                                           onChanged: (String? value) {
                                             setState(() {
                                               commonNameController.text =
@@ -735,137 +699,61 @@ class _NewTodoState extends State<NewSpecies> {
                                             });
                                             _changeCommonToSciName();
                                           },
-                                          showSearchBox: true,
-                                          searchFieldProps: TextFieldProps(
-                                            decoration: InputDecoration(
-                                              prefixIcon: Icon(Icons.search),
-                                              border: OutlineInputBorder(),
-                                              contentPadding:
-                                                  EdgeInsets.fromLTRB(
-                                                      12, 12, 8, 0),
-                                              labelText:
-                                                  "Hanapin ang Isdang Sinukat",
-                                            ),
-                                          ),
-                                          popupTitle: Container(
-                                            height: 50,
-                                            decoration: BoxDecoration(
-                                              color: Color.fromARGB(
-                                                  255, 60, 136, 63),
-                                              borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(10),
-                                                topRight: Radius.circular(10),
-                                              ),
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                'Pangalan ng Isda',
-                                                style: TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          popupShape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(10),
-                                            ),
-                                          ),
                                         ),
-                                        TextFormField(
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return 'Walang sagot; ilagay ang haba ng isda';
-                                            }
-                                            return null;
-                                          },
-                                          keyboardType: TextInputType.number,
-                                          controller: lengthController,
-                                          decoration: InputDecoration(
+                                        TextInputField(
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Walang sagot; ilagay ang haba ng isda';
+                                              }
+                                              return null;
+                                            },
+                                            controller: lengthController,
                                             labelText: "Haba ng Isda (cm)",
-                                            labelStyle: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18),
-                                          ),
-                                          maxLength: 4,
-                                        ),
-                                        TextFormField(
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return 'Walang sagot; ilagay ang bigat ng Isda';
-                                            }
-                                            return null;
-                                          },
-                                          keyboardType: TextInputType.number,
-                                          controller: weightController,
-                                          decoration: InputDecoration(
+                                            keyboardType: TextInputType.number),
+                                        TextInputField(
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Walang sagot; ilagay ang bigat ng isda';
+                                              }
+                                              return null;
+                                            },
+                                            controller: weightController,
                                             labelText: "Bigat ng Isda (g)",
-                                            labelStyle: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18),
-                                          ),
-                                          maxLength: 6,
-                                        ),
+                                            keyboardType: TextInputType.number),
                                       ],
                                     ))),
-                            TextButton(
-                              onPressed: () {
-                                if (_formKeyTwo.currentState!.validate()) {
-                                  _addSpeciesAlert(
-                                      context,
-                                      args.passedDate,
-                                      args.passedEnumerator,
-                                      args.passedLandingCenter,
-                                      args.passedFishingGround,
-                                      args.passedTotalLandings,
-                                      args.passedBoatName,
-                                      args.passedFishingGear,
-                                      args.passedFishingEffort,
-                                      args.passedTotalBoatCatch,
-                                      args.passedSampleSerialNumber,
-                                      args.passedTotalSampleWeight);
-                                }
-                              },
-                              child: Container(
-                                height: 50,
-                                width: MediaQuery.of(context).size.width / 2.2,
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.8),
-                                      spreadRadius: 1,
-                                      blurRadius: 5,
-                                      offset: Offset(
-                                          0, 4), // changes position of shadow
-                                    ),
-                                  ],
-                                  color: Colors.green,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "IDAGDAG",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20),
-                                      ),
-                                      Padding(
-                                          padding: EdgeInsets.only(left: 8),
-                                          child: FaIcon(
-                                              FontAwesomeIcons.plusCircle,
-                                              color: Colors.white)),
-                                    ]),
-                              ),
-                            ),
+                            AddButton(
+                                icon: FaIcon(FontAwesomeIcons.plusCircle,
+                                    color: Colors.white),
+                                text: 'IDAGDAG',
+                                function: () {
+                                  if (_formKeyTwo.currentState!.validate()) {
+                                    _addSpeciesAlert(
+                                        context,
+                                        args.passedDate,
+                                        args.passedEnumerator,
+                                        args.passedLandingCenter,
+                                        args.passedFishingGround,
+                                        args.passedTotalLandings,
+                                        args.passedBoatName,
+                                        args.passedFishingGear,
+                                        args.passedFishingEffort,
+                                        args.passedTotalBoatCatch,
+                                        args.passedSampleSerialNumber,
+                                        args.passedTotalSampleWeight);
+                                  } else {
+                                    showTopSnackBar(
+                                        context,
+                                        CustomSnackBar.error(
+                                          message:
+                                              "May kulang pa sa iyong tala. I-double check kung may laman na lahat.",
+                                        ));
+                                  }
+                                }),
                             Padding(
-                                padding: EdgeInsets.only(top: 60),
+                                padding: EdgeInsets.only(top: 15),
                                 child: SubmitButton(
                                     icon: Icon(Icons.send, color: Colors.white),
                                     text: 'ISUMITE',

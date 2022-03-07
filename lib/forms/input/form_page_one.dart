@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:smart_taal_system/forms/fields/dropdown_field.dart';
 import 'package:smart_taal_system/forms/input/form_page_two.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:smart_taal_system/forms/output/form_preview.dart';
+import 'package:smart_taal_system/widgets/dialogs/back_warning.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
+import '../../widgets/buttons/add_button.dart';
+import '../fields/text_input_field.dart';
 import 'arguments.dart';
 
 class NewActivity extends StatefulWidget {
@@ -42,35 +47,124 @@ class _NewActivityState extends State<NewActivity> {
     'Subic Ilaya, Agoncillo',
   ];
 
-  String newText = '';
-  String newTaskTitle = 'dfhkjas';
   DateTime dateTime = DateTime.now();
 
-  Future<bool?> showWarning(BuildContext context) async => showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: Text("Babalik ka ba?"),
-          content: Text("Mawawala ang mga nasulat mo kung babalik ka ngayon"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text('Nagkamali ako ng pindot',
-                  style: TextStyle(color: Colors.red)),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text("Oo, bumalik"),
-              style: TextButton.styleFrom(
-                primary: Colors.white,
-                backgroundColor: Colors.red,
+  Future<bool?> showWarning(BuildContext context) async =>
+      showDialog<bool>(context: context, builder: (context) => BackWarning());
+
+  showPreview(BuildContext context) => showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => FormPreview(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Pangalan ng Enumerator:",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(" ${enumeratorController.text}"),
+                ],
               ),
-            )
-          ],
-        ),
-      );
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("\nLugar ng Pinangisdaan:",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(" ${fishingGroundController.text}"),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("\nLugar ng Daungan:",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(" ${landingCenterController.text}"),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("\nBilang ng Lahat ng Dumaong:",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(" ${totalLandingsController.text} \n"),
+                ],
+              ),
+              Divider(
+                thickness: 3,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("\nPangalan ng Bangka: ",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(" ${boatNameController.text}"),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("\nGear na Ginamit: ",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("${fishingGearController.text}"),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("\nTagal ng Pangingisda: ",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("${fishingEffortController.text} oras"),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("\nTimbang ng Nahuli ng Bangka: ",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("${totalBoatCatchController.text} kg \n"),
+                ],
+              ),
+              Divider(
+                thickness: 3,
+              ),
+              Column(
+                // mainAxisAlignment:
+                //     MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("\nSample Serial Number: ",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("${sampleSerialNumberController.text}"),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("\nTimbang ng Sample: ",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("${totalSampleWeightController.text}"),
+                ],
+              ),
+            ],
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                NewSpecies.routeName,
+                arguments: Arguments(
+                  dateTime,
+                  enumeratorController.text,
+                  fishingGroundController.text,
+                  landingCenterController.text,
+                  totalLandingsController.text,
+                  boatNameController.text,
+                  fishingGearController.text,
+                  fishingEffortController.text,
+                  totalBoatCatchController.text,
+                  sampleSerialNumberController.text,
+                  totalSampleWeightController.text,
+                ),
+              ).then((_) => setState(() {}));
+            },
+          ));
 
   @override
   Widget build(BuildContext context) => WillPopScope(
@@ -141,7 +235,7 @@ class _NewActivityState extends State<NewActivity> {
                                                 Icon(Icons.location_on)
                                               ],
                                             )),
-                                        TextFormField(
+                                        TextInputField(
                                           validator: (value) {
                                             if (value == null ||
                                                 value.isEmpty) {
@@ -150,14 +244,10 @@ class _NewActivityState extends State<NewActivity> {
                                             return null;
                                           },
                                           controller: enumeratorController,
-                                          decoration: InputDecoration(
-                                            labelText: 'Pangalan ng Enumerator',
-                                            labelStyle: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18),
-                                          ),
+                                          labelText: "Pangalan ng Enumerator",
+                                          keyboardType: TextInputType.name,
                                         ),
-                                        TextFormField(
+                                        TextInputField(
                                           validator: (value) {
                                             if (value == null ||
                                                 value.isEmpty) {
@@ -166,98 +256,46 @@ class _NewActivityState extends State<NewActivity> {
                                             return null;
                                           },
                                           controller: fishingGroundController,
-                                          decoration: InputDecoration(
-                                            labelText: 'Lugar ng Pinangisdaan',
-                                            labelStyle: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18),
-                                          ),
+                                          labelText: "Lugar ng Pinangisdaan",
+                                          keyboardType: TextInputType.name,
                                         ),
                                         Padding(
-                                          padding: EdgeInsets.only(top: 20),
-                                          child: DropdownSearch<String>(
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Walang sagot; pumili ng lugar';
-                                              }
-                                              return null;
-                                            },
-                                            mode: Mode.DIALOG,
-                                            items: [
-                                              "Abelo, San Nicolas",
-                                              "Ambulong, Tanauan City",
-                                              "Bugaan East, Laurel",
-                                              "Don Juan, Cuenca",
-                                              "Kinalaglagan, Mataasnakahoy",
-                                              "Nangkaan, Mataasnakahoy",
-                                              "Napapanayan, Cuenca",
-                                              "Poblacion, Laurel",
-                                              "Saimsim, Santa Teresita",
-                                              "Sampaloc, Talisay",
-                                              "Subic Ibaba, Agoncillo",
-                                              "Subic Ilaya, Agoncillo"
-                                            ],
-                                            dropdownSearchDecoration:
-                                                InputDecoration(
-                                              labelText: "Lugar ng Daungan",
-                                              labelStyle: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 18),
-                                              contentPadding:
-                                                  EdgeInsets.fromLTRB(
-                                                      10, 10, 0, 0),
-                                              border: OutlineInputBorder(),
-                                            ),
-                                            onChanged: (String? value) {
-                                              setState(() {
-                                                landingCenterController.text =
-                                                    value!;
-                                              });
-                                            },
-                                            showSearchBox: true,
-                                            searchFieldProps: TextFieldProps(
-                                              decoration: InputDecoration(
-                                                labelStyle: TextStyle(
-                                                    color: Colors.black),
-                                                prefixIcon: Icon(Icons.search),
-                                                border: OutlineInputBorder(),
-                                                contentPadding:
-                                                    EdgeInsets.fromLTRB(
-                                                        12, 12, 8, 0),
-                                                labelText:
-                                                    "Hanapin ang Lugar ng Dinaungan",
-                                              ),
-                                            ),
-                                            popupTitle: Container(
-                                              height: 50,
-                                              decoration: BoxDecoration(
-                                                color: Color.fromARGB(
-                                                    255, 60, 136, 63),
-                                                borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(10),
-                                                  topRight: Radius.circular(10),
-                                                ),
-                                              ),
-                                              child: Center(
-                                                child: Text(
+                                            padding: EdgeInsets.only(top: 20),
+                                            child: DropDownField(
+                                              items: [
+                                                "Abelo, San Nicolas",
+                                                "Ambulong, Tanauan City",
+                                                "Bugaan East, Laurel",
+                                                "Don Juan, Cuenca",
+                                                "Kinalaglagan, Mataasnakahoy",
+                                                "Nangkaan, Mataasnakahoy",
+                                                "Napapanayan, Cuenca",
+                                                "Poblacion, Laurel",
+                                                "Saimsim, Santa Teresita",
+                                                "Sampaloc, Talisay",
+                                                "Subic Ibaba, Agoncillo",
+                                                "Subic Ilaya, Agoncillo"
+                                              ],
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return 'Walang sagot; pumili ng lugar';
+                                                }
+                                                return null;
+                                              },
+                                              labelTextOne: "Lugar ng Daungan",
+                                              labelTextTwo:
+                                                  "Hanapin ang Lugar ng Dinaungan",
+                                              labelTextThree:
                                                   'Lugar ng Daungan',
-                                                  style: TextStyle(
-                                                    fontSize: 24,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            popupShape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(10),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        TextFormField(
+                                              onChanged: (String? value) {
+                                                setState(() {
+                                                  landingCenterController.text =
+                                                      value!;
+                                                });
+                                              },
+                                            )),
+                                        TextInputField(
                                           validator: (value) {
                                             if (value == null ||
                                                 value.isEmpty) {
@@ -265,15 +303,10 @@ class _NewActivityState extends State<NewActivity> {
                                             }
                                             return null;
                                           },
-                                          keyboardType: TextInputType.number,
                                           controller: totalLandingsController,
-                                          decoration: InputDecoration(
-                                            labelStyle: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18),
-                                            labelText:
-                                                "Bilang ng Lahat ng Dumaong Ngayong Araw",
-                                          ),
+                                          labelText:
+                                              "Bilang ng Lahat ng Dumaong Ngayong Araw",
+                                          keyboardType: TextInputType.number,
                                         ),
                                         Padding(
                                             padding: EdgeInsets.only(
@@ -291,7 +324,7 @@ class _NewActivityState extends State<NewActivity> {
                                                 Icon(Icons.directions_boat)
                                               ],
                                             )),
-                                        TextFormField(
+                                        TextInputField(
                                           validator: (value) {
                                             if (value == null ||
                                                 value.isEmpty) {
@@ -300,106 +333,52 @@ class _NewActivityState extends State<NewActivity> {
                                             return null;
                                           },
                                           controller: boatNameController,
-                                          decoration: InputDecoration(
-                                            labelStyle: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18),
-                                            labelText: "Pangalan ng Bangka",
-                                          ),
+                                          labelText: "Pangalan ng Bangka",
+                                          keyboardType: TextInputType.name,
                                         ),
                                         Padding(
-                                          padding: EdgeInsets.only(top: 20),
-                                          child: DropdownSearch<String>(
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Walang sagot; pumili ng gear';
-                                              }
-                                              return null;
-                                            },
-                                            mode: Mode.DIALOG,
-                                            items: [
-                                              "Gill Net (pante)",
-                                              "Spear Gun (pana)",
-                                              "Hook & Line (kawil)",
-                                              "Fish Trap (bubo)",
-                                              "Fish Corral (baklad)",
-                                              "Lift Net (pantaas)",
-                                              "Beach Seine (pukot)",
-                                              "Scissors Net (salap)",
-                                              "Crab Lift Net (bintol)",
-                                              "Motorized Push Net (suro)",
-                                              "Ring Net (basnig)",
-                                              "Cover Pot (saklob)",
-                                              "Fish Shelter (paksol)",
-                                              "Drive-in Net (sakag/paksol)",
-                                              "Bamboo Fish Trap (tukil)",
-                                              "Scoop Net (sigpaw)",
-                                              "Fish Spear (salapang)",
-                                              "Rake (balukay)",
-                                              "Cast Net (dala)",
-                                              "Fish Pot (patanga)"
-                                            ],
-                                            dropdownSearchDecoration:
-                                                InputDecoration(
-                                              labelStyle: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 18),
-                                              labelText: "Gear na Ginamit",
-                                              contentPadding:
-                                                  EdgeInsets.fromLTRB(
-                                                      10, 10, 0, 0),
-                                              border: OutlineInputBorder(),
-                                            ),
-                                            onChanged: (String? value) {
-                                              setState(() {
-                                                fishingGearController.text =
-                                                    value!;
-                                              });
-                                            },
-                                            showSearchBox: true,
-                                            searchFieldProps: TextFieldProps(
-                                              decoration: InputDecoration(
-                                                  prefixIcon:
-                                                      Icon(Icons.search),
-                                                  border: OutlineInputBorder(),
-                                                  contentPadding:
-                                                      EdgeInsets.fromLTRB(
-                                                          12, 12, 8, 0),
-                                                  labelText:
-                                                      "Hanapin ang Gear na Ginamit",
-                                                  labelStyle: TextStyle(
-                                                      color: Colors.black)),
-                                            ),
-                                            popupTitle: Container(
-                                              height: 50,
-                                              decoration: BoxDecoration(
-                                                color: Color.fromARGB(
-                                                    255, 60, 136, 63),
-                                                borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(10),
-                                                  topRight: Radius.circular(10),
-                                                ),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  'Fishing Gear',
-                                                  style: TextStyle(
-                                                    fontSize: 24,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            popupShape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(10),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        TextFormField(
+                                            padding: EdgeInsets.only(top: 20),
+                                            child: DropDownField(
+                                                items: [
+                                                  "Gill Net (pante)",
+                                                  "Spear Gun (pana)",
+                                                  "Hook & Line (kawil)",
+                                                  "Fish Trap (bubo)",
+                                                  "Fish Corral (baklad)",
+                                                  "Lift Net (pantaas)",
+                                                  "Beach Seine (pukot)",
+                                                  "Scissors Net (salap)",
+                                                  "Crab Lift Net (bintol)",
+                                                  "Motorized Push Net (suro)",
+                                                  "Ring Net (basnig)",
+                                                  "Cover Pot (saklob)",
+                                                  "Fish Shelter (paksol)",
+                                                  "Drive-in Net (sakag/paksol)",
+                                                  "Bamboo Fish Trap (tukil)",
+                                                  "Scoop Net (sigpaw)",
+                                                  "Fish Spear (salapang)",
+                                                  "Rake (balukay)",
+                                                  "Cast Net (dala)",
+                                                  "Fish Pot (patanga)"
+                                                ],
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Walang sagot; pumili ng gear';
+                                                  }
+                                                  return null;
+                                                },
+                                                labelTextOne: "Gear na Ginamit",
+                                                labelTextTwo:
+                                                    "Hanapin ang Gear na Ginamit",
+                                                labelTextThree: 'Fishing Gear',
+                                                onChanged: (String? value) {
+                                                  setState(() {
+                                                    fishingGearController.text =
+                                                        value!;
+                                                  });
+                                                })),
+                                        TextInputField(
                                           validator: (value) {
                                             if (value == null ||
                                                 value.isEmpty) {
@@ -407,18 +386,12 @@ class _NewActivityState extends State<NewActivity> {
                                             }
                                             return null;
                                           },
-                                          keyboardType: TextInputType.number,
                                           controller: fishingEffortController,
-                                          decoration: InputDecoration(
-                                            labelText:
-                                                "Tagal ng Pangingisda (hr)",
-                                            labelStyle: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18),
-                                          ),
-                                          maxLength: 3,
+                                          labelText:
+                                              "Tagal ng Pangingisda (oras)",
+                                          keyboardType: TextInputType.number,
                                         ),
-                                        TextFormField(
+                                        TextInputField(
                                           validator: (value) {
                                             if (value == null ||
                                                 value.isEmpty) {
@@ -426,16 +399,10 @@ class _NewActivityState extends State<NewActivity> {
                                             }
                                             return null;
                                           },
-                                          keyboardType: TextInputType.number,
                                           controller: totalBoatCatchController,
-                                          decoration: InputDecoration(
-                                            labelText:
-                                                "Pangkalahatang Timbang ng Nahuli (kg)",
-                                            labelStyle: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18),
-                                          ),
-                                          maxLength: 5,
+                                          labelText:
+                                              "Pangkalahatang Timbang ng Nahuli (kg)",
+                                          keyboardType: TextInputType.number,
                                         ),
                                         Padding(
                                             padding: EdgeInsets.only(
@@ -453,7 +420,7 @@ class _NewActivityState extends State<NewActivity> {
                                                 Icon(Icons.inbox)
                                               ],
                                             )),
-                                        TextFormField(
+                                        TextInputField(
                                           validator: (value) {
                                             if (value == null ||
                                                 value.isEmpty) {
@@ -461,18 +428,12 @@ class _NewActivityState extends State<NewActivity> {
                                             }
                                             return null;
                                           },
-                                          keyboardType: TextInputType.number,
                                           controller:
                                               sampleSerialNumberController,
-                                          decoration: InputDecoration(
-                                            labelText: "Sample Serial Number",
-                                            labelStyle: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18),
-                                          ),
-                                          maxLength: 4,
+                                          labelText: "Sample Serial Number",
+                                          keyboardType: TextInputType.number,
                                         ),
-                                        TextFormField(
+                                        TextInputField(
                                           validator: (value) {
                                             if (value == null ||
                                                 value.isEmpty) {
@@ -480,16 +441,10 @@ class _NewActivityState extends State<NewActivity> {
                                             }
                                             return null;
                                           },
-                                          keyboardType: TextInputType.number,
                                           controller:
                                               totalSampleWeightController,
-                                          decoration: InputDecoration(
-                                            labelText: "Timbang ng Sample (kg)",
-                                            labelStyle: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18),
-                                          ),
-                                          maxLength: 4,
+                                          labelText: "Timbang ng Sample (kg)",
+                                          keyboardType: TextInputType.number,
                                         ),
                                         Padding(
                                             padding: EdgeInsets.only(
@@ -497,259 +452,24 @@ class _NewActivityState extends State<NewActivity> {
                                                         .size
                                                         .width /
                                                     2.5),
-                                            child: TextButton(
-                                              onPressed: () {
-                                                if (_formKey.currentState!
-                                                    .validate()) {
-                                                  // If the form is valid, display a snackbar. In the real world,
-                                                  // you'd often call a server or save the information in a database.
-                                                  showDialog<String>(
-                                                      context: context,
-                                                      builder:
-                                                          (BuildContext
-                                                                  context) =>
-                                                              AlertDialog(
-                                                                shape:
-                                                                    RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              15),
-                                                                ),
-                                                                title: Text(
-                                                                    "Sigurado ka na ba sa mga nilagay mo?"),
-                                                                content:
-                                                                    Scrollbar(
-                                                                        child:
-                                                                            SingleChildScrollView(
-                                                                  child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Text(
-                                                                          "Bago magpatuloy sa pagtala ng mga nahuling isda, siguraduhing tama ang mga detalye ukol sa pagtatalang ito"),
-                                                                      Divider(
-                                                                        thickness:
-                                                                            3,
-                                                                      ),
-                                                                      Padding(
-                                                                          padding: EdgeInsets.only(
-                                                                              top:
-                                                                                  0,
-                                                                              bottom:
-                                                                                  20),
-                                                                          child:
-                                                                              Column(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.start,
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.start,
-                                                                            children: [
-                                                                              Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  Text("Pangalan ng Enumerator:", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                                                  Text(" ${enumeratorController.text}"),
-                                                                                ],
-                                                                              ),
-                                                                              Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  Text("\nLugar ng Pinangisdaan:", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                                                  Text(" ${fishingGroundController.text}"),
-                                                                                ],
-                                                                              ),
-                                                                              Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  Text("\nLugar ng Daungan:", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                                                  Text(" ${landingCenterController.text}"),
-                                                                                ],
-                                                                              ),
-                                                                              Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  Text("\nBilang ng Lahat ng Dumaong:", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                                                  Text(" ${totalLandingsController.text} \n"),
-                                                                                ],
-                                                                              ),
-                                                                              Divider(
-                                                                                thickness: 3,
-                                                                              ),
-                                                                              Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  Text("\nPangalan ng Bangka: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                                                  Text(" ${boatNameController.text}"),
-                                                                                ],
-                                                                              ),
-                                                                              Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  Text("\nGear na Ginamit: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                                                  Text("${fishingGearController.text}"),
-                                                                                ],
-                                                                              ),
-                                                                              Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  Text("\nTagal ng Pangingisda: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                                                  Text("${fishingEffortController.text} oras"),
-                                                                                ],
-                                                                              ),
-                                                                              Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  Text("\nTimbang ng Nahuli ng Bangka: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                                                  Text("${totalBoatCatchController.text} kg \n"),
-                                                                                ],
-                                                                              ),
-                                                                              Divider(
-                                                                                thickness: 3,
-                                                                              ),
-                                                                              Column(
-                                                                                // mainAxisAlignment:
-                                                                                //     MainAxisAlignment.start,
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  Text("\nSample Serial Number: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                                                  Text("${sampleSerialNumberController.text}"),
-                                                                                ],
-                                                                              ),
-                                                                              Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  Text("\nTimbang ng Sample: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                                                  Text("${totalSampleWeightController.text}"),
-                                                                                ],
-                                                                              ),
-                                                                            ],
-                                                                          ))
-                                                                    ],
-                                                                  ),
-                                                                )),
-                                                                actions: <
-                                                                    Widget>[
-                                                                  TextButton(
-                                                                    onPressed: () =>
-                                                                        Navigator.pop(
-                                                                            context,
-                                                                            'Bumalik'),
-                                                                    child: Text(
-                                                                        'Bumalik',
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.green)),
-                                                                  ),
-                                                                  TextButton(
-                                                                    onPressed:
-                                                                        () {
-                                                                      Navigator
-                                                                          .pushNamed(
-                                                                        context,
-                                                                        NewSpecies
-                                                                            .routeName,
-                                                                        arguments:
-                                                                            Arguments(
-                                                                          dateTime,
-                                                                          enumeratorController
-                                                                              .text,
-                                                                          fishingGroundController
-                                                                              .text,
-                                                                          landingCenterController
-                                                                              .text,
-                                                                          totalLandingsController
-                                                                              .text,
-                                                                          boatNameController
-                                                                              .text,
-                                                                          fishingGearController
-                                                                              .text,
-                                                                          fishingEffortController
-                                                                              .text,
-                                                                          totalBoatCatchController
-                                                                              .text,
-                                                                          sampleSerialNumberController
-                                                                              .text,
-                                                                          totalSampleWeightController
-                                                                              .text,
-                                                                        ),
-                                                                      ).then((_) =>
-                                                                          setState(
-                                                                              () {}));
-                                                                    },
-                                                                    child: Text(
-                                                                        "Oo, sigurado na ako"),
-                                                                    style: TextButton
-                                                                        .styleFrom(
-                                                                      primary:
-                                                                          Colors
-                                                                              .white,
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .green,
-                                                                      //onSurface: Colors.grey,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ));
-                                                } else {
-                                                  showTopSnackBar(
-                                                      context,
-                                                      CustomSnackBar.error(
-                                                        message:
-                                                            "May kulang pa sa iyong tala. I-double check kung may laman na lahat.",
-                                                      ));
-                                                }
-                                              },
-                                              child: Container(
-                                                height: 50,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    2.2,
-                                                decoration: BoxDecoration(
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.8),
-                                                      spreadRadius: 1,
-                                                      blurRadius: 5,
-                                                      offset: Offset(0,
-                                                          4), // changes position of shadow
-                                                    ),
-                                                  ],
-                                                  color: Colors.green,
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text(
-                                                        "MAGPATULOY",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 20),
-                                                      ),
-                                                      Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  left: 8),
-                                                          child: FaIcon(
-                                                              FontAwesomeIcons
-                                                                  .arrowRight,
-                                                              color: Colors
-                                                                  .white)),
-                                                    ]),
-                                              ),
-                                            ))
+                                            child: AddButton(
+                                                icon: FaIcon(
+                                                    FontAwesomeIcons
+                                                        .arrowCircleRight,
+                                                    color: Colors.white),
+                                                text: 'MAGPATULOY',
+                                                function: () {
+                                                  if (_formKey.currentState!
+                                                      .validate()) {
+                                                    showPreview(context);
+                                                  } else {
+                                                    showTopSnackBar(
+                                                        context,
+                                                        CustomSnackBar.error(
+                                                          message:
+                                                              "May kulang pa sa iyong tala. I-double check kung may laman na lahat.",
+                                                        ));
+                                                  }
+                                                })),
                                       ])))))))));
 }
