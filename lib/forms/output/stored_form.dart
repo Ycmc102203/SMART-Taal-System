@@ -9,7 +9,11 @@ import 'package:sqflite/sqflite.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../../backend/enumeratorRawData.dart';
+import '../../providers/refresh_provider.dart';
+import '../../screens/dashboard_page.dart';
+import '../../screens/home_page.dart';
 import '../../widgets/loadingIndicator.dart';
+import 'package:provider/provider.dart';
 
 class storedForm extends StatefulWidget {
   final context;
@@ -87,11 +91,6 @@ class _storedFormState extends State<storedForm> {
                         LoadingDialog(color: Colors.red, text: "Dinedelete"));
                 try {
                   await GoogleSheetsApi.deleteByUuid(uuid: uuid);
-                  showTopSnackBar(
-                      context,
-                      CustomSnackBar.success(
-                        message: 'Ayos! Na-delete na ang talang ito.',
-                      ));
                   Database dbOne = await DatabaseHelperOne.instance.database;
                   Database dbTwo = await DatabaseHelperTwo.instance.database;
                   await dbOne.rawDelete(
@@ -100,9 +99,12 @@ class _storedFormState extends State<storedForm> {
                   await dbTwo.rawDelete(
                       'DELETE FROM enumeratorOfflineData WHERE uuid = ?',
                       ['${widget.uuid}']);
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
+                  showTopSnackBar(
+                      context,
+                      CustomSnackBar.success(
+                        message: 'Ayos! Na-delete na ang talang ito.',
+                      ));
+                  Navigator.pushNamed(context, '/');
                 } catch (e) {
                   showTopSnackBar(
                       context,
@@ -137,8 +139,6 @@ class _storedFormState extends State<storedForm> {
                             await dbTwo.rawDelete(
                                 'DELETE FROM enumeratorOfflineData WHERE uuid = ?',
                                 ['${widget.uuid}']);
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
                             Navigator.of(context).pop();
                             Navigator.of(context).pop();
                           },

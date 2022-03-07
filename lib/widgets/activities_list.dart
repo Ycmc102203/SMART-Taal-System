@@ -10,6 +10,8 @@ import '../backend/google_sheets_api.dart';
 import '../forms/output/stored_form.dart';
 
 class ActivitiesList extends StatefulWidget {
+  final refreshList;
+  ActivitiesList({this.refreshList});
   @override
   State<ActivitiesList> createState() => _ActivitiesListState();
 }
@@ -97,6 +99,7 @@ class _ActivitiesListState extends State<ActivitiesList> {
                             onRefresh: () {
                               return Future.delayed(Duration(seconds: 1), () {
                                 setState(() {});
+                                widget.refreshList;
                               });
                             },
                             child: SingleChildScrollView(

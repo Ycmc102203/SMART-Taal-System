@@ -1,39 +1,28 @@
 import 'dart:async';
 
-import 'package:animations/animations.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:smart_taal_system/screens/dashboard_page.dart';
-import 'package:smart_taal_system/screens/data_table_page.dart';
-import 'package:smart_taal_system/forms/input/form_page_one.dart';
-import 'package:smart_taal_system/screens/manual_page.dart';
-import 'package:smart_taal_system/screens/settings_page.dart';
-import 'package:smart_taal_system/widgets/appbar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
-class MyHomePage extends StatefulWidget {
-  final hasInternet;
-  MyHomePage({required this.hasInternet});
+class AppBarDesign extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _AppBarDesignState createState() => _AppBarDesignState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _AppBarDesignState extends State<AppBarDesign> {
   late StreamSubscription subscription;
   late StreamSubscription internetSubscription;
-  bool hasInternet = false;
   ConnectivityResult result = ConnectivityResult.none;
-  @override
+  bool hasInternet = true;
+
   void initState() {
     internetSubscription =
         InternetConnectionChecker().onStatusChange.listen((status) {
       final hasInternet = status == InternetConnectionStatus.connected;
       setState(() {
-        this.result = result;
+        this.hasInternet = hasInternet;
       });
       if (hasInternet == true) {
         showTopSnackBar(
@@ -53,110 +42,19 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
-  int currentTab = 0;
-  final List<Widget> screens = [
-    Dashboard(),
-    Settings(),
-    Manual(),
-    ActivityTable()
-  ];
+  @override
+  dispose() {
+    subscription.cancel();
+    internetSubscription.cancel();
+    super.dispose();
+  }
 
-  Widget currentScreen = Dashboard();
-
-  final PageStorageBucket bucket = PageStorageBucket();
   final double coverHeight = 125;
   final double profileHeight = 45;
 
-  int? selectedId;
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        flexibleSpace: buildTop(),
-      ),
-      body: PageStorage(
-          child: PageTransitionSwitcher(
-              duration: Duration(milliseconds: 350),
-              transitionBuilder: (child, animation, secondaryAnimation) =>
-                  FadeThroughTransition(
-                      animation: animation,
-                      secondaryAnimation: secondaryAnimation,
-                      child: child),
-              child: currentScreen),
-          bucket: bucket),
-      bottomNavigationBar: ConvexAppBar(
-        elevation: 5,
-        color: Color.fromARGB(100, 0, 0, 0),
-        gradient: LinearGradient(
-          stops: [
-            -1,
-            0.9,
-          ],
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-          colors: [
-            widget.hasInternet
-                ? Color.fromARGB(255, 213, 253, 205)
-                : Color.fromARGB(255, 253, 205, 205),
-            Color(0xFFffffff),
-          ],
-        ),
-        activeColor: Colors.purple,
-        curveSize: 90,
-        height: 70,
-        style: TabStyle.fixedCircle,
-        items: [
-          TabItem(icon: Icons.home, title: 'Home'),
-          TabItem(icon: Icons.library_books, title: 'Mga Tala'),
-          TabItem<Widget>(
-              icon: Transform.scale(
-                scale: 1,
-                child: RawMaterialButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/form_one');
-                  },
-                  elevation: 10,
-                  fillColor: widget.hasInternet ? Colors.green : Colors.red,
-                  child: Icon(
-                    Icons.add,
-                    size: 45.0,
-                    color: Colors.white,
-                  ),
-                  padding: EdgeInsets.all(0.0),
-                  shape: CircleBorder(
-                      side: BorderSide(color: Colors.white, width: 5)),
-                ),
-              ),
-              title: ''),
-          TabItem(icon: Icons.book, title: 'Manwal'),
-          TabItem(icon: Icons.settings, title: 'Settings'),
-        ],
-        initialActiveIndex: 0,
-        onTap: (int i) {
-          if (i == 0) {
-            print(i);
-            currentScreen = Dashboard();
-            setState(() {});
-          }
-          if (i == 1) {
-            print(i);
-            currentScreen = ActivityTable();
-            setState(() {});
-          }
-          if (i == 3) {
-            print(i);
-            currentScreen = Manual();
-            setState(() {});
-          }
-          if (i == 4) {
-            print(i);
-            currentScreen = Settings();
-            setState(() {});
-          }
-        },
-      ),
-    );
+    return buildTop();
   }
 
   Widget buildCoverImage() => Container(
@@ -183,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
           backgroundColor: Colors.white,
           child: CircleAvatar(
               radius: profileHeight + 5,
-              backgroundColor: widget.hasInternet ? Colors.green : Colors.red,
+              backgroundColor: hasInternet ? Colors.green : Colors.red,
               child: CircleAvatar(
                 radius: profileHeight,
                 backgroundColor: Colors.grey,
@@ -197,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color.fromARGB(100, 0, 255, 13),
+                Color.fromARGB(255, 0, 255, 13),
                 Colors.white,
               ],
             ),
@@ -244,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
           colors: [
-            widget.hasInternet ? Colors.green : Colors.red,
+            hasInternet ? Colors.green : Colors.red,
             Color(0xFFffffff),
           ],
         )),

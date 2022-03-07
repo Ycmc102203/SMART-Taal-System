@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:smart_taal_system/backend/google_sheets_api.dart';
 import 'package:smart_taal_system/backend/sqlfite_local_offline_cache.dart';
+import 'package:smart_taal_system/forms/input/form_page_two.dart';
 import 'package:smart_taal_system/widgets/activities_list.dart';
 import 'package:smart_taal_system/widgets/calendar.dart';
 import 'package:smart_taal_system/widgets/offline_cache_list.dart';
@@ -22,7 +23,6 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    setState(() {});
   }
 
   String onlineDate = '';
@@ -50,6 +50,7 @@ class _DashboardState extends State<Dashboard> {
       List<Map<String, dynamic>> results = await db.rawQuery(
           'SELECT * FROM enumeratorOfflineData WHERE id=?', ['$countInt']);
       for (var r in results) {
+        await sleep();
         _postOnline(r);
         await sleep();
         await db.delete("enumeratorOfflineData", //table name

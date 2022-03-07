@@ -46,6 +46,7 @@ dependencies:
   top_snackbar_flutter:
   animations:
   loading_animations:
+  provider:
   flutter:
     sdk: flutter
 
