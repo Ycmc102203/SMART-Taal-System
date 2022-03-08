@@ -5,6 +5,7 @@ import 'package:smart_taal_system/backend/enumeratorRawData.dart';
 import 'package:smart_taal_system/backend/google_sheets_api.dart';
 import 'package:smart_taal_system/backend/sqlfite_local_offline_cache.dart';
 import 'package:smart_taal_system/forms/fields/text_input_field.dart';
+import 'package:smart_taal_system/forms/lists/species_list.dart';
 import 'package:smart_taal_system/forms/output/form_preview.dart';
 import 'package:smart_taal_system/screens/home_page.dart';
 import 'package:smart_taal_system/widgets/buttons/submit_button.dart';
@@ -646,52 +647,7 @@ class _NewTodoState extends State<NewSpecies> {
                                     child: Column(
                                       children: [
                                         DropDownField(
-                                          items: [
-                                            "Flag-tailed glass perchlet (ning-ning)",
-                                            "Midas cichlid (red tilapia)",
-                                            "Climbing perch (martiniko)",
-                                            "Giant mottled eel (igat)",
-                                            "Manila sea catfish (kanduli)",
-                                            "Eendracht Land silverside (guno)",
-                                            "Giant trevally (maliputo)",
-                                            "Big-eye trevally (muslo)",
-                                            "Crucian carp (karpita)",
-                                            "Striped snakehead (dalag)",
-                                            "Milkfish (bangus)",
-                                            "Philippine catfish (hito)",
-                                            "Bighead catfish (hito)",
-                                            "Common carp (karpa)",
-                                            "Pipefish (kambabalo)",
-                                            "Tenpounder (Kanoping)",
-                                            "Half-barred cardinal (dangat)",
-                                            "Whipfin silver-biddy (balabatuhan)",
-                                            "Snakehead gudgeon (baculi)",
-                                            "Celebes goby (biyang bato)",
-                                            "Tank goby (biyang puti)",
-                                            "Bighead carp (bighead)",
-                                            "Quoy's garfish (siliw)",
-                                            "Barramundi (apahap)",
-                                            "Silver perch (ayungin)",
-                                            "Mangrove red snapper (also)",
-                                            "Malabar blood snapper (maya-maya)",
-                                            "Indo-Pacific tarpon (buan-buan)",
-                                            "Sharptail goby (biya)",
-                                            "Gossamer blenny (isdang mamay)",
-                                            "Nile tilapia (tilapia)",
-                                            "Striped catfish (pangasius)",
-                                            "Jaguar guapote (dugong)",
-                                            "Greenback mullet (Banak)",
-                                            "Sleepy goby (biya)",
-                                            "Vermiculated sailfin catfish (janitor fish)",
-                                            "Freshwater sardine (tawilis)",
-                                            "Blackchin tilapia (tilapiang arroyo)",
-                                            "Spotted scat (kitang)",
-                                            "Jarbua terapon (bagaong)",
-                                            "Banded archerfish (kataba)",
-                                            "Three spot gourami (gurami)",
-                                            "Humpbacked cardinalfish (muang)",
-                                            "Feathered river-garfish (siliw)"
-                                          ],
+                                          items: speciesList,
                                           validator: (value) {
                                             if (value == null ||
                                                 value.isEmpty) {

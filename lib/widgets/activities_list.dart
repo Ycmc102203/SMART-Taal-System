@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -8,6 +11,7 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../backend/sqlfite_local_primary_db.dart';
 import '../backend/google_sheets_api.dart';
 import '../forms/output/stored_form.dart';
+import '../screens/colors_list.dart';
 
 class ActivitiesList extends StatefulWidget {
   final refreshList;
@@ -17,6 +21,11 @@ class ActivitiesList extends StatefulWidget {
 }
 
 class _ActivitiesListState extends State<ActivitiesList> {
+  late StreamSubscription subscription;
+  late StreamSubscription internetSubscription;
+  bool hasInternet = false;
+  ConnectivityResult result = ConnectivityResult.none;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -54,22 +63,7 @@ class _ActivitiesListState extends State<ActivitiesList> {
                                     color: Color.fromARGB(255, 255, 255, 255))
                               ]))),
                   Container(
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                        stops: [
-                          0,
-                          0.50,
-                          1.0,
-                        ],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [
-                          Color.fromARGB(150, 155, 39, 176),
-                          Color.fromARGB(150, 76, 175, 79),
-                          Color.fromARGB(150, 155, 39, 176),
-                        ],
-                      )),
-                      height: MediaQuery.of(context).size.height / 100,
+                      height: 5,
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [])),

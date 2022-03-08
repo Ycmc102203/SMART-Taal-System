@@ -4,6 +4,7 @@ import 'package:smart_taal_system/forms/input/form_page_two.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:smart_taal_system/forms/lists/fishing_gear_list.dart';
 import 'package:smart_taal_system/forms/output/form_preview.dart';
 import 'package:smart_taal_system/widgets/warnings/back_warning.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -11,6 +12,7 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../widgets/buttons/add_button.dart';
 import '../fields/text_input_field.dart';
+import '../lists/landing_center_list.dart';
 import 'arguments.dart';
 
 class NewActivity extends StatefulWidget {
@@ -259,42 +261,26 @@ class _NewActivityState extends State<NewActivity> {
                                           labelText: "Lugar ng Pinangisdaan",
                                           keyboardType: TextInputType.name,
                                         ),
-                                        Padding(
-                                            padding: EdgeInsets.only(top: 20),
-                                            child: DropDownField(
-                                              items: [
-                                                "Abelo, San Nicolas",
-                                                "Ambulong, Tanauan City",
-                                                "Bugaan East, Laurel",
-                                                "Don Juan, Cuenca",
-                                                "Kinalaglagan, Mataasnakahoy",
-                                                "Nangkaan, Mataasnakahoy",
-                                                "Napapanayan, Cuenca",
-                                                "Poblacion, Laurel",
-                                                "Saimsim, Santa Teresita",
-                                                "Sampaloc, Talisay",
-                                                "Subic Ibaba, Agoncillo",
-                                                "Subic Ilaya, Agoncillo"
-                                              ],
-                                              validator: (value) {
-                                                if (value == null ||
-                                                    value.isEmpty) {
-                                                  return 'Walang sagot; pumili ng lugar';
-                                                }
-                                                return null;
-                                              },
-                                              labelTextOne: "Lugar ng Daungan",
-                                              labelTextTwo:
-                                                  "Hanapin ang Lugar ng Dinaungan",
-                                              labelTextThree:
-                                                  'Lugar ng Daungan',
-                                              onChanged: (String? value) {
-                                                setState(() {
-                                                  landingCenterController.text =
-                                                      value!;
-                                                });
-                                              },
-                                            )),
+                                        DropDownField(
+                                          items: landingCentersList,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Walang sagot; pumili ng lugar';
+                                            }
+                                            return null;
+                                          },
+                                          labelTextOne: "Lugar ng Daungan",
+                                          labelTextTwo:
+                                              "Hanapin ang Lugar ng Dinaungan",
+                                          labelTextThree: 'Lugar ng Daungan',
+                                          onChanged: (String? value) {
+                                            setState(() {
+                                              landingCenterController.text =
+                                                  value!;
+                                            });
+                                          },
+                                        ),
                                         TextInputField(
                                           validator: (value) {
                                             if (value == null ||
@@ -336,48 +322,25 @@ class _NewActivityState extends State<NewActivity> {
                                           labelText: "Pangalan ng Bangka",
                                           keyboardType: TextInputType.name,
                                         ),
-                                        Padding(
-                                            padding: EdgeInsets.only(top: 20),
-                                            child: DropDownField(
-                                                items: [
-                                                  "Gill Net (pante)",
-                                                  "Spear Gun (pana)",
-                                                  "Hook & Line (kawil)",
-                                                  "Fish Trap (bubo)",
-                                                  "Fish Corral (baklad)",
-                                                  "Lift Net (pantaas)",
-                                                  "Beach Seine (pukot)",
-                                                  "Scissors Net (salap)",
-                                                  "Crab Lift Net (bintol)",
-                                                  "Motorized Push Net (suro)",
-                                                  "Ring Net (basnig)",
-                                                  "Cover Pot (saklob)",
-                                                  "Fish Shelter (paksol)",
-                                                  "Drive-in Net (sakag/paksol)",
-                                                  "Bamboo Fish Trap (tukil)",
-                                                  "Scoop Net (sigpaw)",
-                                                  "Fish Spear (salapang)",
-                                                  "Rake (balukay)",
-                                                  "Cast Net (dala)",
-                                                  "Fish Pot (patanga)"
-                                                ],
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.isEmpty) {
-                                                    return 'Walang sagot; pumili ng gear';
-                                                  }
-                                                  return null;
-                                                },
-                                                labelTextOne: "Gear na Ginamit",
-                                                labelTextTwo:
-                                                    "Hanapin ang Gear na Ginamit",
-                                                labelTextThree: 'Fishing Gear',
-                                                onChanged: (String? value) {
-                                                  setState(() {
-                                                    fishingGearController.text =
-                                                        value!;
-                                                  });
-                                                })),
+                                        DropDownField(
+                                            items: fishingGearList,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Walang sagot; pumili ng gear';
+                                              }
+                                              return null;
+                                            },
+                                            labelTextOne: "Gear na Ginamit",
+                                            labelTextTwo:
+                                                "Hanapin ang Gear na Ginamit",
+                                            labelTextThree: 'Fishing Gear',
+                                            onChanged: (String? value) {
+                                              setState(() {
+                                                fishingGearController.text =
+                                                    value!;
+                                              });
+                                            }),
                                         TextInputField(
                                           validator: (value) {
                                             if (value == null ||

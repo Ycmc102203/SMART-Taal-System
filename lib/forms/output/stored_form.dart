@@ -5,6 +5,12 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:smart_taal_system/backend/google_sheets_api.dart';
 import 'package:smart_taal_system/backend/sqlfite_local_offline_cache.dart';
 import 'package:smart_taal_system/backend/sqlfite_local_primary_db.dart';
+import 'package:smart_taal_system/forms/fields/dropdown_field.dart';
+import 'package:smart_taal_system/forms/fields/text_input_field.dart';
+import 'package:smart_taal_system/forms/lists/fishing_gear_list.dart';
+import 'package:smart_taal_system/forms/lists/landing_center_list.dart';
+import 'package:smart_taal_system/forms/lists/species_list.dart';
+import 'package:smart_taal_system/forms/output/edit_form.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -14,6 +20,8 @@ import '../../screens/dashboard_page.dart';
 import '../../screens/home_page.dart';
 import '../../widgets/loadingIndicator.dart';
 import 'package:provider/provider.dart';
+
+import 'delete_form.dart';
 
 class storedForm extends StatefulWidget {
   final context;
@@ -61,167 +69,70 @@ class storedForm extends StatefulWidget {
 }
 
 class _storedFormState extends State<storedForm> {
-  showDeleteDialog(uuid, context) async {
-    bool isConnected = await InternetConnectionChecker().hasConnection;
-    print(isConnected);
-    if (isConnected == true) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: Text("Delete"),
-          content: Text("Sigurado ka ba na i-dedelete mo ang talang ito?"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                setState(() {});
-              },
-              child: Text('Nagkamali ako ng pindot',
-                  style: TextStyle(color: Colors.red)),
-            ),
-            TextButton(
-              onPressed: () async {
-                setState(() {});
-                showDialog(
-                    context: context,
-                    builder: (context) =>
-                        LoadingDialog(color: Colors.red, text: "Dinedelete"));
-                try {
-                  await GoogleSheetsApi.deleteByUuid(uuid: uuid);
-                  Database dbOne = await DatabaseHelperOne.instance.database;
-                  Database dbTwo = await DatabaseHelperTwo.instance.database;
-                  await dbOne.rawDelete(
-                      'DELETE FROM enumeratorLocalData WHERE uuid = ?',
-                      ['${widget.uuid}']);
-                  await dbTwo.rawDelete(
-                      'DELETE FROM enumeratorOfflineData WHERE uuid = ?',
-                      ['${widget.uuid}']);
-                  showTopSnackBar(
-                      context,
-                      CustomSnackBar.success(
-                        message: 'Ayos! Na-delete na ang talang ito.',
-                      ));
-                  Navigator.pushNamed(context, '/');
-                } catch (e) {
-                  showTopSnackBar(
-                      context,
-                      CustomSnackBar.error(
-                        message: 'ERROR: Hindi mahanap ang tala sa Database',
-                      ));
-                  Navigator.of(context).pop();
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      title: Text("ERROR"),
-                      content: Text(
-                          "Hindi pala ito natala sa GoogleSheets Database. Gusto mo bang i-delete pa ito o i-upload doon?"),
-                      actions: [
-                        TextButton(
-                          onPressed: () async {
-                            setState(() {});
-                            showDialog(
-                                context: context,
-                                builder: (context) => LoadingDialog(
-                                    color: Colors.red, text: "Dinedelete"));
-                            Database dbOne =
-                                await DatabaseHelperOne.instance.database;
-                            Database dbTwo =
-                                await DatabaseHelperTwo.instance.database;
-                            await dbOne.rawDelete(
-                                'DELETE FROM enumeratorLocalData WHERE uuid = ?',
-                                ['${widget.uuid}']);
-                            await dbTwo.rawDelete(
-                                'DELETE FROM enumeratorOfflineData WHERE uuid = ?',
-                                ['${widget.uuid}']);
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('I-delete',
-                              style: TextStyle(color: Colors.red)),
-                        ),
-                        TextButton(
-                          onPressed: () async {
-                            await sleep();
-                            showDialog(
-                                context: context,
-                                builder: (context) => LoadingDialog(
-                                    color: Colors.green, text: "Inu-upload"));
-                            await sleep();
-                            final feedback = {
-                              EnumeratorRawDataColumn.uuid: widget.uuid.trim(),
-                              EnumeratorRawDataColumn.date: widget.date.trim(),
-                              EnumeratorRawDataColumn.enumerator:
-                                  widget.enumerator.trim(),
-                              EnumeratorRawDataColumn.landingCenter:
-                                  widget.landingCenter.trim(),
-                              EnumeratorRawDataColumn.fishingGround:
-                                  widget.fishingGround.trim(),
-                              EnumeratorRawDataColumn.totalLandings:
-                                  widget.totalLandings.trim(),
-                              EnumeratorRawDataColumn.boatName:
-                                  widget.boatName.trim(),
-                              EnumeratorRawDataColumn.fishingGear:
-                                  widget.fishingGear.trim(),
-                              EnumeratorRawDataColumn.fishingEffort:
-                                  widget.fishingEffort.trim(),
-                              EnumeratorRawDataColumn.totalBoatCatch:
-                                  widget.totalBoatCatch.trim(),
-                              EnumeratorRawDataColumn.sampleSerialNumber:
-                                  widget.sampleSerialNumber.trim(),
-                              EnumeratorRawDataColumn.totalSampleWeight:
-                                  widget.sampleWeight.trim(),
-                              EnumeratorRawDataColumn.speciesName:
-                                  widget.speciesName.trim(),
-                              EnumeratorRawDataColumn.length:
-                                  widget.length.trim(),
-                              EnumeratorRawDataColumn.weight:
-                                  widget.weight.trim(),
-                            };
-                            await GoogleSheetsApi.insert([feedback]);
-                            showTopSnackBar(
-                                context,
-                                CustomSnackBar.success(
-                                  message:
-                                      'Ayos! Nai-upload na ang talang ito sa database',
-                                ));
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                          },
-                          child: Text("Oo, i-upload"),
-                          style: TextButton.styleFrom(
-                            primary: Colors.white,
-                            backgroundColor: Colors.red,
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                }
-              },
-              child: Text("Oo, i-delete na"),
-              style: TextButton.styleFrom(
-                primary: Colors.white,
-                backgroundColor: Colors.red,
-              ),
-            )
-          ],
-        ),
-      );
-    } else {
-      showTopSnackBar(
-          context,
-          CustomSnackBar.error(
-            message:
-                "Paalala! Kumonekta muna sa internet para makapag-delete ng tala",
-          ));
-    }
+  bool isEditing = true;
+
+  TextEditingController speciesName = TextEditingController();
+  TextEditingController length = TextEditingController();
+  TextEditingController weight = TextEditingController();
+  TextEditingController enumerator = TextEditingController();
+  TextEditingController fishingGround = TextEditingController();
+  TextEditingController landingCenter = TextEditingController();
+  TextEditingController totalLandings = TextEditingController();
+  TextEditingController boatName = TextEditingController();
+  TextEditingController fishingGear = TextEditingController();
+  TextEditingController fishingEffort = TextEditingController();
+  TextEditingController totalBoatCatch = TextEditingController();
+  TextEditingController sampleSerialNumber = TextEditingController();
+  TextEditingController sampleWeight = TextEditingController();
+
+  @override
+  void initState() {
+    setState(() {
+      speciesName = TextEditingController(text: widget.speciesName);
+      length = TextEditingController(text: widget.length);
+      weight = TextEditingController(text: widget.weight);
+      enumerator = TextEditingController(text: widget.enumerator);
+      fishingGround = TextEditingController(text: widget.fishingGround);
+      landingCenter = TextEditingController(text: widget.landingCenter);
+      totalLandings = TextEditingController(text: widget.totalLandings);
+      boatName = TextEditingController(text: widget.boatName);
+      fishingGear = TextEditingController(text: widget.fishingGear);
+      fishingEffort = TextEditingController(text: widget.fishingEffort);
+      totalBoatCatch = TextEditingController(text: widget.totalBoatCatch);
+      sampleSerialNumber =
+          TextEditingController(text: widget.sampleSerialNumber);
+      sampleWeight = TextEditingController(text: widget.sampleWeight);
+    });
+    super.initState();
+  }
+
+  void onEdit() {
+    setState(() {
+      isEditing = !isEditing;
+    });
+  }
+
+  showEditDialog(uuid) {
+    print(isEditing);
+    return EditForm(
+        context: widget.context,
+        uuid: widget.uuid,
+        speciesName: widget.speciesName,
+        commonName: widget.commonName,
+        speciesPic: widget.speciesPic,
+        enumerator: widget.enumerator,
+        date: widget.date,
+        fishingGround: widget.fishingGround,
+        landingCenter: widget.landingCenter,
+        totalLandings: widget.totalLandings,
+        boatName: widget.boatName,
+        fishingGear: widget.fishingGear,
+        fishingEffort: widget.fishingEffort,
+        totalBoatCatch: widget.totalBoatCatch,
+        sampleSerialNumber: widget.sampleSerialNumber,
+        sampleWeight: widget.sampleWeight,
+        weight: widget.weight,
+        length: widget.length);
   }
 
   @override
@@ -232,77 +143,108 @@ class _storedFormState extends State<storedForm> {
         content: RawScrollbar(
             thumbColor: Colors.green,
             child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
+                physics: BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics()),
                 child: Container(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("${widget.date}"),
-                              Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text('I-edit',
-                                        style: TextStyle(
-                                            color: Colors.green,
-                                            fontWeight: FontWeight.bold)),
-                                    IconButton(
-                                        onPressed: () {
-                                          showEditDialog(widget.uuid);
-                                        },
-                                        icon: Icon(Icons.edit,
-                                            color: Colors.green)),
-                                    Text('I-delete',
-                                        style: TextStyle(
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.bold)),
-                                    IconButton(
-                                        onPressed: () {
-                                          showDeleteDialog(
-                                              widget.uuid, context);
-                                        },
-                                        icon: Icon(Icons.delete,
-                                            color: Colors.red)),
-                                  ]),
-                            ]),
-                        Image.asset(widget.speciesPic),
-                        Text("\n${widget.commonName}",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20)),
-                        Text("${widget.speciesName}"),
-                        Text(
-                            "Haba: ${widget.length} cm     Bigat: ${widget.weight} g"),
-                        Text("\nDetalye ng Lugar",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text("Tinala ni: ${widget.enumerator}"),
-                        Text("Nahuli sa: ${widget.fishingGround}"),
-                        Text("Dinaong sa: ${widget.landingCenter}"),
-                        Text("Bilang ng mga dumaong: ${widget.totalLandings}"),
-                        Text("\nDetalye ng Dumaong",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text("Pangalan ng Bangka: ${widget.boatName}"),
-                        Text(
-                            "Pangalan ng Gear na Ginamit: ${widget.fishingGear}"),
-                        Text(
-                            "Tagal ng Pangingisda: ${widget.fishingEffort} oras"),
-                        Text("Timbang ng Nahuli: ${widget.totalBoatCatch} kg"),
-                        Text("\nDetalye ng Sample",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text(
-                            "Sample Serial Number: ${widget.sampleSerialNumber}"),
-                        Text("Timbang ng Nahuli: ${widget.sampleWeight} kg"),
-                      ]),
-                ))));
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("${widget.date}"),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text('I-edit',
+                                      style: TextStyle(
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.bold)),
+                                  IconButton(
+                                      onPressed: () {
+                                        onEdit();
+                                      },
+                                      icon: Icon(Icons.edit,
+                                          color: Colors.green)),
+                                  Text('I-delete',
+                                      style: TextStyle(
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.bold)),
+                                  IconButton(
+                                      onPressed: () {
+                                        showDeleteDialog(
+                                            widget.uuid,
+                                            context,
+                                            widget.date,
+                                            widget.enumerator,
+                                            widget.landingCenter,
+                                            widget.fishingGround,
+                                            widget.totalLandings,
+                                            widget.boatName,
+                                            widget.fishingGear,
+                                            widget.fishingEffort,
+                                            widget.totalBoatCatch,
+                                            widget.sampleSerialNumber,
+                                            widget.sampleWeight,
+                                            widget.speciesName,
+                                            widget.length,
+                                            widget.weight);
+                                      },
+                                      icon: Icon(Icons.delete,
+                                          color: Colors.red)),
+                                ]),
+                          ]),
+                      isEditing
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                  Image.asset(widget.speciesPic),
+                                  Text("\nDetalye ng Isda",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20)),
+                                  Text("\n${widget.commonName}"),
+                                  Text("${widget.speciesName}",
+                                      style: TextStyle(
+                                          fontStyle: FontStyle.italic)),
+                                  Text(
+                                      "Haba: ${widget.length} cm     Bigat: ${widget.weight} g"),
+                                  Text("\nDetalye ng Lugar",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20)),
+                                  Text("\nTinala ni: ${widget.enumerator}"),
+                                  Text("Nahuli sa: ${widget.fishingGround}"),
+                                  Text("Dinaong sa: ${widget.landingCenter}"),
+                                  Text(
+                                      "Bilang ng mga dumaong: ${widget.totalLandings}"),
+                                  Text("\nDetalye ng Dumaong",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  Text(
+                                      "Pangalan ng Bangka: ${widget.boatName}"),
+                                  Text(
+                                      "Pangalan ng Gear na Ginamit: ${widget.fishingGear}"),
+                                  Text(
+                                      "Tagal ng Pangingisda: ${widget.fishingEffort} oras"),
+                                  Text(
+                                      "Timbang ng Nahuli: ${widget.totalBoatCatch} kg"),
+                                  Text("\nDetalye ng Sample",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  Text(
+                                      "Sample Serial Number: ${widget.sampleSerialNumber}"),
+                                  Text(
+                                      "Timbang ng Nahuli: ${widget.sampleWeight} kg"),
+                                ])
+                          : showEditDialog(widget.uuid)
+                    ])))));
   }
 }
 
 bool isLoading = false;
-showEditDialog(uuid) {
-  print('editssss ' + uuid);
-}
 
 Future sleep() {
   return new Future.delayed(const Duration(milliseconds: 500), () => "1");

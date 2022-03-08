@@ -6,6 +6,7 @@ import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:smart_taal_system/screens/colors_list.dart';
 import 'package:smart_taal_system/screens/dashboard_page.dart';
 import 'package:smart_taal_system/screens/data_table_page.dart';
 import 'package:smart_taal_system/forms/input/form_page_one.dart';
@@ -27,6 +28,12 @@ class _MyHomePageState extends State<MyHomePage> {
   late StreamSubscription internetSubscription;
   bool hasInternet = false;
   ConnectivityResult result = ConnectivityResult.none;
+  int index = 0;
+  Color bottomColor = Colors.red;
+  Color topColor = Colors.yellow;
+  Alignment end = Alignment.bottomLeft;
+  Alignment begin = Alignment.topRight;
+
   @override
   void initState() {
     internetSubscription =
@@ -71,6 +78,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(const Duration(milliseconds: 10), () {
+      setState(() {
+        bottomColor = Colors.white;
+      });
+    });
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: buildTop(),
@@ -164,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Image.asset(
           'assets/Taal-Lake.png',
           width: double.infinity,
-          height: MediaQuery.of(context).size.height / 4,
+          height: 100,
           fit: BoxFit.fitWidth,
         ),
       );
@@ -214,18 +226,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 offset: Offset(0, 50), // changes position of shadow
               )
             ]),
-        height: MediaQuery.of(context).size.width / 3.5,
+        height: 100,
         child: Stack(
           clipBehavior: Clip.none,
           alignment: Alignment.centerLeft,
           children: [
             buildCoverImage(),
             Positioned(
-              top: MediaQuery.of(context).size.height / 10,
+              top: 68,
               child: profileName(),
             ),
             Positioned(
-                top: MediaQuery.of(context).size.width / 10,
+                top: 40,
                 child: Container(
                     padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                     child: buildProfileImage()))
@@ -234,22 +246,29 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget profileName() {
-    return Container(
+    return AnimatedContainer(
+        duration: Duration(seconds: 2),
+        onEnd: () {
+          setState(() {
+            index = index + 1;
+            // animate the color
+            bottomColor = widget.hasInternet
+                ? colorListOnline[index % colorListOnline.length]
+                : colorListOffline[index % colorListOffline.length];
+            topColor = widget.hasInternet
+                ? colorListOnline[(index + 1) % colorListOnline.length]
+                : colorListOffline[(index + 1) % colorListOffline.length];
+
+            //// animate the alignment
+            // begin = alignmentList[index % alignmentList.length];
+            // end = alignmentList[(index + 2) % alignmentList.length];
+          });
+        },
         decoration: BoxDecoration(
             gradient: LinearGradient(
-          stops: [
-            0,
-            0.50,
-          ],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [
-            widget.hasInternet ? Colors.green : Colors.red,
-            Color(0xFFffffff),
-          ],
-        )),
+                begin: begin, end: end, colors: [bottomColor, topColor])),
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height / 10.5,
+        height: 65,
         child: Padding(
             padding: EdgeInsets.fromLTRB(
                 MediaQuery.of(context).size.width / 4, 5, 20, 0),

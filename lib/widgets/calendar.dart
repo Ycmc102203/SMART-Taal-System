@@ -69,87 +69,90 @@ class _CalendarState extends State<Calendar> {
                                 color: Color.fromARGB(255, 255, 255, 255))
                           ]))),
               Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                    stops: [
-                      0,
-                      0.50,
-                      1.0,
-                    ],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      Color.fromARGB(150, 155, 39, 176),
-                      Color.fromARGB(150, 76, 175, 79),
-                      Color.fromARGB(150, 155, 39, 176),
-                    ],
-                  )),
                   height: MediaQuery.of(context).size.height / 100,
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [])),
-              TableCalendar(
-                calendarStyle: const CalendarStyle(
-                    todayDecoration: BoxDecoration(
-                      color: Colors.purple,
-                      shape: BoxShape.circle,
+              Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    const BoxShadow(
+                      color: Color.fromARGB(129, 0, 0, 0),
                     ),
-                    selectedDecoration: BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                    )),
-                daysOfWeekHeight: 16.0,
-                rowHeight: 50,
-                firstDay: DateTime.utc(2010, 10, 16),
-                lastDay: DateTime.utc(2030, 3, 14),
-                focusedDay: DateTime.now(),
-                selectedDayPredicate: (day) {
-                  return isSameDay(_selectedDay, day);
-                },
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay;
-                    _queryDate = DateFormat('yyyy-MM-dd').format(focusedDay);
-                    showModal(); // update `_focusedDay` here as well
-                  });
-                },
-              ),
+                    const BoxShadow(
+                      color: Colors.white,
+                      spreadRadius: -5.0,
+                      blurRadius: 8.0,
+                    ),
+                  ],
+                  borderRadius: BorderRadius.only(
+                      bottomRight: Radius.circular(15),
+                      bottomLeft: Radius.circular(15)),
+                ),
+                padding: EdgeInsets.fromLTRB(0, 10, 0, 20),
+                child: TableCalendar(
+                  calendarStyle: const CalendarStyle(
+                      todayDecoration: BoxDecoration(
+                        color: Colors.purple,
+                        shape: BoxShape.circle,
+                      ),
+                      selectedDecoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      )),
+                  daysOfWeekHeight: 16.0,
+                  rowHeight: 50,
+                  firstDay: DateTime.utc(2010, 10, 16),
+                  lastDay: DateTime.utc(2030, 3, 14),
+                  focusedDay: DateTime.now(),
+                  selectedDayPredicate: (day) {
+                    return isSameDay(_selectedDay, day);
+                  },
+                  onDaySelected: (selectedDay, focusedDay) {
+                    setState(() {
+                      _selectedDay = selectedDay;
+                      _focusedDay = focusedDay;
+                      _queryDate = DateFormat('yyyy-MM-dd').format(focusedDay);
+                      showModal(); // update `_focusedDay` here as well
+                    });
+                  },
+                ),
 
-              // Container(
-              //     child: ListView.builder(
-              //         padding: const EdgeInsets.only(top: 0, bottom: 5),
-              //         itemCount: species.length,
-              //         itemBuilder: (BuildContext context, int index) {
-              //           return Card(
-              //               elevation: 4,
-              //               shape: RoundedRectangleBorder(
-              //                   borderRadius: BorderRadius.circular(8)),
-              //               child: ListTile(
-              //                 leading: Padding(
-              //                   padding: EdgeInsets.only(top: 10),
-              //                   child: Column(
-              //                     mainAxisAlignment:
-              //                         MainAxisAlignment.start,
-              //                     crossAxisAlignment:
-              //                         CrossAxisAlignment.start,
-              //                     children: [
-              //                       Text(
-              //                         '${species[index]}',
-              //                         style: TextStyle(
-              //                           fontWeight: FontWeight.bold,
-              //                           fontSize: 15,
-              //                         ),
-              //                       ),
-              //                       Text(
-              //                           "Haba: ${length[index]} cm     Bigat: ${weight[index]} g")
-              //                     ],
-              //                   ),
-              //                 ),
-              //                 trailing:
-              //                     Image.asset('${pic[index]}', width: 60),
-              //               ));
-              //         }))
+                // Container(
+                //     child: ListView.builder(
+                //         padding: const EdgeInsets.only(top: 0, bottom: 5),
+                //         itemCount: species.length,
+                //         itemBuilder: (BuildContext context, int index) {
+                //           return Card(
+                //               elevation: 4,
+                //               shape: RoundedRectangleBorder(
+                //                   borderRadius: BorderRadius.circular(8)),
+                //               child: ListTile(
+                //                 leading: Padding(
+                //                   padding: EdgeInsets.only(top: 10),
+                //                   child: Column(
+                //                     mainAxisAlignment:
+                //                         MainAxisAlignment.start,
+                //                     crossAxisAlignment:
+                //                         CrossAxisAlignment.start,
+                //                     children: [
+                //                       Text(
+                //                         '${species[index]}',
+                //                         style: TextStyle(
+                //                           fontWeight: FontWeight.bold,
+                //                           fontSize: 15,
+                //                         ),
+                //                       ),
+                //                       Text(
+                //                           "Haba: ${length[index]} cm     Bigat: ${weight[index]} g")
+                //                     ],
+                //                   ),
+                //                 ),
+                //                 trailing:
+                //                     Image.asset('${pic[index]}', width: 60),
+                //               ));
+                //         }))
+              )
             ])));
   }
 }
