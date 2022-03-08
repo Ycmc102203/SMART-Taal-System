@@ -138,7 +138,7 @@ class _ActivityTableState extends State<ActivityTable> {
     // raw query
     List<Map> result = await db.rawQuery('SELECT * FROM enumeratorLocalData');
     // print the results
-    _books = result;
+    _books = result.reversed.toList();
     //result.forEach((row) => print(row));
     // {_id: 2, name: Mary, age: 32}
   }
