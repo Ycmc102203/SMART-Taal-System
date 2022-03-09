@@ -158,145 +158,153 @@ class _ActivityTableState extends State<ActivityTable> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(title: Text('Profile')),
-        body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Center(
-            child: //Column(children: <Widget>[
-                FutureBuilder<List<enumeratorLocal>>(
-                    future: DatabaseHelperOne.instance.getEnumeratorLocal(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<List<enumeratorLocal>> snapshot) {
-                      if (!snapshot.hasData) {
-                        sleep();
-                        return LoadingFlipping.circle(
-                          borderColor: Colors.cyan,
-                          borderSize: 3.0,
-                          size: 30.0,
-                          backgroundColor: Colors.cyanAccent,
-                          duration: Duration(milliseconds: 500),
-                        );
-                      }
-                      var databaseQuery;
-                      return snapshot.data!.isEmpty
-                          ? RefreshIndicator(
-                              onRefresh: () {
-                                return Future.delayed(Duration(seconds: 1), () {
-                                  setState(() {});
-                                  ;
-                                });
-                              },
-                              child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height / 2,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text('MAGTALA NG AKTIBIDAD',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Colors.purple,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 25)),
-                                      Text(''),
-                                      Row(children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 45, right: 15),
-                                          child: Icon(Icons.do_not_disturb_alt,
-                                              size: 40, color: Colors.red),
-                                        ),
-                                        Text(
-                                            'Wala ka pang tala para sa araw na ito.\nPindutin ang kulay berdeng butones\nsa ilalim para magsimula.',
-                                            textAlign: TextAlign.left,
-                                            style: TextStyle(
-                                                color: Colors.purple,
-                                                fontSize: 15)),
-                                      ]),
-                                      Row(children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 45, right: 15),
-                                          child: Icon(Icons.refresh,
-                                              size: 40, color: Colors.blue),
-                                        ),
-                                        Text(
-                                            '\nKung may natala ka na pero di pa\nlumalabas, mangyaring i-refresh ang\npahina sa pamamagitan ng paghila\nnito pababa.',
-                                            textAlign: TextAlign.left,
-                                            style: TextStyle(
-                                                color: Colors.purple,
-                                                fontSize: 15)),
-                                      ]),
-                                    ],
-                                  )))
-                          : Container(
-                              height: MediaQuery.of(context).size.height,
-                              alignment: Alignment.topCenter,
-                              child: Column(children: [
-                                TextFormField(
-                                  controller: databaseQuery,
-                                  onChanged: (String? databaseQuery) async {
-                                    Database db = await DatabaseHelperOne
-                                        .instance.database;
-                                    List<Map> result = await db.rawQuery(
-                                        'SELECT * FROM enumeratorLocalData WHERE sampleSerialNumber LIKE ? OR commonName LIKE ? OR landingCenter LIKE ? OR fishingGear LIKE ?',
-                                        [
-                                          '%$databaseQuery%',
-                                          '%$databaseQuery%',
-                                          '%$databaseQuery%',
-                                          '%$databaseQuery%'
-                                        ]);
-                                    print(result.isEmpty);
-
-                                    _books = result;
-                                    print(result);
+        body: Container(
+          margin: EdgeInsets.only(
+              top: MediaQuery.of(context).size.height -
+                  MediaQuery.of(context).size.height / 1.07),
+          child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Center(
+              child: //Column(children: <Widget>[
+                  FutureBuilder<List<enumeratorLocal>>(
+                      future: DatabaseHelperOne.instance.getEnumeratorLocal(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<List<enumeratorLocal>> snapshot) {
+                        if (!snapshot.hasData) {
+                          sleep();
+                          return LoadingFlipping.circle(
+                            borderColor: Colors.cyan,
+                            borderSize: 3.0,
+                            size: 30.0,
+                            backgroundColor: Colors.cyanAccent,
+                            duration: Duration(milliseconds: 500),
+                          );
+                        }
+                        var databaseQuery;
+                        return snapshot.data!.isEmpty
+                            ? RefreshIndicator(
+                                onRefresh: () {
+                                  return Future.delayed(Duration(seconds: 1),
+                                      () {
                                     setState(() {});
-                                  },
-                                  decoration: InputDecoration(
-                                    contentPadding:
-                                        EdgeInsets.only(top: 15, left: 20),
-                                    hintText:
-                                        "SSN, pangalan, uri ng gear, o lugar daungan",
-                                    suffixIcon:
-                                        // add padding to adjust icon
-                                        Icon(Icons.search),
-                                  ),
-                                ),
-                                Container(
-                                    height: MediaQuery.of(context).size.height -
-                                        250,
+                                    ;
+                                  });
+                                },
+                                child: Container(
+                                    height:
+                                        MediaQuery.of(context).size.height / 2,
                                     width: MediaQuery.of(context).size.width,
-                                    color: Colors.white,
-                                    child: RawScrollbar(
-                                        thumbColor: Colors.green,
-                                        radius: Radius.circular(10),
-                                        thickness: 10,
-                                        child: RefreshIndicator(
-                                          onRefresh: () {
-                                            return Future.delayed(
-                                                Duration(seconds: 1), () {
-                                              setState(() {});
-                                              ;
-                                            });
-                                          },
-                                          child: SingleChildScrollView(
-                                              physics: BouncingScrollPhysics(
-                                                  parent:
-                                                      AlwaysScrollableScrollPhysics()),
-                                              scrollDirection: Axis.vertical,
-                                              child: SingleChildScrollView(
-                                                  physics: BouncingScrollPhysics(
-                                                      parent:
-                                                          AlwaysScrollableScrollPhysics()),
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  child: _createDataTable())),
-                                        )))
-                              ]));
-                    }),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text('MAGTALA NG AKTIBIDAD',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.purple,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 25)),
+                                        Text(''),
+                                        Row(children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                left: 45, right: 15),
+                                            child: Icon(
+                                                Icons.do_not_disturb_alt,
+                                                size: 40,
+                                                color: Colors.red),
+                                          ),
+                                          Text(
+                                              'Wala ka pang tala para sa araw na ito.\nPindutin ang kulay berdeng butones\nsa ilalim para magsimula.',
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  color: Colors.purple,
+                                                  fontSize: 15)),
+                                        ]),
+                                        Row(children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                left: 45, right: 15),
+                                            child: Icon(Icons.refresh,
+                                                size: 40, color: Colors.blue),
+                                          ),
+                                          Text(
+                                              '\nKung may natala ka na pero di pa\nlumalabas, mangyaring i-refresh ang\npahina sa pamamagitan ng paghila\nnito pababa.',
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  color: Colors.purple,
+                                                  fontSize: 15)),
+                                        ]),
+                                      ],
+                                    )))
+                            : Container(
+                                alignment: Alignment.topCenter,
+                                child: Column(children: [
+                                  TextFormField(
+                                    controller: databaseQuery,
+                                    onChanged: (String? databaseQuery) async {
+                                      Database db = await DatabaseHelperOne
+                                          .instance.database;
+                                      List<Map> result = await db.rawQuery(
+                                          'SELECT * FROM enumeratorLocalData WHERE sampleSerialNumber LIKE ? OR commonName LIKE ? OR landingCenter LIKE ? OR fishingGear LIKE ?',
+                                          [
+                                            '%$databaseQuery%',
+                                            '%$databaseQuery%',
+                                            '%$databaseQuery%',
+                                            '%$databaseQuery%'
+                                          ]);
+                                      print(result.isEmpty);
+
+                                      _books = result;
+                                      print(result);
+                                      setState(() {});
+                                    },
+                                    decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.only(
+                                          top: 30, bottom: 20, left: 20),
+                                      hintText:
+                                          "SSN, pangalan, uri ng gear, o lugar daungan",
+                                      suffixIcon:
+                                          // add padding to adjust icon
+                                          Icon(Icons.search),
+                                    ),
+                                  ),
+                                  Container(
+                                      height:
+                                          MediaQuery.of(context).size.height -
+                                              250,
+                                      width: MediaQuery.of(context).size.width,
+                                      color: Colors.white,
+                                      child: RawScrollbar(
+                                          thumbColor: Colors.green,
+                                          radius: Radius.circular(10),
+                                          thickness: 10,
+                                          child: RefreshIndicator(
+                                            onRefresh: () {
+                                              return Future.delayed(
+                                                  Duration(seconds: 1), () {
+                                                setState(() {});
+                                                ;
+                                              });
+                                            },
+                                            child: SingleChildScrollView(
+                                                physics: BouncingScrollPhysics(
+                                                    parent:
+                                                        AlwaysScrollableScrollPhysics()),
+                                                scrollDirection: Axis.vertical,
+                                                child: SingleChildScrollView(
+                                                    physics: BouncingScrollPhysics(
+                                                        parent:
+                                                            AlwaysScrollableScrollPhysics()),
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    child: _createDataTable())),
+                                          )))
+                                ]));
+                      }),
+            ),
           ),
         ) // Center)
         ); // Scaffold

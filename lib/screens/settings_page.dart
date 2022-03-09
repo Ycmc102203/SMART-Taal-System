@@ -10,7 +10,7 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.purple,
-      appBar: AppBar(title: Text('Profile')),
+
       body: Center(
         child: Text('Settings Screen',
             style: TextStyle(color: Colors.white, fontSize: 40)),

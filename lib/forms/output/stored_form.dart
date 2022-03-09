@@ -146,101 +146,103 @@ class _storedFormState extends State<storedForm> {
                 physics: BouncingScrollPhysics(
                     parent: AlwaysScrollableScrollPhysics()),
                 child: Container(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Column(children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("${widget.date}"),
+                        Row(children: [
+                          MaterialButton(
+                            onPressed: () {
+                              onEdit();
+                            },
+                            elevation: 0,
+                            color: Colors.green,
+                            child: Icon(
+                              Icons.edit,
+                              size: 20.0,
+                              color: Colors.white,
+                            ),
+                            shape: CircleBorder(),
+                            minWidth: 10,
+                          ),
+                          MaterialButton(
+                            minWidth: 10,
+                            onPressed: () {
+                              showDeleteDialog(
+                                  widget.uuid,
+                                  context,
+                                  widget.date,
+                                  widget.enumerator,
+                                  widget.landingCenter,
+                                  widget.fishingGround,
+                                  widget.totalLandings,
+                                  widget.boatName,
+                                  widget.fishingGear,
+                                  widget.fishingEffort,
+                                  widget.totalBoatCatch,
+                                  widget.sampleSerialNumber,
+                                  widget.sampleWeight,
+                                  widget.speciesName,
+                                  widget.length,
+                                  widget.weight);
+                            },
+                            elevation: 0,
+                            color: Colors.red,
+                            child: Icon(
+                              Icons.cancel,
+                              size: 20.0,
+                              color: Colors.white,
+                            ),
+                            shape: CircleBorder(),
+                          ),
+                        ])
+                      ]),
+                  isEditing
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("${widget.date}"),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text('I-edit',
-                                      style: TextStyle(
-                                          color: Colors.green,
-                                          fontWeight: FontWeight.bold)),
-                                  IconButton(
-                                      onPressed: () {
-                                        onEdit();
-                                      },
-                                      icon: Icon(Icons.edit,
-                                          color: Colors.green)),
-                                  Text('I-delete',
-                                      style: TextStyle(
-                                          color: Colors.red,
-                                          fontWeight: FontWeight.bold)),
-                                  IconButton(
-                                      onPressed: () {
-                                        showDeleteDialog(
-                                            widget.uuid,
-                                            context,
-                                            widget.date,
-                                            widget.enumerator,
-                                            widget.landingCenter,
-                                            widget.fishingGround,
-                                            widget.totalLandings,
-                                            widget.boatName,
-                                            widget.fishingGear,
-                                            widget.fishingEffort,
-                                            widget.totalBoatCatch,
-                                            widget.sampleSerialNumber,
-                                            widget.sampleWeight,
-                                            widget.speciesName,
-                                            widget.length,
-                                            widget.weight);
-                                      },
-                                      icon: Icon(Icons.delete,
-                                          color: Colors.red)),
-                                ]),
-                          ]),
-                      isEditing
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                  Image.asset(widget.speciesPic),
-                                  Text("\nDetalye ng Isda",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20)),
-                                  Text("\n${widget.commonName}"),
-                                  Text("${widget.speciesName}",
-                                      style: TextStyle(
-                                          fontStyle: FontStyle.italic)),
-                                  Text(
-                                      "Haba: ${widget.length} cm     Bigat: ${widget.weight} g"),
-                                  Text("\nDetalye ng Lugar",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20)),
-                                  Text("\nTinala ni: ${widget.enumerator}"),
-                                  Text("Nahuli sa: ${widget.fishingGround}"),
-                                  Text("Dinaong sa: ${widget.landingCenter}"),
-                                  Text(
-                                      "Bilang ng mga dumaong: ${widget.totalLandings}"),
-                                  Text("\nDetalye ng Dumaong",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  Text(
-                                      "Pangalan ng Bangka: ${widget.boatName}"),
-                                  Text(
-                                      "Pangalan ng Gear na Ginamit: ${widget.fishingGear}"),
-                                  Text(
-                                      "Tagal ng Pangingisda: ${widget.fishingEffort} oras"),
-                                  Text(
-                                      "Timbang ng Nahuli: ${widget.totalBoatCatch} kg"),
-                                  Text("\nDetalye ng Sample",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  Text(
-                                      "Sample Serial Number: ${widget.sampleSerialNumber}"),
-                                  Text(
-                                      "Timbang ng Nahuli: ${widget.sampleWeight} kg"),
-                                ])
-                          : showEditDialog(widget.uuid)
-                    ])))));
+                              Image.asset(widget.speciesPic),
+                              Text("\nDetalye ng Isda",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20)),
+                              Text("\n${widget.commonName}"),
+                              Text("${widget.speciesName}",
+                                  style:
+                                      TextStyle(fontStyle: FontStyle.italic)),
+                              Text(
+                                  "Haba: ${widget.length} cm     Bigat: ${widget.weight} g"),
+                              Text("\nDetalye ng Lugar",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20)),
+                              Text("\nTinala ni: ${widget.enumerator}"),
+                              Text("Nahuli sa: ${widget.fishingGround}"),
+                              Text("Dinaong sa: ${widget.landingCenter}"),
+                              Text(
+                                  "Bilang ng mga dumaong: ${widget.totalLandings}"),
+                              Text("\nDetalye ng Dumaong",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text("Pangalan ng Bangka: ${widget.boatName}"),
+                              Text(
+                                  "Pangalan ng Gear na Ginamit: ${widget.fishingGear}"),
+                              Text(
+                                  "Tagal ng Pangingisda: ${widget.fishingEffort} oras"),
+                              Text(
+                                  "Timbang ng Nahuli: ${widget.totalBoatCatch} kg"),
+                              Text("\nDetalye ng Sample",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text(
+                                  "Sample Serial Number: ${widget.sampleSerialNumber}"),
+                              Text(
+                                  "Timbang ng Nahuli: ${widget.sampleWeight} kg"),
+                            ])
+                      : showEditDialog(widget.uuid)
+                ])))));
   }
 }
 

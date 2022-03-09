@@ -11,7 +11,6 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../backend/sqlfite_local_primary_db.dart';
 import '../backend/google_sheets_api.dart';
 import '../forms/output/stored_form.dart';
-import '../screens/colors_list.dart';
 
 class ActivitiesList extends StatefulWidget {
   final refreshList;
@@ -41,7 +40,7 @@ class _ActivitiesListState extends State<ActivitiesList> {
                 child: Column(children: [
                   Container(
                       color: Colors.purple,
-                      height: MediaQuery.of(context).size.height / 10,
+                      height: 70,
                       child: Container(
                           margin: EdgeInsets.symmetric(horizontal: 15),
                           child: Row(

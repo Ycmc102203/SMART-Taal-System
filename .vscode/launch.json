@@ -8,7 +8,7 @@
             "name": "smart_taal_system (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "debug"
         },
     ]
 }

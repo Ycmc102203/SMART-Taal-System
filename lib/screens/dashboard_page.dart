@@ -103,8 +103,9 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-            margin:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height / 13),
+            margin: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).size.height / 1.07),
             color: Colors.purple,
             child: RefreshIndicator(
                 onRefresh: () {
