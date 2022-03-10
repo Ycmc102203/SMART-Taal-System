@@ -1,4 +1,4 @@
-class Arguments {
+class FormTwoArguments {
   final DateTime passedDate;
   final String passedEnumerator;
   final String passedFishingGround;
@@ -11,7 +11,7 @@ class Arguments {
   final String passedSampleSerialNumber;
   final String passedTotalSampleWeight;
 
-  Arguments(
+  FormTwoArguments(
       this.passedDate,
       this.passedEnumerator,
       this.passedFishingGround,
@@ -23,4 +23,9 @@ class Arguments {
       this.passedTotalBoatCatch,
       this.passedSampleSerialNumber,
       this.passedTotalSampleWeight);
+}
+
+class FormOneArguments {
+  final DateTime passedDate;
+  FormOneArguments(this.passedDate);
 }
