@@ -144,7 +144,17 @@ class DatabaseHelperOne {
   Future<List<enumeratorLocal>> getEnumeratorLocal() async {
     Database db = await instance.database;
     var enumeratorLocalData =
-        await db.query('enumeratorLocalData', orderBy: 'date');
+        await db.rawQuery('SELECT * FROM enumeratorLocalData ORDER BY date');
+    List<enumeratorLocal> enumeratorLocalList = enumeratorLocalData.isNotEmpty
+        ? enumeratorLocalData.map((c) => enumeratorLocal.fromMap(c)).toList()
+        : [];
+    return enumeratorLocalList;
+  }
+
+  Future<List<enumeratorLocal>> getEnumeratorLocalDate(dateNow) async {
+    Database db = await instance.database;
+    var enumeratorLocalData = await db.rawQuery(
+        'SELECT * FROM enumeratorLocalData WHERE date = ?', ['${dateNow}']);
     List<enumeratorLocal> enumeratorLocalList = enumeratorLocalData.isNotEmpty
         ? enumeratorLocalData.map((c) => enumeratorLocal.fromMap(c)).toList()
         : [];

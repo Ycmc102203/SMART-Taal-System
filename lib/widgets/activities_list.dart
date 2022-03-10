@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:intl/intl.dart';
 import 'package:smart_taal_system/widgets/loadingIndicator.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -24,7 +25,7 @@ class _ActivitiesListState extends State<ActivitiesList> {
   late StreamSubscription internetSubscription;
   bool hasInternet = false;
   ConnectivityResult result = ConnectivityResult.none;
-
+  String dateTime = DateFormat('yyyy-MM-dd').format(DateTime.now());
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -100,7 +101,7 @@ class _ActivitiesListState extends State<ActivitiesList> {
                                     parent: AlwaysScrollableScrollPhysics()),
                                 child: FutureBuilder<List<enumeratorLocal>>(
                                     future: DatabaseHelperOne.instance
-                                        .getEnumeratorLocal(),
+                                        .getEnumeratorLocalDate(dateTime),
                                     builder: (BuildContext context,
                                         AsyncSnapshot<List<enumeratorLocal>>
                                             snapshot) {

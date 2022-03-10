@@ -142,6 +142,7 @@ class _storedFormState extends State<storedForm> {
             borderRadius: BorderRadius.all(Radius.circular(32))),
         content: RawScrollbar(
             thumbColor: Colors.green,
+            radius: Radius.circular(10),
             child: SingleChildScrollView(
                 physics: BouncingScrollPhysics(
                     parent: AlwaysScrollableScrollPhysics()),
@@ -156,7 +157,7 @@ class _storedFormState extends State<storedForm> {
                             onPressed: () {
                               onEdit();
                             },
-                            elevation: 0,
+                            elevation: 5,
                             color: Colors.green,
                             child: Icon(
                               Icons.edit,
@@ -187,7 +188,7 @@ class _storedFormState extends State<storedForm> {
                                   widget.length,
                                   widget.weight);
                             },
-                            elevation: 0,
+                            elevation: 5,
                             color: Colors.red,
                             child: Icon(
                               Icons.cancel,
@@ -203,6 +204,7 @@ class _storedFormState extends State<storedForm> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                              SizedBox(height: 10),
                               Image.asset(widget.speciesPic),
                               Text("\nDetalye ng Isda",
                                   style: TextStyle(
@@ -224,9 +226,10 @@ class _storedFormState extends State<storedForm> {
                               Text(
                                   "Bilang ng mga dumaong: ${widget.totalLandings}"),
                               Text("\nDetalye ng Dumaong",
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                              Text("Pangalan ng Bangka: ${widget.boatName}"),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20)),
+                              Text("\nPangalan ng Bangka: ${widget.boatName}"),
                               Text(
                                   "Pangalan ng Gear na Ginamit: ${widget.fishingGear}"),
                               Text(
@@ -234,10 +237,11 @@ class _storedFormState extends State<storedForm> {
                               Text(
                                   "Timbang ng Nahuli: ${widget.totalBoatCatch} kg"),
                               Text("\nDetalye ng Sample",
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20)),
                               Text(
-                                  "Sample Serial Number: ${widget.sampleSerialNumber}"),
+                                  "\nSample Serial Number: ${widget.sampleSerialNumber}"),
                               Text(
                                   "Timbang ng Nahuli: ${widget.sampleWeight} kg"),
                             ])

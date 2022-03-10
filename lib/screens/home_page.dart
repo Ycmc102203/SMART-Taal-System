@@ -16,6 +16,8 @@ import 'package:smart_taal_system/widgets/appbar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
+import '../forms/input/arguments.dart';
+
 class MyHomePage extends StatefulWidget {
   final hasInternet;
   MyHomePage({required this.hasInternet});
@@ -28,6 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late StreamSubscription internetSubscription;
   bool hasInternet = false;
   ConnectivityResult result = ConnectivityResult.none;
+  DateTime dateTime = DateTime.now();
 
   @override
   void initState() {
@@ -113,7 +116,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 scale: 1,
                 child: RawMaterialButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/form_one');
+                    Navigator.pushNamed(context, '/form_one',
+                        arguments: FormOneArguments(dateTime));
                   },
                   elevation: 10,
                   fillColor: widget.hasInternet ? Colors.green : Colors.red,

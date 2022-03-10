@@ -3,6 +3,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:intl/intl.dart';
 import 'package:smart_taal_system/widgets/activities_list.dart';
 import 'package:smart_taal_system/widgets/loadingIndicator.dart';
 import 'package:sqflite/sqflite.dart';
@@ -45,8 +46,9 @@ class _ActivityTableState extends State<ActivityTable> {
 
   _queryAll() async {
     Database db = await DatabaseHelperOne.instance.database;
-    List<Map> result = await db.rawQuery('SELECT * FROM enumeratorLocalData');
-    _data = result.reversed.toList();
+    List<Map> result = await db
+        .rawQuery('SELECT * FROM enumeratorLocalData ORDER BY date DESC');
+    _data = result.toList();
   }
 
   Future sleep() {
@@ -60,6 +62,9 @@ class _ActivityTableState extends State<ActivityTable> {
   }
 
   List<Map> _data = [];
+  int _currentSortColumn = 0;
+  bool _isAscending = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -219,7 +224,8 @@ class _ActivityTableState extends State<ActivityTable> {
 
   DataTable _createDataTable() {
     return DataTable(
-        sortAscending: false,
+        sortColumnIndex: _currentSortColumn,
+        sortAscending: _isAscending,
         showCheckboxColumn: false,
         columnSpacing: 10,
         headingRowHeight: 60,
@@ -229,7 +235,7 @@ class _ActivityTableState extends State<ActivityTable> {
             MaterialStateColor.resolveWith((states) => Colors.purple),
         dataTextStyle: TextStyle(color: Colors.black),
         dataRowColor: MaterialStateColor.resolveWith((states) => Colors.white),
-        dataRowHeight: 79,
+        dataRowHeight: 80,
         columns: _createColumns(),
         rows: _createRows());
   }
@@ -237,6 +243,20 @@ class _ActivityTableState extends State<ActivityTable> {
   List<DataColumn> _createColumns() {
     return [
       DataColumn(
+          onSort: (columnIndex, _) {
+            setState(() {
+              _currentSortColumn = columnIndex;
+              if (_isAscending == true) {
+                _isAscending = false;
+                _data.sort(
+                    (dataA, dataB) => dataB['date'].compareTo(dataA['date']));
+              } else {
+                _isAscending = true;
+                _data.sort(
+                    (dataA, dataB) => dataA['date'].compareTo(dataB['date']));
+              }
+            });
+          },
           label: Center(child: Text('Petsa', textAlign: TextAlign.center))),
       DataColumn(
           label: Center(

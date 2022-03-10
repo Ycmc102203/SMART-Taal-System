@@ -585,7 +585,8 @@ class _NewTodoState extends State<NewSpecies> {
                                         style: TextStyle(
                                             fontSize: 25,
                                             fontWeight: FontWeight.bold)),
-                                    FaIcon(FontAwesomeIcons.fish)
+                                    FaIcon(FontAwesomeIcons.fish,
+                                        color: Colors.black)
                                   ],
                                 )),
                             Padding(

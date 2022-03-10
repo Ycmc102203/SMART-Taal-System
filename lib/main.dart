@@ -58,7 +58,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Enumerator Profile',
-        theme: ThemeData(primarySwatch: Colors.purple),
+        theme: ThemeData(
+            iconTheme: IconThemeData(color: Colors.white),
+            primarySwatch: Colors.purple),
         initialRoute: '/',
         routes: <String, WidgetBuilder>{
           '/': (BuildContext context) => MyHomePage(
