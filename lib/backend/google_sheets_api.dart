@@ -58,6 +58,11 @@ class GoogleSheetsApi {
     return _userSheet!.deleteRow(index);
   }
 
+  static Future<bool> update({uuid, row}) async {
+    if (_userSheet == null) return false;
+    return _userSheet!.values.map.insertRowByKey(uuid, row);
+  }
+
 //   static Future<bool> update(
 //     int id,
 //     Map<String, dynamic> user,
