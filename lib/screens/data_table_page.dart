@@ -43,104 +43,10 @@ class _ActivityTableState extends State<ActivityTable> {
     }
   }
 
-  String speciesPic = '';
-  showStoredForm(
-      BuildContext context,
-      String? uuid,
-      String? speciesName,
-      String? commonName,
-      speciesPic,
-      String? enumerator,
-      String? date,
-      String? fishingGround,
-      String? landingCenter,
-      String? totalLandings,
-      String? boatName,
-      String? fishingGear,
-      String? fishingEffort,
-      String? totalBoatCatch,
-      String? sampleSerialNumber,
-      String? sampleWeight,
-      String? weight,
-      String? length) {
-    ;
-    var alert = AlertDialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(32))),
-        content: RawScrollbar(
-            thumbColor: Colors.green,
-            child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics()),
-                child: Container(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("${date}"),
-                              Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text('I-edit',
-                                        style: TextStyle(
-                                            color: Colors.green,
-                                            fontWeight: FontWeight.bold)),
-                                    IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(Icons.edit,
-                                            color: Colors.green)),
-                                    Text('I-delete',
-                                        style: TextStyle(
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.bold)),
-                                    IconButton(
-                                        onPressed: () {
-                                          showDeleteDialog(uuid, context);
-                                        },
-                                        icon: Icon(Icons.delete,
-                                            color: Colors.red)),
-                                  ]),
-                            ]),
-                        Image.asset(speciesPic),
-                        Text("\n${commonName}",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20)),
-                        Text("${speciesName}",
-                            style: TextStyle(fontStyle: FontStyle.italic)),
-                        Text("Haba: ${length} cm     Bigat: ${weight} g"),
-                        Text("\nDetalye ng Lugar",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text("Tinala ni: ${enumerator}"),
-                        Text("Nahuli sa: ${fishingGround}"),
-                        Text("Dinaong sa: ${landingCenter}"),
-                        Text("Bilang ng mga dumaong: ${totalLandings}"),
-                        Text("\nDetalye ng Dumaong",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text("Pangalan ng Bangka: ${boatName}"),
-                        Text("Pangalan ng Gear na Ginamit: ${fishingGear}"),
-                        Text("Tagal ng Pangingisda: ${fishingEffort} hr/s"),
-                        Text("Timbang ng Nahuli: ${totalBoatCatch} kg"),
-                        Text("\nDetalye ng Sample",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text("Sample Serial Number: ${sampleSerialNumber}"),
-                        Text("Timbang ng Nahuli: ${sampleWeight} kg"),
-                      ]),
-                ))));
-    showDialog(context: context, builder: (BuildContext context) => alert);
-  }
-
   _queryAll() async {
-    // get a reference to the database
     Database db = await DatabaseHelperOne.instance.database;
-    // raw query
     List<Map> result = await db.rawQuery('SELECT * FROM enumeratorLocalData');
-    // print the results
-    _books = result.reversed.toList();
-    //result.forEach((row) => print(row));
-    // {_id: 2, name: Mary, age: 32}
+    _data = result.reversed.toList();
   }
 
   Future sleep() {
@@ -153,7 +59,7 @@ class _ActivityTableState extends State<ActivityTable> {
     _queryAll();
   }
 
-  List<Map> _books = [];
+  List<Map> _data = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -248,8 +154,9 @@ class _ActivityTableState extends State<ActivityTable> {
                                       Database db = await DatabaseHelperOne
                                           .instance.database;
                                       List<Map> result = await db.rawQuery(
-                                          'SELECT * FROM enumeratorLocalData WHERE sampleSerialNumber LIKE ? OR commonName LIKE ? OR landingCenter LIKE ? OR fishingGear LIKE ?',
+                                          'SELECT * FROM enumeratorLocalData WHERE sampleSerialNumber LIKE ? OR commonName LIKE ? OR speciesName LIKE ? OR landingCenter LIKE ? OR fishingGear LIKE ?',
                                           [
+                                            '%$databaseQuery%',
                                             '%$databaseQuery%',
                                             '%$databaseQuery%',
                                             '%$databaseQuery%',
@@ -257,7 +164,7 @@ class _ActivityTableState extends State<ActivityTable> {
                                           ]);
                                       print(result.isEmpty);
 
-                                      _books = result;
+                                      _data = result;
                                       print(result);
                                       setState(() {});
                                     },
@@ -344,38 +251,38 @@ class _ActivityTableState extends State<ActivityTable> {
   }
 
   List<DataRow> _createRows() {
-    return _books
-        .map((book) => DataRow(
+    return _data
+        .map((data) => DataRow(
                 onSelectChanged: (newValue) {
                   showDialog(
                       context: context,
                       builder: (BuildContext context) => storedForm(
                           context: context,
-                          uuid: book['uuid'],
-                          speciesName: book['speciesName'],
-                          commonName: book['commonName'],
-                          speciesPic: book['image'],
-                          enumerator: book['enumerator'],
-                          date: book['date'],
-                          fishingGround: book['fishingGround'],
-                          landingCenter: book['landingCenter'],
-                          totalLandings: book['totalLandings'],
-                          boatName: book['boatName'],
-                          fishingGear: book['fishingGear'],
-                          fishingEffort: book['fishingEffort'],
-                          totalBoatCatch: book['totalBoatCatch'],
-                          sampleSerialNumber: book['sampleSerialNumber'],
-                          sampleWeight: book['totalSampleWeight'],
-                          weight: book['weight'],
-                          length: book['length']));
+                          uuid: data['uuid'],
+                          speciesName: data['speciesName'],
+                          commonName: data['commonName'],
+                          speciesPic: data['image'],
+                          enumerator: data['enumerator'],
+                          date: data['date'],
+                          fishingGround: data['fishingGround'],
+                          landingCenter: data['landingCenter'],
+                          totalLandings: data['totalLandings'],
+                          boatName: data['boatName'],
+                          fishingGear: data['fishingGear'],
+                          fishingEffort: data['fishingEffort'],
+                          totalBoatCatch: data['totalBoatCatch'],
+                          sampleSerialNumber: data['sampleSerialNumber'],
+                          sampleWeight: data['totalSampleWeight'],
+                          weight: data['weight'],
+                          length: data['length']));
                 },
                 cells: [
                   DataCell(Center(
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                        Image.asset(book['image'].toString(), width: 60),
-                        Text(book['date']),
+                        Image.asset(data['image'].toString(), width: 60),
+                        Text(data['date']),
                       ]))),
                   DataCell(Row(
                     children: [
@@ -385,14 +292,14 @@ class _ActivityTableState extends State<ActivityTable> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(book['commonName'],
+                              Text(data['commonName'],
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                               Text('Haba: ' +
-                                  book['length'] +
+                                  data['length'] +
                                   ' cm' +
                                   '  Bigat: ' +
-                                  book['weight'] +
+                                  data['weight'] +
                                   ' g'),
                             ],
                           ))
@@ -404,19 +311,19 @@ class _ActivityTableState extends State<ActivityTable> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('SSN: ' + book['sampleSerialNumber']),
-                          Text('bigat: ' + book['totalSampleWeight'] + ' kg')
+                          Text('SSN: ' + data['sampleSerialNumber']),
+                          Text('bigat: ' + data['totalSampleWeight'] + ' kg')
                         ],
                       ))),
                   DataCell(Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(book['boatName']),
-                      Text(book['fishingGear']),
-                      Text(book['fishingEffort'] +
+                      Text(data['boatName']),
+                      Text(data['fishingGear']),
+                      Text(data['fishingEffort'] +
                           ' oras, ' +
-                          book['totalBoatCatch'] +
+                          data['totalBoatCatch'] +
                           'kg nahuli'),
                     ],
                   )),
@@ -424,9 +331,9 @@ class _ActivityTableState extends State<ActivityTable> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(book['landingCenter']),
-                      Text(book['fishingGround']),
-                      Text('# ng dumaong:  ' + book['totalLandings'])
+                      Text(data['landingCenter']),
+                      Text(data['fishingGround']),
+                      Text('# ng dumaong:  ' + data['totalLandings'])
                     ],
                   )),
                 ]))
