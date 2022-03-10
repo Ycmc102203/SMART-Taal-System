@@ -417,7 +417,7 @@ class _NewTodoState extends State<NewSpecies> {
             LoadingDialog(color: Colors.green, text: "Inu-upload"));
     await sleep();
     String? uuidNow;
-    uuidNow = uuid.v4().toString();
+    uuidNow = uuid.v1().toString();
     final passedGSheetsDate = DateFormat('yyyy/MM/dd').format(passedDate);
     final passedSqfliteDateTime = DateFormat('yyyy-MM-dd').format(passedDate);
     final feedback = {
@@ -476,7 +476,7 @@ class _NewTodoState extends State<NewSpecies> {
       passedTotalSampleWeight) async {
     _addSpeciesToList();
     String? uuidNow;
-    uuidNow = uuid.v4().toString();
+    uuidNow = uuid.v1().toString();
     final passedSqfliteDateTime = DateFormat('yyyy-MM-dd').format(passedDate);
     await DatabaseHelperTwo.instance.add(enumeratorOffline(
         uuid: uuidNow,
@@ -534,7 +534,7 @@ class _NewTodoState extends State<NewSpecies> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Arguments;
+    final args = ModalRoute.of(context)!.settings.arguments as FormTwoArguments;
     return WillPopScope(
         onWillPop: () async {
           print('Ikaw ay bumalik');
@@ -561,7 +561,10 @@ class _NewTodoState extends State<NewSpecies> {
                                   Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
-                                      children: [Text('${args.passedDate}')]),
+                                      children: [
+                                        Text(
+                                            '${DateFormat('yyy-MM-dd').format(args.passedDate)}')
+                                      ]),
                                   Text('Nahuli sa ${args.passedFishingGround}'),
                                   Text(
                                       'Dumaong sa ${args.passedLandingCenter}'),
