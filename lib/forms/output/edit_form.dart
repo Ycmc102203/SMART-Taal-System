@@ -578,7 +578,7 @@ class _EditFormState extends State<EditForm> {
                                 message: 'Ayos! Na-update na ang talang ito.',
                               ));
                           setState(() {});
-                          Navigator.pushNamed(context, '/');
+                          Navigator.pushNamed(context, '/home');
                         } catch (e) {
                           showTopSnackBar(
                               context,

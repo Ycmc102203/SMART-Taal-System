@@ -67,7 +67,7 @@ showDeleteDialog(
                     CustomSnackBar.success(
                       message: 'Ayos! Na-delete na ang talang ito.',
                     ));
-                Navigator.pushNamed(context, '/');
+                Navigator.pushNamed(context, '/home');
               } catch (e) {
                 showTopSnackBar(
                     context,

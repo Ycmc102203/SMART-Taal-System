@@ -47,16 +47,24 @@ class _NewTodoState extends State<NewSpecies> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: Text("Magtatala ka ba ng bagong sample o bangka?"),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Magtatala ka ba\nng bagong sample\no bangka?",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              FaIcon(FontAwesomeIcons.questionCircle,
+                  color: Color.fromARGB(50, 0, 0, 0), size: 50)
+            ],
+          ),
           content: Text(
               "Naisumite na ang iyong tala. \n\nPiliin kung babalik ka sa Home Screen o magdadagdag ng isa pang sample o bangka. \n\nMangyaring pindutin ang labas pag nagkamali lang."),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/');
+                Navigator.pushNamed(context, '/home');
               },
               child: Text('Bumalik sa Home Screen',
-                  style: TextStyle(color: Colors.green)),
+                  style: TextStyle(color: Colors.green, fontSize: 13)),
             ),
             TextButton(
               onPressed: () {
@@ -64,7 +72,7 @@ class _NewTodoState extends State<NewSpecies> {
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
-              child: Text("Magdagdag pa"),
+              child: Text("Magdagdag pa", style: TextStyle(fontSize: 13)),
               style: TextButton.styleFrom(
                 primary: Colors.white,
                 backgroundColor: Colors.green,
@@ -546,6 +554,7 @@ class _NewTodoState extends State<NewSpecies> {
                 height: MediaQuery.of(context).size.height * 0.9,
                 margin: EdgeInsets.all(20),
                 child: RawScrollbar(
+                  radius: Radius.circular(10),
                   thumbColor: Color.fromARGB(139, 76, 175, 79),
                   child: SingleChildScrollView(
                       physics: BouncingScrollPhysics(),

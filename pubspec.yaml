@@ -47,6 +47,7 @@ dependencies:
   animations:
   loading_animations:
   provider:
+  introduction_screen:
   flutter:
     sdk: flutter
 
@@ -117,5 +118,13 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: fonts/Montserrat-Medium.ttf
+        - asset: fonts/Montserrat-MediumItalic.ttf
+          style: italic
+        - asset: fonts/Montserrat-ExtraBold.ttf
+          weight: 700
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

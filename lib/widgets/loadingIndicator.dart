@@ -13,22 +13,24 @@ class LoadingDialog extends StatelessWidget {
         borderRadius: BorderRadius.circular(50),
       ),
       content: Container(
-          height: MediaQuery.of(context).size.height / 2.5,
+          height: 225,
+          width: 100,
           child: Center(
               child: Stack(children: [
-            Positioned(
-              top: MediaQuery.of(context).size.height / 6,
-              left: MediaQuery.of(context).size.width / 8.5,
+            Center(
               child: Text(text,
                   style: TextStyle(
-                      fontSize: 40, color: color, fontWeight: FontWeight.bold)),
+                      fontSize: 30, color: color, fontWeight: FontWeight.bold)),
             ),
             Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
-                child: CircularProgressIndicator(
-                  strokeWidth: 15,
-                  valueColor: new AlwaysStoppedAnimation<Color>(color),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 15,
+                    valueColor: new AlwaysStoppedAnimation<Color>(color),
+                  ),
                 ))
           ]))),
     );

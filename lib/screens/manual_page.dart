@@ -14,7 +14,8 @@ class _ManualState extends State<Manual> {
         body: Container(
           margin: EdgeInsets.only(
               top: MediaQuery.of(context).size.height -
-                  MediaQuery.of(context).size.height / 1.07),
+                  (MediaQuery.of(context).size.height / 1.07) +
+                  10),
           child: RawScrollbar(
             thumbColor: Colors.green,
             thickness: 7,

@@ -49,6 +49,7 @@ class _ActivityTableState extends State<ActivityTable> {
     List<Map> result = await db
         .rawQuery('SELECT * FROM enumeratorLocalData ORDER BY date DESC');
     _data = result.toList();
+    //extractMap();
   }
 
   Future sleep() {
@@ -74,6 +75,7 @@ class _ActivityTableState extends State<ActivityTable> {
               top: MediaQuery.of(context).size.height -
                   MediaQuery.of(context).size.height / 1.07),
           child: SingleChildScrollView(
+            primary: false,
             physics: BouncingScrollPhysics(),
             child: Center(
               child: //Column(children: <Widget>[
@@ -155,7 +157,7 @@ class _ActivityTableState extends State<ActivityTable> {
                                 child: Column(children: [
                                   TextFormField(
                                     controller: databaseQuery,
-                                    onChanged: (String? databaseQuery) async {
+                                    onChanged: (String databaseQuery) async {
                                       Database db = await DatabaseHelperOne
                                           .instance.database;
                                       List<Map> result = await db.rawQuery(
@@ -168,7 +170,6 @@ class _ActivityTableState extends State<ActivityTable> {
                                             '%$databaseQuery%'
                                           ]);
                                       print(result.isEmpty);
-
                                       _data = result;
                                       print(result);
                                       setState(() {});
@@ -207,6 +208,7 @@ class _ActivityTableState extends State<ActivityTable> {
                                                         AlwaysScrollableScrollPhysics()),
                                                 scrollDirection: Axis.vertical,
                                                 child: SingleChildScrollView(
+                                                    primary: false,
                                                     physics: BouncingScrollPhysics(
                                                         parent:
                                                             AlwaysScrollableScrollPhysics()),
@@ -230,10 +232,13 @@ class _ActivityTableState extends State<ActivityTable> {
         columnSpacing: 10,
         headingRowHeight: 60,
         headingTextStyle: TextStyle(
-            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+            fontFamily: 'Montserrat',
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 20),
         headingRowColor:
             MaterialStateColor.resolveWith((states) => Colors.purple),
-        dataTextStyle: TextStyle(color: Colors.black),
+        dataTextStyle: TextStyle(fontFamily: 'Montserrat', color: Colors.black),
         dataRowColor: MaterialStateColor.resolveWith((states) => Colors.white),
         dataRowHeight: 80,
         columns: _createColumns(),
@@ -259,21 +264,86 @@ class _ActivityTableState extends State<ActivityTable> {
           },
           label: Center(child: Text('Petsa', textAlign: TextAlign.center))),
       DataColumn(
+          onSort: (columnIndex, _) {
+            setState(() {
+              _currentSortColumn = columnIndex;
+              if (_isAscending == true) {
+                _isAscending = false;
+                _data.sort((dataA, dataB) =>
+                    dataB['commonName'].compareTo(dataA['commonName']));
+              } else {
+                _isAscending = true;
+                _data.sort((dataA, dataB) =>
+                    dataA['commonName'].compareTo(dataB['commonName']));
+              }
+            });
+          },
           label: Center(
               child: Text('Mga Isdang Nahuli', textAlign: TextAlign.center))),
       DataColumn(
+          onSort: (columnIndex, _) {
+            setState(() {
+              _currentSortColumn = columnIndex;
+              if (_isAscending == true) {
+                _isAscending = false;
+                _data.sort((dataA, dataB) => dataB['sampleSerialNumber']
+                    .compareTo(dataA['sampleSerialNumber']));
+              } else {
+                _isAscending = true;
+                _data.sort((dataA, dataB) => dataA['sampleSerialNumber']
+                    .compareTo(dataB['sampleSerialNumber']));
+              }
+            });
+          },
           label: Center(child: Text('Sample', textAlign: TextAlign.center))),
       DataColumn(
+          onSort: (columnIndex, _) {
+            setState(() {
+              _currentSortColumn = columnIndex;
+              if (_isAscending == true) {
+                _isAscending = false;
+                _data.sort((dataA, dataB) =>
+                    dataB['fishingGear'].compareTo(dataA['fishingGear']));
+              } else {
+                _isAscending = true;
+                _data.sort((dataA, dataB) =>
+                    dataA['fishingGear'].compareTo(dataB['fishingGear']));
+              }
+            });
+          },
           label: Center(child: Text('Bangka', textAlign: TextAlign.center))),
       DataColumn(
+          onSort: (columnIndex, _) {
+            setState(() {
+              _currentSortColumn = columnIndex;
+              if (_isAscending == true) {
+                _isAscending = false;
+                _data.sort((dataA, dataB) =>
+                    dataB['landingCenter'].compareTo(dataA['landingCenter']));
+              } else {
+                _isAscending = true;
+                _data.sort((dataA, dataB) =>
+                    dataA['landingCenter'].compareTo(dataB['landingCenter']));
+              }
+            });
+          },
           label: Center(child: Text('Lugar', textAlign: TextAlign.center))),
     ];
   }
+
+  // Map<dynamic, dynamic> map = _data.first;
+  // var d;
+  // extractMap() {
+  //   map = List<Map<dynamic, dynamic>>.from()
+  // }
 
   List<DataRow> _createRows() {
     return _data
         .map((data) => DataRow(
                 onSelectChanged: (newValue) {
+                  setState(() {
+                    var uuid = data['uuid'];
+                  });
                   showDialog(
                       context: context,
                       builder: (BuildContext context) => storedForm(
@@ -339,8 +409,8 @@ class _ActivityTableState extends State<ActivityTable> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(data['boatName']),
                       Text(data['fishingGear']),
+                      Text('Bangka: ' + data['boatName']),
                       Text(data['fishingEffort'] +
                           ' oras, ' +
                           data['totalBoatCatch'] +

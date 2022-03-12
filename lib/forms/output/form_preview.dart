@@ -16,8 +16,8 @@ class FormPreview extends StatelessWidget {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("Sigurado ka na ba\nsa nilagay mo?",
-              style: TextStyle(fontSize: 25)),
+          Text("Sigurado ka na\nba sa nilagay mo?",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
           FaIcon(FontAwesomeIcons.solidCheckCircle,
               size: 40, color: Colors.green)
         ],
@@ -34,7 +34,8 @@ class FormPreview extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(bottom: 20),
                   child: Text(
-                      "Bago magpatuloy sa pagtala ng mga nahuling isda, siguraduhing tama ang mga detalye ukol sa pagtatalang ito"),
+                    "Bago magpatuloy sa pagtala ng mga nahuling isda, siguraduhing tama ang mga detalye ukol sa pagtatalang ito",
+                  ),
                 ),
                 Divider(
                   thickness: 3,
@@ -55,7 +56,9 @@ class FormPreview extends StatelessWidget {
         ),
         TextButton(
           onPressed: onPressed,
-          child: Text("Oo, sigurado na ako"),
+          child: Text(
+            "Oo, sigurado na ako",
+          ),
           style: TextButton.styleFrom(
             primary: Colors.white,
             backgroundColor: Colors.green,

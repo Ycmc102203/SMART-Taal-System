@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_taal_system/forms/fields/dropdown_field.dart';
+import 'package:smart_taal_system/forms/fields/output_text_field.dart';
 import 'package:smart_taal_system/forms/input/form_page_two.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -46,89 +47,53 @@ class _NewActivityState extends State<NewActivity> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Pangalan ng Enumerator:",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(" ${enumeratorController.text}"),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("\nLugar ng Pinangisdaan:",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(" ${fishingGroundController.text}"),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("\nLugar ng Daungan:",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(" ${landingCenterController.text}"),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("\nBilang ng Lahat ng Dumaong:",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(" ${totalLandingsController.text} \n"),
-                ],
-              ),
-              Divider(
-                thickness: 3,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("\nPangalan ng Bangka: ",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(" ${boatNameController.text}"),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("\nGear na Ginamit: ",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text("${fishingGearController.text}"),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("\nTagal ng Pangingisda: ",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text("${fishingEffortController.text} oras"),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("\nTimbang ng Nahuli ng Bangka: ",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text("${totalBoatCatchController.text} kg \n"),
-                ],
-              ),
-              Divider(
-                thickness: 3,
-              ),
-              Column(
-                // mainAxisAlignment:
-                //     MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("\nSample Serial Number: ",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text("${sampleSerialNumberController.text}"),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("\nTimbang ng Sample: ",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text("${totalSampleWeightController.text}"),
+                  OutputTextField(
+                      label: Text("Pangalan ng Enumerator"),
+                      content: "${enumeratorController.text}"),
+                  SizedBox(height: 20),
+                  OutputTextField(
+                      label: Text("Lugar ng Pinangisdaan"),
+                      content: "${fishingGroundController.text}"),
+                  SizedBox(height: 20),
+                  OutputTextField(
+                      label: Text("Lugar ng Daungan"),
+                      content: "${landingCenterController.text}"),
+                  SizedBox(height: 20),
+                  OutputTextField(
+                      label: Text("Bilang ng Lahat ng Dumaong"),
+                      content: "${totalLandingsController.text}"),
+                  SizedBox(height: 20),
+                  Divider(
+                    thickness: 3,
+                  ),
+                  SizedBox(height: 20),
+                  OutputTextField(
+                      label: Text("Pangalan ng Bangka"),
+                      content: "${boatNameController.text}"),
+                  SizedBox(height: 20),
+                  OutputTextField(
+                      label: Text("Gear na Ginamit"),
+                      content: "${fishingGearController.text}"),
+                  SizedBox(height: 20),
+                  OutputTextField(
+                      label: Text("Tagal ng Pangingisda"),
+                      content: "${fishingEffortController.text} oras"),
+                  SizedBox(height: 20),
+                  OutputTextField(
+                      label: Text("Timbang ng Nahuli ng Bangka"),
+                      content: "${totalBoatCatchController.text} kg"),
+                  SizedBox(height: 20),
+                  Divider(
+                    thickness: 3,
+                  ),
+                  SizedBox(height: 20),
+                  OutputTextField(
+                      label: Text("Sample Serial Number"),
+                      content: "${sampleSerialNumberController.text}"),
+                  SizedBox(height: 20),
+                  OutputTextField(
+                      label: Text("Timbang ng Sample"),
+                      content: "${totalSampleWeightController.text}"),
                 ],
               ),
             ],
@@ -192,6 +157,7 @@ class _NewActivityState extends State<NewActivity> {
                 child: Container(
                     child: RawScrollbar(
                         thumbColor: Color.fromARGB(139, 76, 175, 79),
+                        radius: Radius.circular(10),
                         child: SingleChildScrollView(
                             reverse: false,
                             physics: BouncingScrollPhysics(),
@@ -331,7 +297,7 @@ class _NewActivityState extends State<NewActivity> {
                                             },
                                             controller: totalLandingsController,
                                             labelText:
-                                                "Bilang ng Lahat ng Dumaong Ngayong Araw",
+                                                "Bilang ng Lahat ng Dumaong",
                                             keyboardType: TextInputType.number,
                                           ),
                                           Padding(
@@ -406,7 +372,7 @@ class _NewActivityState extends State<NewActivity> {
                                             controller:
                                                 totalBoatCatchController,
                                             labelText:
-                                                "Pangkalahatang Timbang ng Nahuli (kg)",
+                                                "Kabuuang Timbang ng Nahuli (kg)",
                                             keyboardType: TextInputType.number,
                                           ),
                                           Padding(

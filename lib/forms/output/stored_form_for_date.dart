@@ -7,6 +7,7 @@ import 'package:smart_taal_system/forms/output/stored_form.dart';
 import 'package:smart_taal_system/widgets/buttons/add_button.dart';
 
 import '../../widgets/buttons/submit_button.dart';
+import '../../widgets/offline_cache_list.dart';
 
 showStoredFormForDate(
   BuildContext context,
@@ -113,187 +114,319 @@ showStoredFormForDate(
   }
   ;
 
-  var alert = AlertDialog(
+  var alert = SimpleDialog(
       contentPadding: EdgeInsets.all(10),
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20))),
-      content: SingleChildScrollView(
-          physics:
-              BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                FutureBuilder<List<enumeratorLocal>>(
-                    future: speciesName,
-                    builder: (BuildContext context,
-                        AsyncSnapshot<List<enumeratorLocal>> snapshot) {
-                      if (!snapshot.hasData) {
-                        return Center(child: Text('Loading...'));
-                      }
-                      if (dateSelected.isAfter(dateNow)) {
-                        return Center(
-                          child: Text(
-                              'Wala ka pang maitatala sapagkat di pa ito nakalilipas',
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 30)),
-                        );
-                      }
-                      return snapshot.data!.isEmpty
-                          ? Center(
-                              child: Text(
-                                  'Magtala ng Bagong Aktibidad para sa Araw na ito?',
+      children: [
+        SingleChildScrollView(
+          child: FutureBuilder<List<enumeratorLocal>>(
+              future: speciesName,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<enumeratorLocal>> snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(child: Text('Loading...'));
+                }
+                if (dateSelected.isAfter(dateNow)) {
+                  return Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Paalala',
                                   style: TextStyle(
-                                      color: Colors.black, fontSize: 30)),
-                            )
-                          : Container(
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                  Padding(
-                                      padding:
-                                          EdgeInsets.fromLTRB(15, 0, 15, 0),
-                                      child: Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              15,
-                                          child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: [
-                                                Text(
-                                                    "Mga Natalang Isda         ",
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 24)),
-                                                FaIcon(
-                                                  FontAwesomeIcons.fish,
-                                                  size: 20,
-                                                  color: Colors.green,
-                                                )
-                                              ]))),
-                                  Text('    sa araw ng:   ' +
-                                      dateSelectedString),
-                                  Container(
-                                    height:
-                                        MediaQuery.of(context).size.height / 2,
-                                    margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                    width: MediaQuery.of(context).size.width,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                          bottomRight: Radius.circular(15),
-                                          bottomLeft: Radius.circular(15)),
-                                    ),
-                                    padding:
-                                        EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                    child: RefreshIndicator(
-                                        onRefresh: () {
-                                          return Future.delayed(
-                                              Duration(seconds: 1), () {
-                                            //setState(() {});
-                                          });
-                                        },
-                                        child: RawScrollbar(
-                                            thumbColor: Colors.green,
-                                            radius: Radius.circular(10),
-                                            thickness: 7,
-                                            child: SingleChildScrollView(
-                                                physics: BouncingScrollPhysics(
-                                                    parent:
-                                                        AlwaysScrollableScrollPhysics()),
-                                                child: ListView(
-                                                  reverse: true,
-                                                  physics:
-                                                      BouncingScrollPhysics(),
-                                                  shrinkWrap: true,
-                                                  children: snapshot.data!
-                                                      .map((enumeratorLocal) {
-                                                    return Center(
-                                                        child:
-                                                            FractionallySizedBox(
-                                                                widthFactor:
-                                                                    0.95,
-                                                                child: Card(
-                                                                    elevation:
-                                                                        8,
-                                                                    margin: EdgeInsets
-                                                                        .fromLTRB(
-                                                                            0,
-                                                                            10,
-                                                                            0,
-                                                                            0),
-                                                                    shape: RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(10)),
-                                                                    child: Container(
-                                                                        height: 75,
-                                                                        child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                                          ListTile(
-                                                                              onTap: () {
-                                                                                showDialog(context: context, builder: (BuildContext context) => storedForm(context: context, uuid: enumeratorLocal.uuid, speciesName: enumeratorLocal.speciesName, commonName: enumeratorLocal.commonName, speciesPic: enumeratorLocal.image, enumerator: enumeratorLocal.enumerator, date: enumeratorLocal.date, fishingGround: enumeratorLocal.fishingGround, landingCenter: enumeratorLocal.landingCenter, totalLandings: enumeratorLocal.totalLandings, boatName: enumeratorLocal.boatName, fishingGear: enumeratorLocal.fishingGear, fishingEffort: enumeratorLocal.fishingEffort, totalBoatCatch: enumeratorLocal.totalBoatCatch, sampleSerialNumber: enumeratorLocal.sampleSerialNumber, sampleWeight: enumeratorLocal.totalSampleWeight, weight: enumeratorLocal.weight, length: enumeratorLocal.length));
-                                                                              },
-                                                                              leading: Padding(
-                                                                                padding: EdgeInsets.only(top: 8),
-                                                                                child: Wrap(
-                                                                                  children: [
-                                                                                    Column(
-                                                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                      children: [
-                                                                                        Text(
-                                                                                          '${enumeratorLocal.commonName}',
-                                                                                          style: TextStyle(
-                                                                                            fontWeight: FontWeight.bold,
-                                                                                            fontSize: 15,
-                                                                                          ),
-                                                                                        ),
-                                                                                        Text("Haba: ${enumeratorLocal.length} cm Bigat: ${enumeratorLocal.weight} g"),
-                                                                                        Text('${enumeratorLocal.landingCenter}')
-                                                                                      ],
-                                                                                    )
-                                                                                  ],
-                                                                                ),
-                                                                              ),
-                                                                              trailing: Padding(padding: EdgeInsets.only(top: 20), child: Image.asset('${enumeratorLocal.image}', width: 60))),
-                                                                        ])))));
-                                                  }).toList(),
-                                                )))),
-                                  ),
-                                ]));
-                    }),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(height: 10),
-                    SizedBox(
-                      height: 50,
-                      child: (dateSelected.isBefore(dateNow) ||
-                              dateSelected == dateNow)
-                          ? MaterialButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/form_one',
-                                    arguments: FormOneArguments(dateSelected));
-                              },
-                              elevation: 10,
-                              color: Colors.green,
-                              child: Icon(
-                                Icons.add,
-                                size: 30.0,
-                                color: Colors.white,
-                              ),
-                              shape: CircleBorder(),
-                              minWidth: 50,
-                            )
-                          : SizedBox(height: 0),
+                                      color: Colors.black,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold)),
+                              FaIcon(FontAwesomeIcons.telegramPlane,
+                                  color: Colors.black, size: 30)
+                            ],
+                          ),
+                          Text(
+                              "\nAng araw na ito (${dateSelectedString}) ay hindi pa nakalilipas. Makakapagtala ka lang ngayon o sa mga araw na nakalipas na."),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ])));
+                  );
+                }
+                return snapshot.data!.isEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Wala pang tala',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.bold)),
+                                      Text(
+                                        "para sa araw ng: ${dateSelectedString}",
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ],
+                                  ),
+                                  Icon(Icons.content_paste,
+                                      color: Colors.black, size: 40)
+                                ],
+                              ),
+                              Text(
+                                  "\nPara magdagdag ng tala para sa araw na ito, mangyaring pindutin ang bilog na butones sa kanang ibaba."),
+                            ],
+                          ),
+                        ),
+                      )
+                    : Container(
+                        margin: EdgeInsets.only(top: 20),
+                        child: SingleChildScrollView(
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                    padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                    child: Container(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text('Mga Naitalang Isda',
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              Text(
+                                                "para sa araw ng: ${dateSelectedString}",
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ],
+                                          ),
+                                          Center(
+                                            child: FaIcon(FontAwesomeIcons.fish,
+                                                color: Colors.black, size: 25),
+                                          )
+                                        ],
+                                      ),
+                                    )),
+                                SizedBox(height: 10),
+                                Container(
+                                  height:
+                                      MediaQuery.of(context).size.height / 2,
+                                  margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(15),
+                                        bottomLeft: Radius.circular(15)),
+                                  ),
+                                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                  child: RefreshIndicator(
+                                      onRefresh: () {
+                                        return Future.delayed(
+                                            Duration(seconds: 1), () {
+                                          //setState(() {});
+                                        });
+                                      },
+                                      child: SingleChildScrollView(
+                                          physics: BouncingScrollPhysics(
+                                              parent:
+                                                  AlwaysScrollableScrollPhysics()),
+                                          child: RawScrollbar(
+                                            thumbColor: Colors.green,
+                                            child: ListView(
+                                              reverse: true,
+                                              physics: BouncingScrollPhysics(),
+                                              shrinkWrap: true,
+                                              children: snapshot.data!
+                                                  .map((enumeratorLocal) {
+                                                return Center(
+                                                    child: Container(
+                                                  height: 100,
+                                                  child: Card(
+                                                      elevation: 5,
+                                                      margin:
+                                                          EdgeInsets.fromLTRB(
+                                                              5, 0, 10, 5),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10)),
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          showDialog(
+                                                              context: context,
+                                                              builder: (BuildContext context) => storedForm(
+                                                                  context:
+                                                                      context,
+                                                                  uuid: enumeratorLocal
+                                                                      .uuid,
+                                                                  speciesName:
+                                                                      enumeratorLocal
+                                                                          .speciesName,
+                                                                  commonName:
+                                                                      enumeratorLocal
+                                                                          .commonName,
+                                                                  speciesPic:
+                                                                      enumeratorLocal
+                                                                          .image,
+                                                                  enumerator:
+                                                                      enumeratorLocal
+                                                                          .enumerator,
+                                                                  date: enumeratorLocal
+                                                                      .date,
+                                                                  fishingGround:
+                                                                      enumeratorLocal
+                                                                          .fishingGround,
+                                                                  landingCenter:
+                                                                      enumeratorLocal
+                                                                          .landingCenter,
+                                                                  totalLandings:
+                                                                      enumeratorLocal
+                                                                          .totalLandings,
+                                                                  boatName: enumeratorLocal
+                                                                      .boatName,
+                                                                  fishingGear:
+                                                                      enumeratorLocal
+                                                                          .fishingGear,
+                                                                  fishingEffort:
+                                                                      enumeratorLocal
+                                                                          .fishingEffort,
+                                                                  totalBoatCatch:
+                                                                      enumeratorLocal
+                                                                          .totalBoatCatch,
+                                                                  sampleSerialNumber:
+                                                                      enumeratorLocal
+                                                                          .sampleSerialNumber,
+                                                                  sampleWeight:
+                                                                      enumeratorLocal
+                                                                          .totalSampleWeight,
+                                                                  weight:
+                                                                      enumeratorLocal
+                                                                          .weight,
+                                                                  length: enumeratorLocal
+                                                                      .length));
+                                                        },
+                                                        child: Align(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .fromLTRB(
+                                                                    10,
+                                                                    5,
+                                                                    10,
+                                                                    10),
+                                                            child: SizedBox(
+                                                              width: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width -
+                                                                  60,
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Expanded(
+                                                                    flex: 13,
+                                                                    child: Wrap(
+                                                                      children: [
+                                                                        Text(
+                                                                          '${enumeratorLocal.commonName}',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            fontSize:
+                                                                                13,
+                                                                          ),
+                                                                        ),
+                                                                        Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            Text("Haba: ${enumeratorLocal.length} cm | Bigat: ${enumeratorLocal.weight} g",
+                                                                                style: TextStyle(
+                                                                                  fontSize: 13,
+                                                                                )),
+                                                                            Text('${enumeratorLocal.landingCenter}',
+                                                                                style: TextStyle(
+                                                                                  fontSize: 13,
+                                                                                ))
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  Expanded(
+                                                                      flex: 4,
+                                                                      child: Image.asset(
+                                                                          '${enumeratorLocal.image}',
+                                                                          width:
+                                                                              80))
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )),
+                                                ));
+                                              }).toList(),
+                                            ),
+                                          ))),
+                                ),
+                              ]),
+                        ));
+              }),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(),
+            SizedBox(
+              height: 50,
+              child: (dateSelected.isBefore(dateNow) || dateSelected == dateNow)
+                  ? MaterialButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/form_one',
+                            arguments: FormOneArguments(dateSelected));
+                      },
+                      elevation: 10,
+                      color: Colors.green,
+                      child: Icon(
+                        Icons.add,
+                        size: 30.0,
+                        color: Colors.white,
+                      ),
+                      shape: CircleBorder(),
+                      minWidth: 50,
+                    )
+                  : SizedBox(height: 0),
+            ),
+          ],
+        )
+      ]);
   showDialog(context: context, builder: (BuildContext context) => alert);
 }
