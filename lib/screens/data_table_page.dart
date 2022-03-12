@@ -44,12 +44,12 @@ class _ActivityTableState extends State<ActivityTable> {
     }
   }
 
+  var d;
   _queryAll() async {
     Database db = await DatabaseHelperOne.instance.database;
     List<Map> result = await db
         .rawQuery('SELECT * FROM enumeratorLocalData ORDER BY date DESC');
     _data = result.toList();
-    //extractMap();
   }
 
   Future sleep() {
@@ -63,6 +63,7 @@ class _ActivityTableState extends State<ActivityTable> {
   }
 
   List<Map> _data = [];
+  List<Map> datas = [];
   int _currentSortColumn = 0;
   bool _isAscending = false;
 
@@ -169,10 +170,14 @@ class _ActivityTableState extends State<ActivityTable> {
                                             '%$databaseQuery%',
                                             '%$databaseQuery%'
                                           ]);
-                                      print(result.isEmpty);
-                                      _data = result;
-                                      print(result);
-                                      setState(() {});
+                                      datas.clear();
+                                      for (var dRead in result) {
+                                        d = Map<dynamic, dynamic>.from(dRead);
+                                        datas.insert(0, d);
+                                      }
+                                      setState(() {
+                                        _data = datas;
+                                      });
                                     },
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.only(
