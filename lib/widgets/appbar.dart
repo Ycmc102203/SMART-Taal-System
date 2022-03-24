@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -161,7 +160,7 @@ class _AppBarDesignState extends State<AppBarDesign> {
                         fontSize: 20)),
                 Text("NFRDI Enumerator",
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w800,
                         fontSize: 24,
                         color: Colors.purple)),
               ],

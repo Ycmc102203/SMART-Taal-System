@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class LoadingDialog extends StatelessWidget {
-  var color;
-  var text;
+  final color;
+  final text;
 
   LoadingDialog({this.color, this.text});
 
@@ -20,7 +20,7 @@ class LoadingDialog extends StatelessWidget {
             Center(
               child: Text(text,
                   style: TextStyle(
-                      fontSize: 30, color: color, fontWeight: FontWeight.bold)),
+                      fontSize: 30, color: color, fontWeight: FontWeight.w800)),
             ),
             Container(
                 width: MediaQuery.of(context).size.width,

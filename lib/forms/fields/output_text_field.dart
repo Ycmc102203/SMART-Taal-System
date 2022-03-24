@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 
 class OutputTextField extends StatelessWidget {
   final content;
@@ -10,7 +11,7 @@ class OutputTextField extends StatelessWidget {
     return TextField(
         decoration: InputDecoration(
             labelStyle: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
+                color: Colors.black, fontWeight: FontWeight.w700, fontSize: 20),
             disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
                 borderSide:

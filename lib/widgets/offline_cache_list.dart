@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smart_taal_system/backend/sqlfite_local_offline_cache.dart';
-import '../backend/sqlfite_local_primary_db.dart';
 import '../forms/output/stored_form.dart';
 
 class OfflineCacheList extends StatefulWidget {
@@ -48,9 +46,7 @@ class _OfflineCacheListState extends State<OfflineCacheList> {
                                   child: Column(children: [
                                     Container(
                                         color: Colors.red,
-                                        height:
-                                            MediaQuery.of(context).size.height /
-                                                8,
+                                        height: 90,
                                         child: Container(
                                             margin: EdgeInsets.symmetric(
                                                 horizontal: 15),
@@ -68,7 +64,7 @@ class _OfflineCacheListState extends State<OfflineCacheList> {
                                                               .start,
                                                       children: [
                                                         Text(
-                                                            "Mga Hindi pa Uploaded",
+                                                            "Mga Hindi Na-upload",
                                                             style: TextStyle(
                                                                 color: Color
                                                                     .fromARGB(
@@ -104,24 +100,8 @@ class _OfflineCacheListState extends State<OfflineCacheList> {
                                                           size: 50))
                                                 ]))),
                                     Container(
-                                        decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                          stops: [
-                                            0,
-                                            0.50,
-                                            1.0,
-                                          ],
-                                          begin: Alignment.centerLeft,
-                                          end: Alignment.centerRight,
-                                          colors: [
-                                            Color.fromARGB(149, 255, 255, 255),
-                                            Color.fromARGB(255, 255, 140, 140),
-                                            Color.fromARGB(149, 255, 255, 255),
-                                          ],
-                                        )),
-                                        height:
-                                            MediaQuery.of(context).size.height /
-                                                100,
+                                        color: Colors.white,
+                                        height: 5,
                                         child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
@@ -165,60 +145,133 @@ class _OfflineCacheListState extends State<OfflineCacheList> {
                                                     physics:
                                                         BouncingScrollPhysics(),
                                                     shrinkWrap: true,
-                                                    children: snapshot.data!.map(
-                                                        (enumeratorOffline) {
+                                                    children: snapshot.data!
+                                                        .map((enumeratorLocal) {
                                                       return Center(
-                                                          child:
-                                                              FractionallySizedBox(
-                                                                  widthFactor:
-                                                                      1,
-                                                                  child: Card(
-                                                                      elevation:
+                                                          child: Container(
+                                                        height: 100,
+                                                        child: Card(
+                                                            elevation: 5,
+                                                            margin: EdgeInsets
+                                                                .fromLTRB(15, 0,
+                                                                    15, 10),
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10)),
+                                                            child: InkWell(
+                                                              onTap: () {
+                                                                showDialog(
+                                                                    context:
+                                                                        context,
+                                                                    builder: (BuildContext context) => storedForm(
+                                                                        context:
+                                                                            context,
+                                                                        uuid: enumeratorLocal
+                                                                            .uuid,
+                                                                        speciesName: enumeratorLocal
+                                                                            .speciesName,
+                                                                        commonName: enumeratorLocal
+                                                                            .commonName,
+                                                                        speciesPic:
+                                                                            enumeratorLocal
+                                                                                .image,
+                                                                        enumerator:
+                                                                            enumeratorLocal
+                                                                                .enumerator,
+                                                                        date: enumeratorLocal
+                                                                            .date,
+                                                                        fishingGround:
+                                                                            enumeratorLocal
+                                                                                .fishingGround,
+                                                                        landingCenter:
+                                                                            enumeratorLocal
+                                                                                .landingCenter,
+                                                                        totalLandings:
+                                                                            enumeratorLocal
+                                                                                .totalLandings,
+                                                                        boatName:
+                                                                            enumeratorLocal
+                                                                                .boatName,
+                                                                        fishingGear:
+                                                                            enumeratorLocal
+                                                                                .fishingGear,
+                                                                        fishingEffort:
+                                                                            enumeratorLocal
+                                                                                .fishingEffort,
+                                                                        totalBoatCatch:
+                                                                            enumeratorLocal
+                                                                                .totalBoatCatch,
+                                                                        sampleSerialNumber:
+                                                                            enumeratorLocal
+                                                                                .sampleSerialNumber,
+                                                                        sampleWeight:
+                                                                            enumeratorLocal
+                                                                                .totalSampleWeight,
+                                                                        weight: enumeratorLocal
+                                                                            .weight,
+                                                                        length:
+                                                                            enumeratorLocal.length));
+                                                              },
+                                                              child: Align(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .center,
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .fromLTRB(
+                                                                          10,
                                                                           5,
-                                                                      margin: EdgeInsets
-                                                                          .fromLTRB(
-                                                                              15,
-                                                                              0,
-                                                                              15,
-                                                                              5),
-                                                                      shape: RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(10)),
-                                                                      child: Container(
-                                                                          height: 85,
-                                                                          child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                                            ListTile(
-                                                                                onTap: () {
-                                                                                  showDialog(context: context, builder: (BuildContext context) => storedForm(context: context, uuid: enumeratorOffline.uuid, speciesName: enumeratorOffline.speciesName, commonName: enumeratorOffline.commonName, speciesPic: enumeratorOffline.image, enumerator: enumeratorOffline.enumerator, date: enumeratorOffline.date, fishingGround: enumeratorOffline.fishingGround, landingCenter: enumeratorOffline.landingCenter, totalLandings: enumeratorOffline.totalLandings, boatName: enumeratorOffline.boatName, fishingGear: enumeratorOffline.fishingGear, fishingEffort: enumeratorOffline.fishingEffort, totalBoatCatch: enumeratorOffline.totalBoatCatch, sampleSerialNumber: enumeratorOffline.sampleSerialNumber, sampleWeight: enumeratorOffline.totalSampleWeight, weight: enumeratorOffline.weight, length: enumeratorOffline.length));
-                                                                                },
-                                                                                leading: Padding(
-                                                                                  padding: EdgeInsets.only(top: 8),
-                                                                                  child: Wrap(
-                                                                                    children: [
-                                                                                      Column(
-                                                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                        children: [
-                                                                                          Text(
-                                                                                            "${enumeratorOffline.date}",
-                                                                                            style: TextStyle(fontSize: 10),
-                                                                                          ),
-                                                                                          Text(
-                                                                                            '${enumeratorOffline.speciesName}',
-                                                                                            style: TextStyle(
-                                                                                              fontWeight: FontWeight.bold,
-                                                                                              fontSize: 18,
-                                                                                            ),
-                                                                                          ),
-                                                                                          Text("Haba: ${enumeratorOffline.length} cm Bigat: ${enumeratorOffline.weight} g"),
-                                                                                          Text('${enumeratorOffline.landingCenter}')
-                                                                                        ],
-                                                                                      )
-                                                                                    ],
-                                                                                  ),
+                                                                          10,
+                                                                          10),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width -
+                                                                        60,
+                                                                    child: Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        Expanded(
+                                                                          flex:
+                                                                              10,
+                                                                          child:
+                                                                              Wrap(
+                                                                            children: [
+                                                                              Text(
+                                                                                '${enumeratorLocal.commonName}',
+                                                                                style: TextStyle(
+                                                                                  fontWeight: FontWeight.w800,
+                                                                                  fontSize: 15,
                                                                                 ),
-                                                                                trailing: Padding(padding: EdgeInsets.only(top: 20), child: Image.asset('${enumeratorOffline.image}', width: 80))),
-                                                                          ])))));
+                                                                              ),
+                                                                              Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  Text("Haba: ${enumeratorLocal.length} cm | Bigat: ${enumeratorLocal.weight} g"),
+                                                                                  Text('${enumeratorLocal.landingCenter}')
+                                                                                ],
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        Expanded(
+                                                                            flex:
+                                                                                3,
+                                                                            child:
+                                                                                Image.asset('${enumeratorLocal.image}', width: 80))
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            )),
+                                                      ));
                                                     }).toList(),
                                                   ))),
                                         ))

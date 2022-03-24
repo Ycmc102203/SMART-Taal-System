@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "smart_taal_system (profile mode)",
+            "name": "smart_taal_system",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug"

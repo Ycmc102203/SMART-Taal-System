@@ -1,13 +1,14 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:smart_taal_system/backend/enumeratorRawData.dart';
+import 'package:smart_taal_system/backend/models/enumeratorRawData.dart';
 import 'package:smart_taal_system/backend/google_sheets_api.dart';
 import 'package:smart_taal_system/backend/sqlfite_local_offline_cache.dart';
+import 'package:smart_taal_system/forms/fields/output_text_field.dart';
 import 'package:smart_taal_system/forms/fields/text_input_field.dart';
 import 'package:smart_taal_system/forms/lists/species_list.dart';
 import 'package:smart_taal_system/forms/output/form_preview.dart';
-import 'package:smart_taal_system/screens/home_page.dart';
+import 'package:smart_taal_system/enumerator/screens/home_page.dart';
 import 'package:smart_taal_system/widgets/buttons/submit_button.dart';
 import 'package:smart_taal_system/widgets/warnings/post_offline_warning.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -40,6 +41,7 @@ class _NewTodoState extends State<NewSpecies> {
   String speciesPic = '';
 
   var uuid = Uuid();
+  static final RegExp numericRegExp = RegExp(r'^[0-9]+$');
 
   Future<bool?> showAddQuestion(BuildContext context) async => showDialog<bool>(
         context: context,
@@ -51,7 +53,7 @@ class _NewTodoState extends State<NewSpecies> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("Magtatala ka ba\nng bagong sample\no bangka?",
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontWeight: FontWeight.w800)),
               FaIcon(FontAwesomeIcons.questionCircle,
                   color: Color.fromARGB(50, 0, 0, 0), size: 50)
             ],
@@ -64,7 +66,7 @@ class _NewTodoState extends State<NewSpecies> {
                 Navigator.pushNamed(context, '/home');
               },
               child: Text('Bumalik sa Home Screen',
-                  style: TextStyle(color: Colors.green, fontSize: 13)),
+                  style: TextStyle(color: Colors.green, fontSize: 11.5)),
             ),
             TextButton(
               onPressed: () {
@@ -88,7 +90,7 @@ class _NewTodoState extends State<NewSpecies> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: Text("Wala ka pang \nnaidadagdag na isda"),
+          title: Text("Wala ka pang na-\nidadagdag na isda"),
           content: Text(
               "Siguraduhing napindot ang 'IDAGDAG' para malista ang sinukat na isda"),
         ),
@@ -353,15 +355,29 @@ class _NewTodoState extends State<NewSpecies> {
         builder: (BuildContext context) => FormPreview(
               children: [
                 Image.asset(speciesPic),
-                Text("\nCommon Name ng Isda:",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(
-                  "${commonNameController.text}",
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Detalye ng Isda",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
+                    ),
+                    FaIcon(FontAwesomeIcons.fish, color: Colors.black)
+                  ],
                 ),
-                Text("\nScientific Name ng Isda:",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                Text("${speciesNameController.text}",
-                    style: TextStyle(fontStyle: FontStyle.italic)),
+                Divider(
+                  thickness: 3,
+                ),
+                SizedBox(height: 20),
+                OutputTextField(
+                    label: Text("Common Name ng Isda"),
+                    content: "${commonNameController.text}"),
+                SizedBox(height: 20),
+                OutputTextField(
+                    label: Text("Scientific Name ng Isda"),
+                    content: "${speciesNameController.text}")
               ],
               onPressed: () async {
                 bool isConnected =
@@ -399,7 +415,6 @@ class _NewTodoState extends State<NewSpecies> {
                                 passedTotalSampleWeight);
                             Navigator.pop(context);
                           }));
-
                   print('Not connected :(');
                 }
               },
@@ -574,9 +589,10 @@ class _NewTodoState extends State<NewSpecies> {
                                         Text(
                                             '${DateFormat('yyy-MM-dd').format(args.passedDate)}')
                                       ]),
-                                  Text('Nahuli sa ${args.passedFishingGround}'),
                                   Text(
-                                      'Dumaong sa ${args.passedLandingCenter}'),
+                                      'Pangisdaan: ${args.passedFishingGround}'),
+                                  Text(
+                                      'Lugar daungan ${args.passedLandingCenter}'),
                                   Text(
                                       'Bangkang humuli: ${args.passedBoatName}'),
                                   Text(
@@ -593,7 +609,7 @@ class _NewTodoState extends State<NewSpecies> {
                                     Text('Mga Isdang Sinukat',
                                         style: TextStyle(
                                             fontSize: 25,
-                                            fontWeight: FontWeight.bold)),
+                                            fontWeight: FontWeight.w800)),
                                     FaIcon(FontAwesomeIcons.fish,
                                         color: Colors.black)
                                   ],
@@ -637,7 +653,7 @@ class _NewTodoState extends State<NewSpecies> {
                                                         '${species[index]}',
                                                         style: TextStyle(
                                                           fontWeight:
-                                                              FontWeight.bold,
+                                                              FontWeight.w800,
                                                           fontSize: 15,
                                                         ),
                                                       ),
@@ -671,7 +687,7 @@ class _NewTodoState extends State<NewSpecies> {
                                           labelTextOne: "Pangalan ng Isda",
                                           labelTextTwo:
                                               "Hanapin ang Isdang Sinukat",
-                                          labelTextThree: 'Pangalan ng Isda',
+                                          icon: FaIcon(FontAwesomeIcons.fish),
                                           onChanged: (String? value) {
                                             setState(() {
                                               commonNameController.text =
@@ -681,24 +697,20 @@ class _NewTodoState extends State<NewSpecies> {
                                           },
                                         ),
                                         TextInputField(
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Walang sagot; ilagay ang haba ng isda';
-                                              }
-                                              return null;
-                                            },
+                                            validator: (value) => value.isEmpty
+                                                ? 'Walang sagot; Ilagay ang haba ng isda'
+                                                : (numericRegExp.hasMatch(value)
+                                                    ? null
+                                                    : 'Hindi ito pwede. Siguraduhing mga numero (0 - 9)\nlang ang nilagay mo.'),
                                             controller: lengthController,
                                             labelText: "Haba ng Isda (cm)",
                                             keyboardType: TextInputType.number),
                                         TextInputField(
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Walang sagot; ilagay ang bigat ng isda';
-                                              }
-                                              return null;
-                                            },
+                                            validator: (value) => value.isEmpty
+                                                ? 'Walang sagot; Ilagay ang bigat ng isda'
+                                                : (numericRegExp.hasMatch(value)
+                                                    ? null
+                                                    : 'Hindi ito pwede. Siguraduhing mga numero (0 - 9)\nlang ang nilagay mo.'),
                                             controller: weightController,
                                             labelText: "Bigat ng Isda (g)",
                                             keyboardType: TextInputType.number),
@@ -732,29 +744,32 @@ class _NewTodoState extends State<NewSpecies> {
                                         ));
                                   }
                                 }),
-                            Padding(
-                                padding: EdgeInsets.only(top: 15),
-                                child: SubmitButton(
-                                    icon: Icon(Icons.send, color: Colors.white),
-                                    text: 'ISUMITE',
-                                    function: () {
-                                      if (_formKeyTwo.currentState!
-                                          .validate()) {
-                                        if (species.length < 1) {
-                                          noTallyWarning(context);
-                                        } else {
-                                          showAddQuestion(context);
-                                          setState(() {});
-                                        }
-                                      } else {
-                                        showTopSnackBar(
-                                            context,
-                                            CustomSnackBar.error(
-                                              message:
-                                                  "May kulang pa sa iyong tala. I-double check kung may laman na lahat.",
-                                            ));
-                                      }
-                                    }))
+                            species.isNotEmpty
+                                ? Padding(
+                                    padding: EdgeInsets.only(top: 15),
+                                    child: SubmitButton(
+                                        icon: Icon(Icons.send,
+                                            color: Colors.white),
+                                        text: 'ISUMITE',
+                                        function: () {
+                                          if (_formKeyTwo.currentState!
+                                              .validate()) {
+                                            if (species.length < 1) {
+                                              noTallyWarning(context);
+                                            } else {
+                                              showAddQuestion(context);
+                                              setState(() {});
+                                            }
+                                          } else {
+                                            showTopSnackBar(
+                                                context,
+                                                CustomSnackBar.error(
+                                                  message:
+                                                      "May kulang pa sa iyong tala. I-double check kung may laman na lahat.",
+                                                ));
+                                          }
+                                        }))
+                                : SizedBox()
                           ])),
                 ))));
   }

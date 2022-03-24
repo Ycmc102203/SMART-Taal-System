@@ -3,14 +3,8 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:intl/intl.dart';
-import 'package:smart_taal_system/widgets/loadingIndicator.dart';
-import 'package:sqflite/sqlite_api.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../backend/sqlfite_local_primary_db.dart';
-import '../backend/google_sheets_api.dart';
 import '../forms/output/stored_form.dart';
 
 class ActivitiesList extends StatefulWidget {
@@ -29,8 +23,8 @@ class _ActivitiesListState extends State<ActivitiesList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.fromLTRB(5, 0, 5, 20),
-        height: 440,
+        margin: EdgeInsets.fromLTRB(5, 5, 5, 20),
+        height: 410,
         child: Card(
             elevation: 20,
             shape: RoundedRectangleBorder(
@@ -56,7 +50,7 @@ class _ActivitiesListState extends State<ActivitiesList> {
                                           style: TextStyle(
                                               color: Color.fromARGB(
                                                   255, 255, 255, 255),
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight: FontWeight.w800,
                                               fontSize: 25))
                                     ]),
                                 FaIcon(FontAwesomeIcons.fish,
@@ -68,7 +62,7 @@ class _ActivitiesListState extends State<ActivitiesList> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [])),
                   Container(
-                      height: 350,
+                      height: 325,
                       decoration: BoxDecoration(
                         boxShadow: [
                           const BoxShadow(
@@ -111,14 +105,10 @@ class _ActivitiesListState extends State<ActivitiesList> {
                                       }
                                       return snapshot.data!.isEmpty
                                           ? Container(
+                                              height: 325,
                                               width: MediaQuery.of(context)
                                                   .size
                                                   .width,
-                                              margin: EdgeInsets.only(
-                                                  top: MediaQuery.of(context)
-                                                          .size
-                                                          .height /
-                                                      10),
                                               child: Column(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
@@ -131,47 +121,70 @@ class _ActivitiesListState extends State<ActivitiesList> {
                                                       style: TextStyle(
                                                           color: Colors.purple,
                                                           fontWeight:
-                                                              FontWeight.bold,
+                                                              FontWeight.w800,
                                                           fontSize: 25)),
                                                   Text(''),
-                                                  Row(children: [
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 45, right: 15),
-                                                      child: Icon(
-                                                          Icons
-                                                              .do_not_disturb_alt,
-                                                          size: 40,
-                                                          color: Colors.red),
-                                                    ),
-                                                    Text(
-                                                        'Wala ka pang tala para sa araw na ito.\nPindutin ang kulay berdeng butones\nsa ilalim para magsimula.',
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.purple,
-                                                            fontSize: 15)),
-                                                  ]),
-                                                  Row(children: [
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 45, right: 15),
-                                                      child: Icon(Icons.refresh,
-                                                          size: 40,
-                                                          color: Colors.blue),
-                                                    ),
-                                                    Text(
-                                                        '\nKung may natala ka na pero di pa\nlumalabas, mangyaring i-refresh ang\npahina sa pamamagitan ng paghila\nnito pababa.',
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.purple,
-                                                            fontSize: 15)),
-                                                  ]),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceEvenly,
+                                                          children: [
+                                                            Icon(
+                                                                Icons
+                                                                    .do_not_disturb_alt,
+                                                                size: 40,
+                                                                color:
+                                                                    Colors.red),
+                                                            SizedBox(
+                                                                height: 40),
+                                                            Icon(Icons.refresh,
+                                                                size: 40,
+                                                                color: Colors
+                                                                    .blue),
+                                                            SizedBox(
+                                                                height: 10),
+                                                          ]),
+                                                      Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                                'Wala ka pang itinatala para\nsa araw na ito. Pindutin ang\nkulay berdeng butones sa\nilalim para magsimula.',
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left,
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .purple,
+                                                                    fontSize:
+                                                                        15)),
+                                                            Text(
+                                                                '\nKung may natala ka na pero di pa\nlumalabas, mangyaring i-refresh\nang pahina sa pamamagitan ng\npaghila nito pababa.',
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left,
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .purple,
+                                                                    fontSize:
+                                                                        15)),
+                                                          ]),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceEvenly,
+                                                      children: []),
                                                 ],
-                                              ))
+                                              ),
+                                            )
                                           : ListView(
                                               reverse: true,
                                               physics: BouncingScrollPhysics(),
@@ -278,7 +291,7 @@ class _ActivitiesListState extends State<ActivitiesList> {
                                                                           style:
                                                                               TextStyle(
                                                                             fontWeight:
-                                                                                FontWeight.bold,
+                                                                                FontWeight.w800,
                                                                             fontSize:
                                                                                 15,
                                                                           ),

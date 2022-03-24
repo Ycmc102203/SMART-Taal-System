@@ -10,17 +10,21 @@ class FormPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      titlePadding: EdgeInsets.fromLTRB(18, 18, 18, 0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text("Sigurado ka na\nba sa nilagay mo?",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          FaIcon(FontAwesomeIcons.solidCheckCircle,
-              size: 40, color: Colors.green)
-        ],
+      title: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("Sigurado ka na\nba sa nilagay mo?   ",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800)),
+            FaIcon(FontAwesomeIcons.solidCheckCircle,
+                size: 40, color: Colors.green)
+          ],
+        ),
       ),
       content: RawScrollbar(
           thumbColor: Colors.green,
@@ -34,14 +38,11 @@ class FormPreview extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(bottom: 20),
                   child: Text(
-                    "Bago magpatuloy sa pagtala ng mga nahuling isda, siguraduhing tama ang mga detalye ukol sa pagtatalang ito",
+                    "Bago magpatuloy sa pagtala, siguraduhing tama ang mga detalye ukol sa pagtatalang ito",
                   ),
                 ),
-                Divider(
-                  thickness: 3,
-                ),
                 Padding(
-                    padding: EdgeInsets.only(top: 20, bottom: 20),
+                    padding: EdgeInsets.only(top: 0, bottom: 20),
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,

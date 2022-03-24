@@ -1,25 +1,31 @@
 import 'dart:async';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:smart_taal_system/backend/google_sheets_api.dart';
 import 'package:smart_taal_system/backend/sqlfite_local_offline_cache.dart';
-import 'package:smart_taal_system/forms/input/form_page_two.dart';
 import 'package:smart_taal_system/widgets/activities_list.dart';
 import 'package:smart_taal_system/widgets/calendar.dart';
 import 'package:smart_taal_system/widgets/offline_cache_list.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-
-import '../backend/sqlfite_local_primary_db.dart';
+import '../../backend/models/user_model.dart';
+import '../../backend/sqlfite_local_primary_db.dart';
+import '../../widgets/loadingIndicator.dart';
 
 class Dashboard extends StatefulWidget {
+  final firstName;
+  final lastName;
+  Dashboard({this.firstName, this.lastName});
   @override
   _DashboardState createState() => _DashboardState();
 }
 
 class _DashboardState extends State<Dashboard> {
+  User? user = FirebaseAuth.instance.currentUser;
+  UserModel loggedInUser = UserModel();
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +53,10 @@ class _DashboardState extends State<Dashboard> {
     String countString = count.toString();
     var countInt = int.parse(countString);
     while (countInt != 0) {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              LoadingDialog(color: Colors.green, text: "Inu-upload"));
       List<Map<String, dynamic>> results = await db.rawQuery(
           'SELECT * FROM enumeratorOfflineData WHERE id=?', ['$countInt']);
       for (var r in results) {
@@ -80,6 +90,7 @@ class _DashboardState extends State<Dashboard> {
         setState(() {});
       }
       countInt--;
+      Navigator.pop(context);
     }
     if (countInt == 0) {
       showTopSnackBar(
@@ -140,7 +151,9 @@ class _DashboardState extends State<Dashboard> {
                             child: Column(children: [
                               OfflineCacheList(),
                               ActivitiesList(),
-                              Calendar(),
+                              Calendar(
+                                  firstName: widget.firstName,
+                                  lastName: widget.lastName)
                             ])))))));
   }
 }

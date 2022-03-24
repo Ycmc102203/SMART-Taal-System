@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'package:animations/animations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:smart_taal_system/backend/models/user_model.dart';
 import 'package:smart_taal_system/forms/fields/output_text_field.dart';
 import 'package:smart_taal_system/forms/fields/text_input_field.dart';
 import 'package:smart_taal_system/forms/output/form_preview.dart';
@@ -13,8 +16,13 @@ import 'package:smart_taal_system/frontend/innershadow.dart';
 import 'package:smart_taal_system/widgets/buttons/add_button.dart';
 import 'package:smart_taal_system/widgets/buttons/colored_bg_button.dart';
 import 'package:smart_taal_system/widgets/buttons/submit_button.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../backend/user_db.dart';
+import '../../widgets/loadingIndicator.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -40,26 +48,9 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
 
-  Future pickImage(ImageSource source) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-      if (image == null) return;
-      final imageTemporary = File(image.path);
-      //final imagePermanent = await saveImagePermanently(image.path);
-      setState(() {
-        this.image = imageTemporary;
-      });
-    } on PlatformException catch (e) {
-      print('Failed to pick image: $e');
-    }
-  }
-
-  // Future<File> saveImagePermanently(String imagePath) async {
-  //   final directory = await getApplicationDocumentsDirectory();
-  //   final name = basename(imagePath);
-  //   final image = File('${directory.path}/$name');
-  //   return File(imagePath).copy(image.path);
-  // }
+  bool _isObscureOne = true;
+  bool _isObscureTwo = true;
+  final _signupAuth = FirebaseAuth.instance;
 
   _showRegistrationPreview(BuildContext context) => showDialog<String>(
       context: context,
@@ -74,7 +65,10 @@ class _SignupPageState extends State<SignupPage> {
                     child: CircleAvatar(
                         backgroundColor: Colors.white,
                         radius: 80,
-                        backgroundImage: FileImage(image!)),
+                        backgroundImage: image != null
+                            ? FileImage(image!)
+                            : AssetImage('assets/Enumerator.png')
+                                as ImageProvider),
                   ),
                   SizedBox(height: 20),
                   Row(
@@ -125,10 +119,39 @@ class _SignupPageState extends State<SignupPage> {
                 ],
               ),
             ],
-            onPressed: () {
-              Navigator.pushNamed(context, '/home');
+            onPressed: () async {
+              showDialog(
+                  context: context,
+                  builder: (context) => LoadingDialog(
+                      color: Colors.green, text: "Nag-si-sign-up"));
+              await _signupAuth
+                  .createUserWithEmailAndPassword(
+                      email: email.text.trim(), password: password.text.trim())
+                  .then((value) => {
+                        postDetailsToFirestore(),
+                      })
+                  .catchError((e) {
+                showTopSnackBar(
+                    context,
+                    CustomSnackBar.error(
+                      message: e!.message,
+                    ));
+              });
+              _postDetailsLocally(firstName.text, lastName.text, nickname.text);
             },
           ));
+
+  void _launchUrl(url) async {
+    if (!await launch(
+      url,
+      forceSafariVC: false,
+      forceWebView: false,
+      headers: <String, String>{'my_header_key': 'my_header_value'},
+    )) {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return PageTransitionSwitcher(
@@ -161,6 +184,103 @@ class _SignupPageState extends State<SignupPage> {
             maxLength: maxLength,
             validator: validator,
             decoration: InputDecoration(
+                counterText: "",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                labelText: name,
+                labelStyle: TextStyle(fontSize: 20),
+                prefixIcon: icon,
+                contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                filled: true,
+                fillColor: Colors.transparent,
+                focusColor: Colors.green),
+          ),
+        ),
+      ),
+      SizedBox(height: 10),
+    ]);
+  }
+
+  Widget formFieldPasswordOne(
+      name, icon, keyboardType, controller, validator, minLength, maxLength) {
+    return Column(children: [
+      Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.white, width: 5),
+          boxShadow: innerShadow(),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+          child: TextFormField(
+            obscureText: _isObscureOne,
+            controller: controller,
+            keyboardType: keyboardType,
+            maxLength: maxLength,
+            validator: validator,
+            decoration: InputDecoration(
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isObscureOne ? Icons.visibility : Icons.visibility_off,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isObscureOne = !_isObscureOne;
+                    });
+                  },
+                ),
+                counterText: "",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                labelText: name,
+                labelStyle: TextStyle(fontSize: 20),
+                prefixIcon: icon,
+                contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                filled: true,
+                fillColor: Colors.transparent,
+                focusColor: Colors.green),
+          ),
+        ),
+      ),
+      SizedBox(height: 10),
+    ]);
+  }
+
+  Widget formFieldPasswordTwo(
+      name, icon, keyboardType, controller, validator, minLength, maxLength) {
+    return Column(children: [
+      Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.white, width: 5),
+          boxShadow: innerShadow(),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+          child: TextFormField(
+            obscureText: _isObscureTwo,
+            controller: controller,
+            keyboardType: keyboardType,
+            maxLength: maxLength,
+            validator: validator,
+            decoration: InputDecoration(
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isObscureTwo ? Icons.visibility : Icons.visibility_off,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isObscureTwo = !_isObscureTwo;
+                    });
+                  },
+                ),
+                counterText: "",
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -270,7 +390,7 @@ class _SignupPageState extends State<SignupPage> {
                         Text("-",
                             style: TextStyle(
                                 fontWeight: FontWeight.w900,
-                                color: Colors.black,
+                                color: Colors.purple,
                                 fontSize: 150)),
                         Text("UP",
                             style: TextStyle(
@@ -318,6 +438,29 @@ class _SignupPageState extends State<SignupPage> {
                           key: _signupKey,
                           child: Column(
                             children: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/login');
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      SizedBox(width: 15),
+                                      Icon(
+                                        Icons.login_rounded,
+                                        size: 35,
+                                        color: Colors.white,
+                                      ),
+                                      Text(
+                                        "May account ka na ba?\nPindutin ito para mag-Log-In",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 15),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      SizedBox(width: 16),
+                                    ],
+                                  )),
                               SizedBox(height: 10),
                               formSection("Personal na Detalye",
                                   Icon(Icons.person, size: 35)),
@@ -374,7 +517,7 @@ class _SignupPageState extends State<SignupPage> {
                                           : 'Hindi valid ang email na nilagay. Siguraduhing\nkumpleto at tama ang email na nilagay mo dito\n\n halimbawa: juandelacruz@email.com'),
                                   1,
                                   null),
-                              formField(
+                              formFieldPasswordOne(
                                   "Password",
                                   Icon(Icons.lock),
                                   TextInputType.visiblePassword,
@@ -386,109 +529,51 @@ class _SignupPageState extends State<SignupPage> {
                                           : 'Para masiguradong ligtas ang iyong\naccount, dapat ang password ay:\n\n(1)  8-15 na karakter lang ang haba;\n(2)  Naglalaman ng malaking titik;\n(3)  Naglalaman ng maliit na titik;\n(4)  Naglalaman ng numero; at\n(5)  Naglalaman ng espesyal na\n       karakter (hal. @!%*?&)'),
                                   8,
                                   15),
-                              formField(
+                              formFieldPasswordTwo(
                                   "Ulitin ang Password",
                                   Icon(Icons.lock),
                                   TextInputType.visiblePassword,
                                   confirmPassword,
                                   (value) => value.isEmpty
                                       ? 'Ulitin ang Password'
-                                      : ((value == password)
-                                          ? 'Hindi magkatugma ang password!'
-                                          : null),
+                                      : ((value == password.text)
+                                          ? null
+                                          : 'Hindi magkatugma ang password!'),
                                   // (passwordRegExp.hasMatch(value)
                                   //     ? null
                                   //     : 'Para masiguradong ligtas ang iyong account,\ndapat ang password ay:\n\n(1)  8-10 na karakter lang ang haba;\n(2)  Naglalaman ng malaking titik;\n(3)  Naglalaman ng maliit na titik;\n(4)  Naglalaman ng numero; at\n(5)  Naglalaman ng espesyal na karakter\n      (hal. @!%*?&)'),
                                   8,
                                   15),
                               SizedBox(height: 20),
-                              formSection("Litrato (optional)",
-                                  Icon(Icons.camera_alt, size: 35)),
-                              SizedBox(height: 10),
-                              image != null
-                                  ? CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      radius: 85,
-                                      child: CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          radius: 80,
-                                          backgroundImage: FileImage(image!)),
-                                    )
-                                  : CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      radius: 80,
-                                      child:
-                                          Image.asset("assets/Enumerator.png")),
-                              SizedBox(height: 20),
-                              ColoredBgButton(
-                                  title: "Pumili sa Gallery",
-                                  function: () {
-                                    pickImage(ImageSource.gallery);
-                                    print(image);
-                                  },
-                                  color: Colors.purple,
-                                  colorSelected: Colors.purpleAccent,
-                                  size: Size(
-                                      MediaQuery.of(context).size.width / 1.15,
-                                      70),
-                                  fontSize: 20.0,
-                                  icon: Icon(FontAwesomeIcons.image)),
-                              SizedBox(height: 10),
-                              ColoredBgButton(
-                                  title: "Kumuha ng Litrato",
-                                  function: () {
-                                    pickImage(ImageSource.camera);
-                                  },
-                                  color: Colors.purple,
-                                  colorSelected: Colors.purpleAccent,
-                                  size: Size(
-                                      MediaQuery.of(context).size.width / 1.15,
-                                      70),
-                                  fontSize: 20.0,
-                                  icon: Icon(FontAwesomeIcons.camera)),
-                              SizedBox(height: 30),
                               formSection(
                                   "Pahintulot",
                                   Icon(FontAwesomeIcons.fileContract,
                                       size: 30)),
                               SizedBox(height: 10),
-                              Card(
-                                  elevation: 5,
+                              SubmitButton(
+                                text: "Terms and Conditions",
+                                icon: Icon(FontAwesomeIcons.wpforms,
+                                    color: Colors.white),
+                                color: Colors.blue,
+                                function: () {
+                                  _launchUrl(
+                                      "https://docs.google.com/document/d/e/2PACX-1vQtcmo4T1mQBqfPXWwwj3CS1E_umVKkxHrZTNxx45i_u0T4NfIlck2Uh7-cUO0nFs6GlaJ99MylMvIU/pub");
+                                },
+                                vertical: 5.0,
+                              ),
+                              SubmitButton(
+                                text: "Privacy policy",
+                                color: Colors.blue,
+                                icon: Icon(
+                                  Icons.privacy_tip,
                                   color: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  child: Container(
-                                      height: 200,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Colors.white, width: 5),
-                                        boxShadow: innerShadow(),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                      ),
-                                      child: SingleChildScrollView(
-                                        physics: BouncingScrollPhysics(),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(20.0),
-                                          child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text("Background",
-                                                    style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontWeight:
-                                                            FontWeight.w700)),
-                                                SizedBox(height: 10),
-                                                Text(
-                                                    "Republic Act No. 10173, also known as the Data Privacy Act of 2012 (DPA), aims to protect personal data in information and communications systems both in the government and the private sector.\nIt ensures that entities or organizations processing personal data establish policies, and implement measures and procedures that guarantee the safety and security of personal data under their control or custody, thereby upholding an individual’s data privacy rights. A personal information controller or personal information processor is instructed to implement reasonable and appropriate measures to protect personal data against natural dangers such as accidental loss or destruction, and human dangers such as unlawful access, fraudulent misuse, unlawful destruction, alteration and contamination.\nTo inform its personnel of such measures, each personal information controller or personal information processor is expected to produce a Privacy Manual. The Manual serves as a guide or handbook for ensuring the compliance of an organization or entity with the DPA, its Implementing Rules and Regulations (IRR), and other relevant issuances of the National Privacy Commission (NPC). It also encapsulates the privacy and data protection protocols that need to be observed and carried out within the organization for specific circumstances (e.g., from collection to destruction), directed toward the fulfillment and realization of the rights of data subjects."),
-                                              ]),
-                                        ),
-                                      ))),
+                                ),
+                                function: () {
+                                  _launchUrl(
+                                      "https://docs.google.com/document/d/e/2PACX-1vQtEWN1f_Vf5tBpP-tahR3yCoF5zIH07xi17-Y5s3oKLG1LVdL_9qQz5cRDKRLy_dZQO0VwPX-MJu7A/pub");
+                                },
+                                vertical: 5.0,
+                              ),
                               CheckboxListTile(
                                   activeColor: Colors.white,
                                   checkColor: Colors.purple,
@@ -519,11 +604,12 @@ class _SignupPageState extends State<SignupPage> {
                                     print("lol");
                                     //Navigator.popAndPushNamed(context, '/home');
                                   } else {
+                                    print(password.text);
                                     showTopSnackBar(
                                         context,
                                         CustomSnackBar.error(
                                           message:
-                                              "May kulang pa sa iyong tala. I-double check kung may laman na lahat.",
+                                              "May kulang o mali pa sa iyong mga nilagay. I-double check kung may laman na lahat.",
                                         ));
                                   }
                                 },
@@ -541,5 +627,44 @@ class _SignupPageState extends State<SignupPage> {
                 )),
           ))
     ]));
+  }
+
+  postDetailsToFirestore() async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    User? user = _signupAuth.currentUser;
+
+    UserModel userModel = UserModel();
+    userModel.email = user!.email;
+    userModel.uid = user.uid;
+    userModel.firstName = firstName.text;
+    userModel.lastName = lastName.text;
+    userModel.nickname = nickname.text;
+
+    await firebaseFirestore
+        .collection("users")
+        .doc(user.uid)
+        .set(userModel.toMap());
+
+    // showTopSnackBar(
+    //     context,
+    //     CustomSnackBar.success(
+    //       message: "Nagawa na ang iyong account!",
+    //     ));
+    Navigator.popAndPushNamed(context, '/verify_email');
+  }
+
+  void _postDetailsLocally(fName, lName, nName) async {
+    await DatabaseHelperThree.instance.add(userData(
+        firstName: fName,
+        lastName: lName,
+        nickname: nName,
+        status: 'logged in'));
+
+    // Database db = await DatabaseHelperThree.instance.database;
+
+    // await db.rawUpdate(
+    //     '''UPDATE userDataData SET firstName = ?, lastName = ?, nickname = ?, status = ? WHERE id = ?''',
+    //     ['${fName}', '${lName}', '${nName}', 'logged in', 1]);
+    // setState(() {});
   }
 }

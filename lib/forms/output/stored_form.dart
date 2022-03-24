@@ -14,10 +14,10 @@ import 'package:smart_taal_system/forms/output/edit_form.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import '../../backend/enumeratorRawData.dart';
+import '../../backend/models/enumeratorRawData.dart';
 import '../../providers/refresh_provider.dart';
-import '../../screens/dashboard_page.dart';
-import '../../screens/home_page.dart';
+import '../../enumerator/screens/dashboard_page.dart';
+import '../../enumerator/screens/home_page.dart';
 import '../../widgets/loadingIndicator.dart';
 import 'package:provider/provider.dart';
 
@@ -208,7 +208,7 @@ class _storedFormState extends State<storedForm> {
                               Image.asset(widget.speciesPic),
                               Text("\nDetalye ng Isda",
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w800,
                                       fontSize: 20)),
                               Text("\n${widget.commonName}"),
                               Text("${widget.speciesName}",
@@ -218,16 +218,16 @@ class _storedFormState extends State<storedForm> {
                                   "Haba: ${widget.length} cm     Bigat: ${widget.weight} g"),
                               Text("\nDetalye ng Lugar",
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w800,
                                       fontSize: 20)),
                               Text("\nTinala ni: ${widget.enumerator}"),
-                              Text("Nahuli sa: ${widget.fishingGround}"),
+                              Text("Pangisdaan: ${widget.fishingGround}"),
                               Text("Dinaong sa: ${widget.landingCenter}"),
                               Text(
                                   "Bilang ng mga dumaong: ${widget.totalLandings}"),
                               Text("\nDetalye ng Dumaong",
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w800,
                                       fontSize: 20)),
                               Text("\nPangalan ng Bangka: ${widget.boatName}"),
                               Text(
@@ -238,7 +238,7 @@ class _storedFormState extends State<storedForm> {
                                   "Timbang ng Nahuli: ${widget.totalBoatCatch} kg"),
                               Text("\nDetalye ng Sample",
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w800,
                                       fontSize: 20)),
                               Text(
                                   "\nSample Serial Number: ${widget.sampleSerialNumber}"),

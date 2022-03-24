@@ -34,13 +34,12 @@ Widget scrollPage(
     child: Column(children: [
       Image.asset(image),
       Padding(
-          padding: const EdgeInsets.all(25),
+          padding: const EdgeInsets.all(15),
           child: RawScrollbar(
             radius: Radius.circular(10),
             thumbColor: Color.fromARGB(100, 76, 175, 79),
             child: Container(
               width: MediaQuery.of(context).size.width,
-              height: 300,
               padding: EdgeInsets.only(bottom: 80),
               child: SingleChildScrollView(
                 physics: BouncingScrollPhysics(
@@ -49,7 +48,7 @@ Widget scrollPage(
                   Text(title, style: titleStyle),
                   SizedBox(height: 20),
                   Text(body, style: bodyStyle, textAlign: textAlign),
-                  SizedBox(height: 100)
+                  SizedBox(height: 400)
                 ]),
               ),
             ),
@@ -174,7 +173,7 @@ class OnBoarding extends StatelessWidget {
       done: const Text("Magsimula!",
           style: TextStyle(fontWeight: FontWeight.w800, color: Colors.green)),
       onDone: () {
-        Navigator.popAndPushNamed(context, '/login');
+        Navigator.popAndPushNamed(context, '/signup');
       },
       dotsContainerDecorator: const ShapeDecoration(
           color: Colors.white,

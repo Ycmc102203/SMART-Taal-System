@@ -14,7 +14,7 @@ class PostOfflineWarning extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text("Offline ka parin",
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w800)),
             Icon(Icons.wifi_off, size: 30, color: Colors.red)
           ],
         ),

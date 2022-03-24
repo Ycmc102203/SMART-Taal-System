@@ -9,11 +9,11 @@ import 'package:smart_taal_system/widgets/loadingIndicator.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import '../backend/google_sheets_api.dart';
-import '../backend/sqlfite_local_primary_db.dart';
+import '../../backend/google_sheets_api.dart';
+import '../../backend/sqlfite_local_primary_db.dart';
 import 'package:loading_animations/loading_animations.dart';
 
-import '../forms/output/stored_form.dart';
+import '../../forms/output/stored_form.dart';
 
 class ActivityTable extends StatefulWidget {
   @override
@@ -118,39 +118,50 @@ class _ActivityTableState extends State<ActivityTable> {
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 color: Colors.purple,
-                                                fontWeight: FontWeight.bold,
+                                                fontWeight: FontWeight.w800,
                                                 fontSize: 25)),
                                         Text(''),
-                                        Row(children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 45, right: 15),
-                                            child: Icon(
-                                                Icons.do_not_disturb_alt,
-                                                size: 40,
-                                                color: Colors.red),
-                                          ),
-                                          Text(
-                                              'Wala ka pang tala para sa araw na ito.\nPindutin ang kulay berdeng butones\nsa ilalim para magsimula.',
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                  color: Colors.purple,
-                                                  fontSize: 15)),
-                                        ]),
-                                        Row(children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 45, right: 15),
-                                            child: Icon(Icons.refresh,
-                                                size: 40, color: Colors.blue),
-                                          ),
-                                          Text(
-                                              '\nKung may natala ka na pero di pa\nlumalabas, mangyaring i-refresh ang\npahina sa pamamagitan ng paghila\nnito pababa.',
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                  color: Colors.purple,
-                                                  fontSize: 15)),
-                                        ]),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  Icon(Icons.do_not_disturb_alt,
+                                                      size: 40,
+                                                      color: Colors.red),
+                                                  SizedBox(height: 40),
+                                                  Icon(Icons.refresh,
+                                                      size: 40,
+                                                      color: Colors.blue),
+                                                  SizedBox(height: 10),
+                                                ]),
+                                            Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                      'Wala ka pang itinatala. Pindutin\nang kulay berdeng butones\nsa ilalim para magsimula.',
+                                                      textAlign: TextAlign.left,
+                                                      style: TextStyle(
+                                                          color: Colors.purple,
+                                                          fontSize: 15)),
+                                                  Text(
+                                                      '\nKung may natala ka na pero di pa\nlumalabas, mangyaring i-refresh\nang pahina sa pamamagitan ng\npaghila nito pababa.',
+                                                      textAlign: TextAlign.left,
+                                                      style: TextStyle(
+                                                          color: Colors.purple,
+                                                          fontSize: 15)),
+                                                ]),
+                                          ],
+                                        ),
+                                        Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: []),
                                       ],
                                     )))
                             : Container(
@@ -239,7 +250,7 @@ class _ActivityTableState extends State<ActivityTable> {
         headingTextStyle: TextStyle(
             fontFamily: 'Montserrat',
             color: Colors.white,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w800,
             fontSize: 20),
         headingRowColor:
             MaterialStateColor.resolveWith((states) => Colors.purple),
@@ -336,19 +347,10 @@ class _ActivityTableState extends State<ActivityTable> {
     ];
   }
 
-  // Map<dynamic, dynamic> map = _data.first;
-  // var d;
-  // extractMap() {
-  //   map = List<Map<dynamic, dynamic>>.from()
-  // }
-
   List<DataRow> _createRows() {
     return _data
         .map((data) => DataRow(
                 onSelectChanged: (newValue) {
-                  setState(() {
-                    var uuid = data['uuid'];
-                  });
                   showDialog(
                       context: context,
                       builder: (BuildContext context) => storedForm(
@@ -389,7 +391,7 @@ class _ActivityTableState extends State<ActivityTable> {
                             children: [
                               Text(data['commonName'],
                                   style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
+                                      TextStyle(fontWeight: FontWeight.w700)),
                               Text('Haba: ' +
                                   data['length'] +
                                   ' cm' +

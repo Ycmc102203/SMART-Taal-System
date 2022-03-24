@@ -3,8 +3,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-
-import '../../backend/enumeratorRawData.dart';
+import '../../backend/models/enumeratorRawData.dart';
 import '../../backend/google_sheets_api.dart';
 import '../../backend/sqlfite_local_offline_cache.dart';
 import '../../backend/sqlfite_local_primary_db.dart';

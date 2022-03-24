@@ -6,6 +6,9 @@ import 'package:table_calendar/table_calendar.dart';
 import '../backend/sqlfite_local_primary_db.dart';
 
 class Calendar extends StatefulWidget {
+  final firstName;
+  final lastName;
+  Calendar({required this.firstName, required this.lastName});
   @override
   State<Calendar> createState() => _CalendarState();
 }
@@ -17,11 +20,6 @@ class _CalendarState extends State<Calendar> {
   String _queryDate = '';
   String? speciesOnDate;
   int? listLength;
-
-  void _showTallyOfTheDay() {
-    print(_queryDate);
-    _query();
-  }
 
   Future<List<enumeratorLocal>> _query() async {
     // get a reference to the database
@@ -38,7 +36,8 @@ class _CalendarState extends State<Calendar> {
   }
 
   void showModal() {
-    showStoredFormForDate(context, _query(), _queryDate);
+    showStoredFormForDate(
+        context, _query(), _queryDate, widget.firstName, widget.lastName);
   }
 
   @override
@@ -57,17 +56,20 @@ class _CalendarState extends State<Calendar> {
                   height: MediaQuery.of(context).size.height / 10,
                   child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 15),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Kalendaryo ng mga Tala",
-                                style: TextStyle(
-                                    color: Color.fromARGB(255, 255, 255, 255),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 24)),
-                            Icon(Icons.date_range,
-                                color: Color.fromARGB(255, 255, 255, 255))
-                          ]))),
+                      child: FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("Kalendaryo ng mga Tala     ",
+                                    style: TextStyle(
+                                        color:
+                                            Color.fromARGB(255, 255, 255, 255),
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 24)),
+                                Icon(Icons.date_range,
+                                    color: Color.fromARGB(255, 255, 255, 255))
+                              ])))),
               Container(
                   height: MediaQuery.of(context).size.height / 100,
                   child: Row(
@@ -139,7 +141,7 @@ class _CalendarState extends State<Calendar> {
                 //                       Text(
                 //                         '${species[index]}',
                 //                         style: TextStyle(
-                //                           fontWeight: FontWeight.bold,
+                //                           fontWeight: FontWeight.w800,
                 //                           fontSize: 15,
                 //                         ),
                 //                       ),

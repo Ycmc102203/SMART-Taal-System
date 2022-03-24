@@ -10,10 +10,11 @@ import '../../widgets/buttons/submit_button.dart';
 import '../../widgets/offline_cache_list.dart';
 
 showStoredFormForDate(
-  BuildContext context,
-  Future<List<enumeratorLocal>> speciesName,
-  String dateSelectedString,
-) {
+    BuildContext context,
+    Future<List<enumeratorLocal>> speciesName,
+    String dateSelectedString,
+    var firstName,
+    var lastName) {
   String englishFilipinoName = '';
   DateTime dateSelected = DateTime.parse(dateSelectedString);
   DateTime dateNow =
@@ -141,7 +142,7 @@ showStoredFormForDate(
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 30,
-                                      fontWeight: FontWeight.bold)),
+                                      fontWeight: FontWeight.w800)),
                               FaIcon(FontAwesomeIcons.telegramPlane,
                                   color: Colors.black, size: 30)
                             ],
@@ -167,11 +168,11 @@ showStoredFormForDate(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text('Wala pang tala',
+                                      Text('Walang tala',
                                           style: TextStyle(
                                               color: Colors.black,
                                               fontSize: 30,
-                                              fontWeight: FontWeight.bold)),
+                                              fontWeight: FontWeight.w800)),
                                       Text(
                                         "para sa araw ng: ${dateSelectedString}",
                                         textAlign: TextAlign.start,
@@ -207,13 +208,13 @@ showStoredFormForDate(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text('Mga Naitalang Isda',
+                                              Text('Mga Talang Isda',
                                                   textAlign: TextAlign.start,
                                                   style: TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 24,
                                                       fontWeight:
-                                                          FontWeight.bold)),
+                                                          FontWeight.w800)),
                                               Text(
                                                 "para sa araw ng: ${dateSelectedString}",
                                                 textAlign: TextAlign.start,
@@ -358,7 +359,7 @@ showStoredFormForDate(
                                                                           style:
                                                                               TextStyle(
                                                                             fontWeight:
-                                                                                FontWeight.bold,
+                                                                                FontWeight.w800,
                                                                             fontSize:
                                                                                 13,
                                                                           ),
@@ -367,7 +368,7 @@ showStoredFormForDate(
                                                                           crossAxisAlignment:
                                                                               CrossAxisAlignment.start,
                                                                           children: [
-                                                                            Text("Haba: ${enumeratorLocal.length} cm | Bigat: ${enumeratorLocal.weight} g",
+                                                                            Text("${enumeratorLocal.length} cm | ${enumeratorLocal.weight} g",
                                                                                 style: TextStyle(
                                                                                   fontSize: 13,
                                                                                 )),
@@ -408,10 +409,11 @@ showStoredFormForDate(
             SizedBox(
               height: 50,
               child: (dateSelected.isBefore(dateNow) || dateSelected == dateNow)
+                  //Null names
                   ? MaterialButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/form_one',
-                            arguments: FormOneArguments(dateSelected));
+                            arguments: FormOneArguments(dateSelected, '', ''));
                       },
                       elevation: 10,
                       color: Colors.green,

@@ -8,9 +8,11 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:smart_taal_system/forms/lists/fishing_gear_list.dart';
 import 'package:smart_taal_system/forms/output/form_preview.dart';
 import 'package:smart_taal_system/widgets/warnings/back_warning.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
+import '../../backend/user_db.dart';
 import '../../widgets/buttons/add_button.dart';
 import '../fields/text_input_field.dart';
 import '../lists/landing_center_list.dart';
@@ -22,7 +24,6 @@ class NewActivity extends StatefulWidget {
 }
 
 class _NewActivityState extends State<NewActivity> {
-  TextEditingController enumeratorController = TextEditingController();
   TextEditingController landingCenterController = TextEditingController();
   TextEditingController fishingGroundController = TextEditingController();
   TextEditingController totalLandingsController = TextEditingController();
@@ -33,90 +34,17 @@ class _NewActivityState extends State<NewActivity> {
   TextEditingController sampleSerialNumberController = TextEditingController();
   TextEditingController totalSampleWeightController = TextEditingController();
 
-  final _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    super.initState();
+  }
 
+  final _formKey = GlobalKey<FormState>();
+  static final RegExp numericRegExp = RegExp(r'^[0-9]+$');
   DateTime dateTime = DateTime.now();
 
   Future<bool?> showWarning(BuildContext context) async =>
       showDialog<bool>(context: context, builder: (context) => BackWarning());
-
-  showPreview(BuildContext context, passedDate) => showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => FormPreview(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  OutputTextField(
-                      label: Text("Pangalan ng Enumerator"),
-                      content: "${enumeratorController.text}"),
-                  SizedBox(height: 20),
-                  OutputTextField(
-                      label: Text("Lugar ng Pinangisdaan"),
-                      content: "${fishingGroundController.text}"),
-                  SizedBox(height: 20),
-                  OutputTextField(
-                      label: Text("Lugar ng Daungan"),
-                      content: "${landingCenterController.text}"),
-                  SizedBox(height: 20),
-                  OutputTextField(
-                      label: Text("Bilang ng Lahat ng Dumaong"),
-                      content: "${totalLandingsController.text}"),
-                  SizedBox(height: 20),
-                  Divider(
-                    thickness: 3,
-                  ),
-                  SizedBox(height: 20),
-                  OutputTextField(
-                      label: Text("Pangalan ng Bangka"),
-                      content: "${boatNameController.text}"),
-                  SizedBox(height: 20),
-                  OutputTextField(
-                      label: Text("Gear na Ginamit"),
-                      content: "${fishingGearController.text}"),
-                  SizedBox(height: 20),
-                  OutputTextField(
-                      label: Text("Tagal ng Pangingisda"),
-                      content: "${fishingEffortController.text} oras"),
-                  SizedBox(height: 20),
-                  OutputTextField(
-                      label: Text("Timbang ng Nahuli ng Bangka"),
-                      content: "${totalBoatCatchController.text} kg"),
-                  SizedBox(height: 20),
-                  Divider(
-                    thickness: 3,
-                  ),
-                  SizedBox(height: 20),
-                  OutputTextField(
-                      label: Text("Sample Serial Number"),
-                      content: "${sampleSerialNumberController.text}"),
-                  SizedBox(height: 20),
-                  OutputTextField(
-                      label: Text("Timbang ng Sample"),
-                      content: "${totalSampleWeightController.text}"),
-                ],
-              ),
-            ],
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                NewSpecies.routeName,
-                arguments: FormTwoArguments(
-                  passedDate,
-                  enumeratorController.text,
-                  fishingGroundController.text,
-                  landingCenterController.text,
-                  totalLandingsController.text,
-                  boatNameController.text,
-                  fishingGearController.text,
-                  fishingEffortController.text,
-                  totalBoatCatchController.text,
-                  sampleSerialNumberController.text,
-                  totalSampleWeightController.text,
-                ),
-              ).then((_) => setState(() {}));
-            },
-          ));
 
   Future<void> _selectDate(BuildContext context, passedDate) async {
     final DateTime? picked = await showDatePicker(
@@ -145,6 +73,127 @@ class _NewActivityState extends State<NewActivity> {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as FormOneArguments;
+    TextEditingController enumeratorController =
+        TextEditingController(text: '${args.firstName} ${args.lastName}');
+    // void _setUser() async {
+    //   setState(() {
+    //     enumeratorController.text = "${args.firstName} ${args.lastName}";
+    //   });
+    // }
+    showPreview(BuildContext context, passedDate) => showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => FormPreview(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Detalye ng Lugar",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w800, fontSize: 20),
+                        ),
+                        Icon(Icons.location_on, color: Colors.black)
+                      ],
+                    ),
+                    Divider(
+                      thickness: 3,
+                    ),
+                    SizedBox(height: 20),
+                    OutputTextField(
+                        label: Text("Pangalan ng Enumerator"),
+                        content: "${enumeratorController.text}"),
+                    SizedBox(height: 20),
+                    OutputTextField(
+                        label: Text("Lugar ng Pinangisdaan"),
+                        content: "${fishingGroundController.text}"),
+                    SizedBox(height: 20),
+                    OutputTextField(
+                        label: Text("Lugar ng Daungan"),
+                        content: "${landingCenterController.text}"),
+                    SizedBox(height: 20),
+                    OutputTextField(
+                        label: Text("Bilang ng Lahat ng Dumaong"),
+                        content: "${totalLandingsController.text}"),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Detalye ng Dumaong",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w800, fontSize: 20),
+                        ),
+                        Icon(Icons.directions_boat, color: Colors.black)
+                      ],
+                    ),
+                    Divider(
+                      thickness: 3,
+                    ),
+                    SizedBox(height: 20),
+                    OutputTextField(
+                        label: Text("Pangalan ng Bangka"),
+                        content: "${boatNameController.text}"),
+                    SizedBox(height: 20),
+                    OutputTextField(
+                        label: Text("Gear na Ginamit"),
+                        content: "${fishingGearController.text}"),
+                    SizedBox(height: 20),
+                    OutputTextField(
+                        label: Text("Tagal ng Pangingisda"),
+                        content: "${fishingEffortController.text} oras"),
+                    SizedBox(height: 20),
+                    OutputTextField(
+                        label: Text("Timbang ng Nahuli ng Bangka"),
+                        content: "${totalBoatCatchController.text} kg"),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Detalye ng Sample",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w800, fontSize: 20),
+                        ),
+                        Icon(Icons.inbox, color: Colors.black)
+                      ],
+                    ),
+                    Divider(
+                      thickness: 3,
+                    ),
+                    SizedBox(height: 20),
+                    OutputTextField(
+                        label: Text("Sample Serial Number"),
+                        content: "${sampleSerialNumberController.text}"),
+                    SizedBox(height: 20),
+                    OutputTextField(
+                        label: Text("Timbang ng Sample"),
+                        content: "${totalSampleWeightController.text}"),
+                  ],
+                ),
+              ],
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  NewSpecies.routeName,
+                  arguments: FormTwoArguments(
+                    passedDate,
+                    enumeratorController.text,
+                    fishingGroundController.text,
+                    landingCenterController.text,
+                    totalLandingsController.text,
+                    boatNameController.text,
+                    fishingGearController.text,
+                    fishingEffortController.text,
+                    totalBoatCatchController.text,
+                    sampleSerialNumberController.text,
+                    totalSampleWeightController.text,
+                  ),
+                ).then((_) => setState(() {}));
+              },
+            ));
     return WillPopScope(
         onWillPop: () async {
           print('Ikaw ay bumalik');
@@ -182,7 +231,7 @@ class _NewActivityState extends State<NewActivity> {
                                                   style: TextStyle(
                                                       fontSize: 30,
                                                       fontWeight:
-                                                          FontWeight.bold))),
+                                                          FontWeight.w800))),
                                           Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
@@ -238,7 +287,7 @@ class _NewActivityState extends State<NewActivity> {
                                                       style: TextStyle(
                                                           fontSize: 25,
                                                           fontWeight:
-                                                              FontWeight.bold)),
+                                                              FontWeight.w800)),
                                                   Icon(Icons.location_on,
                                                       color: Colors.black)
                                                 ],
@@ -255,7 +304,20 @@ class _NewActivityState extends State<NewActivity> {
                                             labelText: "Pangalan ng Enumerator",
                                             keyboardType: TextInputType.name,
                                           ),
-                                          TextInputField(
+                                          // TextInputField(
+                                          //   validator: (value) {
+                                          //     if (value == null ||
+                                          //         value.isEmpty) {
+                                          //       return 'Walang sagot; pumili ng lugar';
+                                          //     }
+                                          //     return null;
+                                          //   },
+                                          //   controller: fishingGroundController,
+                                          //   labelText: "Lugar ng Pinangisdaan",
+                                          //   keyboardType: TextInputType.name,
+                                          // ),
+                                          DropDownField(
+                                            items: ['Municipal', 'Commercial'],
                                             validator: (value) {
                                               if (value == null ||
                                                   value.isEmpty) {
@@ -263,9 +325,17 @@ class _NewActivityState extends State<NewActivity> {
                                               }
                                               return null;
                                             },
-                                            controller: fishingGroundController,
-                                            labelText: "Lugar ng Pinangisdaan",
-                                            keyboardType: TextInputType.name,
+                                            labelTextOne:
+                                                "Lugar ng Pinangisdaan",
+                                            labelTextTwo:
+                                                "Anong klasipikasyon ng lugar?",
+                                            icon: Icon(Icons.location_on),
+                                            onChanged: (String? value) {
+                                              setState(() {
+                                                fishingGroundController.text =
+                                                    value!;
+                                              });
+                                            },
                                           ),
                                           DropDownField(
                                             items: landingCentersList,
@@ -279,7 +349,7 @@ class _NewActivityState extends State<NewActivity> {
                                             labelTextOne: "Lugar ng Daungan",
                                             labelTextTwo:
                                                 "Hanapin ang Lugar ng Dinaungan",
-                                            labelTextThree: 'Lugar ng Daungan',
+                                            icon: Icon(Icons.location_on),
                                             onChanged: (String? value) {
                                               setState(() {
                                                 landingCenterController.text =
@@ -288,13 +358,17 @@ class _NewActivityState extends State<NewActivity> {
                                             },
                                           ),
                                           TextInputField(
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Walang sagot; ilagay ang dami ng dumaong';
-                                              }
-                                              return null;
-                                            },
+                                            validator: (value) => value.isEmpty
+                                                ? 'Walang sagot; Ilagay ang bilang ng dumaong'
+                                                : (numericRegExp.hasMatch(value)
+                                                    ? null
+                                                    : 'Hindi ito pwede. Siguraduhing mga numero (0 - 9)\nlang ang nilagay mo.'),
+                                            // if (value == null ||
+                                            //     value.isEmpty) {
+                                            //   return 'Walang sagot; ilagay ang dami ng dumaong';
+                                            // }
+                                            // return null;
+
                                             controller: totalLandingsController,
                                             labelText:
                                                 "Bilang ng Lahat ng Dumaong",
@@ -312,7 +386,7 @@ class _NewActivityState extends State<NewActivity> {
                                                       style: TextStyle(
                                                           fontSize: 25,
                                                           fontWeight:
-                                                              FontWeight.bold)),
+                                                              FontWeight.w800)),
                                                   Icon(Icons.directions_boat,
                                                       color: Colors.black)
                                                 ],
@@ -341,7 +415,7 @@ class _NewActivityState extends State<NewActivity> {
                                               labelTextOne: "Gear na Ginamit",
                                               labelTextTwo:
                                                   "Hanapin ang Gear na Ginamit",
-                                              labelTextThree: 'Fishing Gear',
+                                              icon: Icon(Icons.directions_boat),
                                               onChanged: (String? value) {
                                                 setState(() {
                                                   fishingGearController.text =
@@ -349,26 +423,22 @@ class _NewActivityState extends State<NewActivity> {
                                                 });
                                               }),
                                           TextInputField(
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Walang sagot; ilagay ang tagal ng pangingisda';
-                                              }
-                                              return null;
-                                            },
+                                            validator: (value) => value.isEmpty
+                                                ? 'Walang sagot; Ilagay ang tagal ng pangingisda'
+                                                : (numericRegExp.hasMatch(value)
+                                                    ? null
+                                                    : 'Hindi ito pwede. Siguraduhing mga numero (0 - 9)\nlang ang nilagay mo.'),
                                             controller: fishingEffortController,
                                             labelText:
                                                 "Tagal ng Pangingisda (oras)",
                                             keyboardType: TextInputType.number,
                                           ),
                                           TextInputField(
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Walang sagot; ilagay ang timbang ng hinuli';
-                                              }
-                                              return null;
-                                            },
+                                            validator: (value) => value.isEmpty
+                                                ? 'Walang sagot; Ilagay ang timbang ng nahuli'
+                                                : (numericRegExp.hasMatch(value)
+                                                    ? null
+                                                    : 'Hindi ito pwede. Siguraduhing mga numero (0 - 9)\nlang ang nilagay mo.'),
                                             controller:
                                                 totalBoatCatchController,
                                             labelText:
@@ -387,44 +457,43 @@ class _NewActivityState extends State<NewActivity> {
                                                       style: TextStyle(
                                                           fontSize: 25,
                                                           fontWeight:
-                                                              FontWeight.bold)),
+                                                              FontWeight.w800)),
                                                   Icon(Icons.inbox,
                                                       color: Colors.black)
                                                 ],
                                               )),
                                           TextInputField(
                                             validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Walang sagot; ilagay ang sample serial number';
-                                              }
-                                              return null;
+                                              (value) => value.isEmpty
+                                                  ? 'Walang sagot; Ilagay ang SSN'
+                                                  : (numericRegExp
+                                                          .hasMatch(value)
+                                                      ? null
+                                                      : 'Hindi ito pwede. Siguraduhing mga numero (0 - 9)\nlang ang nilagay mo.');
                                             },
                                             controller:
                                                 sampleSerialNumberController,
-                                            labelText: "Sample Serial Number",
+                                            labelText:
+                                                "Sample Serial Number (SSN)",
                                             keyboardType: TextInputType.number,
                                           ),
                                           TextInputField(
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Walang sagot; ilagay ang timbang ng sample';
-                                              }
-                                              return null;
-                                            },
+                                            validator: (value) => value.isEmpty
+                                                ? 'Walang sagot; Ilagay ang bigat ng sample.'
+                                                : (numericRegExp.hasMatch(value)
+                                                    ? null
+                                                    : 'Hindi ito pwede. Siguraduhing mga numero (0 - 9)\nlang ang nilagay mo.'),
                                             controller:
                                                 totalSampleWeightController,
                                             labelText: "Timbang ng Sample (kg)",
                                             keyboardType: TextInputType.number,
                                           ),
-                                          Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      2.5),
-                                              child: AddButton(
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              SizedBox(),
+                                              AddButton(
                                                   icon: FaIcon(
                                                       FontAwesomeIcons
                                                           .arrowCircleRight,
@@ -440,10 +509,12 @@ class _NewActivityState extends State<NewActivity> {
                                                           context,
                                                           CustomSnackBar.error(
                                                             message:
-                                                                "May kulang pa sa iyong tala. I-double check kung may laman na lahat.",
+                                                                "May kulang o mali pa sa iyong tala. I-double check kung may laman na lahat.",
                                                           ));
                                                     }
-                                                  })),
+                                                  }),
+                                            ],
+                                          ),
                                         ])))))))));
   }
 }

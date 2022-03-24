@@ -27,5 +27,7 @@ class FormTwoArguments {
 
 class FormOneArguments {
   final DateTime passedDate;
-  FormOneArguments(this.passedDate);
+  final firstName;
+  final lastName;
+  FormOneArguments(this.passedDate, this.firstName, this.lastName);
 }

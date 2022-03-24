@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:smart_taal_system/forms/fields/dropdown_field.dart';
 import 'package:smart_taal_system/widgets/buttons/submit_button.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-
-import '../../backend/enumeratorRawData.dart';
+import '../../backend/models/enumeratorRawData.dart';
 import '../../backend/google_sheets_api.dart';
-import '../../backend/sqlfite_local_offline_cache.dart';
 import '../../backend/sqlfite_local_primary_db.dart';
 import '../../widgets/loadingIndicator.dart';
 import '../fields/text_input_field.dart';
@@ -333,10 +332,10 @@ class _EditFormState extends State<EditForm> {
         child: Column(
       children: [
         Image.asset(speciesPic.text),
-        Text("\n----PAG-EEDIT NG TALA----",
+        Text("\n---PAG-EEDIT NG TALA---",
             textAlign: TextAlign.center,
             style: TextStyle(
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w800,
                 fontSize: 20,
                 color: Colors.green)),
         Form(
@@ -346,19 +345,19 @@ class _EditFormState extends State<EditForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("\nDetalye ng Isda",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                  style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20)),
               DropDownField(
                 items: speciesList,
                 selectedItem: widget.commonName,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Walang sagot; pumili ng isda';
+                    return 'Walang sagot; siguraduhing may laman ang tala';
                   }
                   return null;
                 },
                 labelTextOne: "Pangalan ng Isda",
                 labelTextTwo: "Hanapin ang Isdang Sinukat",
-                labelTextThree: 'Pangalan ng Isda',
+                icon: FaIcon(FontAwesomeIcons.fish),
                 onChanged: (String? value) {
                   setState(() {
                     commonName.text = value!;
@@ -370,7 +369,7 @@ class _EditFormState extends State<EditForm> {
               TextInputField(
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Walang sagot; pumili ng isda';
+                    return 'Walang sagot; siguraduhing may laman ang tala';
                   }
                   return null;
                 },
@@ -389,7 +388,7 @@ class _EditFormState extends State<EditForm> {
                   labelText: "Bigat ng Isda (g)",
                   keyboardType: TextInputType.number),
               Text("\nDetalye ng Lugar",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                  style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20)),
               TextInputField(
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -400,28 +399,46 @@ class _EditFormState extends State<EditForm> {
                   controller: enumerator,
                   labelText: "Pangalan ng Enumerator",
                   keyboardType: TextInputType.name),
-              TextInputField(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Walang sagot; ilagay ang timbang';
-                    }
-                    return null;
-                  },
-                  controller: fishingGround,
-                  labelText: "Lugar na Pinangisdaan",
-                  keyboardType: TextInputType.name),
+              // TextInputField(
+              //     validator: (value) {
+              //       if (value == null || value.isEmpty) {
+              //         return 'Walang sagot; ilagay ang timbang';
+              //       }
+              //       return null;
+              //     },
+              //     controller: fishingGround,
+              //     labelText: "Lugar na Pinangisdaan",
+              //     keyboardType: TextInputType.name),
+              DropDownField(
+                items: ['Commercial', 'Municipal'],
+                selectedItem: widget.fishingGround,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Walang sagot; siguraduhing may laman ang tala';
+                  }
+                  return null;
+                },
+                labelTextOne: "Lugar na Pinangisdaan",
+                labelTextTwo: "Hanapin ang Lugar na Pinangisdaan",
+                icon: Icon(Icons.location_on),
+                onChanged: (String? value) {
+                  setState(() {
+                    fishingGround.text = value!;
+                  });
+                },
+              ),
               DropDownField(
                 items: landingCentersList,
                 selectedItem: widget.landingCenter,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Walang sagot; pumili ng isda';
+                    return 'Walang sagot; siguraduhing may laman ang tala';
                   }
                   return null;
                 },
                 labelTextOne: "Lugar Daungan",
                 labelTextTwo: "Hanapin ang Lugar na Dinaungan",
-                labelTextThree: 'Lugar Daungan',
+                icon: Icon(Icons.location_on),
                 onChanged: (String? value) {
                   setState(() {
                     landingCenter.text = value!;
@@ -439,7 +456,7 @@ class _EditFormState extends State<EditForm> {
                   labelText: "Bilang ng mga Dumaong",
                   keyboardType: TextInputType.number),
               Text("\nDetalye ng Dumaong",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                  style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20)),
               TextInputField(
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -455,13 +472,13 @@ class _EditFormState extends State<EditForm> {
                 selectedItem: widget.fishingGear,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Walang sagot; pumili ng isda';
+                    return 'Walang sagot; siguraduhing may laman ang tala';
                   }
                   return null;
                 },
                 labelTextOne: "Gear na Ginamit",
                 labelTextTwo: "Hanapin ang Gear na Ginamit",
-                labelTextThree: 'Gear na Ginamit',
+                icon: Icon(Icons.directions_boat),
                 onChanged: (String? value) {
                   setState(() {
                     landingCenter.text = value!;
@@ -489,7 +506,7 @@ class _EditFormState extends State<EditForm> {
                   labelText: "Timbang ng Nahuli",
                   keyboardType: TextInputType.number),
               Text("\nDetalye ng Sample",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                  style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20)),
               TextInputField(
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -674,7 +691,7 @@ class _EditFormState extends State<EditForm> {
                           context,
                           CustomSnackBar.error(
                             message:
-                                "Kailangan mo munang magkaron ng koneksyon sa internet upang ma-edit ito.",
+                                "Kailangan mo munang magkaron ng koneksyon upang mag-edit.",
                           ));
                     }
                   },

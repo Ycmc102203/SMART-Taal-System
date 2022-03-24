@@ -9,8 +9,17 @@ class BackWarning extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        title: Text("Babalik ka ba?"),
-        content: Text("Mawawala ang mga nasulat mo kung babalik ka ngayon"),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Babalik ka ba?",
+              style: TextStyle(fontWeight: FontWeight.w800),
+            ),
+            Icon(Icons.arrow_circle_left, color: Colors.red, size: 30)
+          ],
+        ),
+        content: Text("Mawawala ang mga nasulat mo kung babalik ka ngayon."),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -19,7 +28,7 @@ class BackWarning extends StatelessWidget {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text("Oo, bumalik"),
+            child: Text("Bumalik"),
             style: TextButton.styleFrom(
               primary: Colors.white,
               backgroundColor: Colors.red,

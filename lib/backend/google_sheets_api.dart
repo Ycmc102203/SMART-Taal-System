@@ -1,4 +1,4 @@
-import 'package:smart_taal_system/backend/enumeratorRawData.dart';
+import 'package:smart_taal_system/backend/models/enumeratorRawData.dart';
 import 'package:gsheets/gsheets.dart';
 
 class GoogleSheetsApi {
@@ -25,8 +25,8 @@ class GoogleSheetsApi {
     try {
       final spreadsheet = await _gsheets.spreadsheet(_spreadsheetId);
       _userSheet = await _getWorksheet(spreadsheet, title: 'enumeratorRawData');
-      final firstRow = EnumeratorRawDataColumn.getColumns();
-      _userSheet!.values.insertRow(1, firstRow);
+      // final firstRow = EnumeratorRawDataColumn.getColumns();
+      // _userSheet!.values.insertRow(1, firstRow);
     } catch (e) {
       print(e);
     }
